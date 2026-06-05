@@ -7,6 +7,7 @@ import { FeatureVisual } from "@/components/FeatureVisual";
 import { AddonIcon } from "@/components/icons";
 import { AddonVisual } from "@/components/AddonVisual";
 import { CORE_FEATURES, CATEGORIES, ADDONS } from "@/components/featuresData";
+import { JsonLd, breadcrumb } from "@/components/JsonLd";
 
 export const metadata: Metadata = {
   title: "Features",
@@ -39,6 +40,12 @@ function Tile({ img, h }: { img: string; h: number }) {
 export default function FeaturesPage() {
   return (
     <>
+      <JsonLd
+        data={breadcrumb([
+          { name: "Home", path: "/" },
+          { name: "Features", path: "/features" },
+        ])}
+      />
       <Nav />
       <main>
         <Section id="features-top" ariaLabel="All features">

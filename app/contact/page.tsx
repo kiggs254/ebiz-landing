@@ -3,6 +3,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { Section } from "@/components/primitives";
 import ContactForm from "@/components/ContactForm";
+import { JsonLd, breadcrumb } from "@/components/JsonLd";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -35,6 +36,12 @@ const METHODS: Array<{ label: string; value: string; href: string; note: string 
 export default function ContactPage() {
   return (
     <>
+      <JsonLd
+        data={breadcrumb([
+          { name: "Home", path: "/" },
+          { name: "Contact", path: "/contact" },
+        ])}
+      />
       <Nav />
       <main>
         <Section id="contact-top" ariaLabel="Contact E-biz">

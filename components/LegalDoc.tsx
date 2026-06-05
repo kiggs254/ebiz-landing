@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { Section } from "@/components/primitives";
+import { JsonLd, breadcrumb } from "@/components/JsonLd";
 
 /**
  * Shared shell for long-form legal/document pages (privacy, terms, cookies).
@@ -11,15 +12,26 @@ export default function LegalDoc({
   eyebrow = "Legal",
   title,
   updated,
+  path,
   children,
 }: {
   eyebrow?: string;
   title: string;
   updated: string;
+  /** Route path (e.g. "/privacy") — used for the BreadcrumbList. */
+  path?: string;
   children: ReactNode;
 }) {
   return (
     <>
+      {path && (
+        <JsonLd
+          data={breadcrumb([
+            { name: "Home", path: "/" },
+            { name: title, path },
+          ])}
+        />
+      )}
       <Nav />
       <main>
         <Section id="legal-top" ariaLabel={title}>

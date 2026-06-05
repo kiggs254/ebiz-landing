@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <LegalDoc title="Terms & Conditions" updated="6 June 2026">
+    <LegalDoc title="Terms & Conditions" updated="6 June 2026" path="/terms">
       <p>
         These Terms &amp; Conditions ("Terms") govern your access to and use of
         the <strong>E-biz</strong> Ecommerce Management System, our website{" "}

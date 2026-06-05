@@ -3,6 +3,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import CTA from "@/components/CTA";
 import { Section } from "@/components/primitives";
+import { JsonLd, breadcrumb } from "@/components/JsonLd";
 
 export const metadata: Metadata = {
   title: "About",
@@ -44,6 +45,12 @@ const STATS: Array<{ value: string; label: string }> = [
 export default function AboutPage() {
   return (
     <>
+      <JsonLd
+        data={breadcrumb([
+          { name: "Home", path: "/" },
+          { name: "About", path: "/about" },
+        ])}
+      />
       <Nav />
       <main>
         <Section id="about-top" ariaLabel="About E-biz">

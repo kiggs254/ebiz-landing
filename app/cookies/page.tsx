@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function CookiesPage() {
   return (
-    <LegalDoc title="Cookie Policy" updated="6 June 2026">
+    <LegalDoc title="Cookie Policy" updated="6 June 2026" path="/cookies">
       <p>
         This Cookie Policy explains how <strong>E-biz</strong> uses cookies and
         similar technologies on <a href="https://e-biz.co.ke">e-biz.co.ke</a> and

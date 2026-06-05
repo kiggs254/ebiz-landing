@@ -127,10 +127,24 @@ const FAQItem = ({
   </div>
 );
 
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQS.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+};
+
 export default function FAQ() {
   const [open, setOpen] = useState(0);
   return (
     <Section id="faq" ariaLabel="Frequently asked questions">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       <div
         className="faq-grid"
         style={{

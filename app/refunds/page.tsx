@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function RefundsPage() {
   return (
-    <LegalDoc title="Refund Policy" updated="6 June 2026">
+    <LegalDoc title="Refund Policy" updated="6 June 2026" path="/refunds">
       <p>
         This Refund Policy applies to subscriptions to the <strong>E-biz</strong>{" "}
         Ecommerce Management System. It forms part of our{" "}

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <LegalDoc title="Privacy Policy" updated="6 June 2026">
+    <LegalDoc title="Privacy Policy" updated="6 June 2026" path="/privacy">
       <p>
         This Privacy Policy explains how <strong>E-biz</strong> ("E-biz", "we",
         "us") collects, uses, discloses, and safeguards your information when you

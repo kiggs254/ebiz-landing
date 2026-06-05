@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { Section } from "./primitives";
 
@@ -276,10 +277,12 @@ export default function Industries() {
               position: "relative",
             }}
           >
-            <img
+            <Image
               src={IND_IMAGES[ind.id]}
               alt={ind.sample.product}
-              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              fill
+              sizes="(max-width: 900px) 90vw, 420px"
+              style={{ objectFit: "cover" }}
             />
             <span
               style={{

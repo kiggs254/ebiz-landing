@@ -1,6 +1,7 @@
 // Rich mini product-preview visuals for the core features. Pure component (no
 // "use client") so both the home Features teaser and the /features page can use it.
 
+import Image from "next/image";
 import type { Hue, AccentKey } from "./featuresData";
 
 export const HUES: Record<AccentKey, Hue> = {
@@ -287,17 +288,19 @@ export function FeatureVisual({ kind, hue }: { kind: AccentKey; hue: Hue }) {
             <div key={sku}>
               <div
                 style={{
+                  position: "relative",
                   height: 60,
                   borderRadius: 4,
                   border: "1px solid var(--line-softer)",
                   overflow: "hidden",
                 }}
               >
-                <img
+                <Image
                   src={`/products/${img}.jpg`}
                   alt=""
-                  loading="lazy"
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  fill
+                  sizes="120px"
+                  style={{ objectFit: "cover" }}
                 />
               </div>
               <div

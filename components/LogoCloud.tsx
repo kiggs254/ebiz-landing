@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Section } from "./primitives";
 
 const clients = [
@@ -40,15 +41,16 @@ export default function LogoCloud() {
         }}
       >
         {clients.map((c) => (
-          <div key={c.file} className="client-chip">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`/clients/${c.file}`}
-              alt={c.name}
-              title={c.name}
-              loading="lazy"
-              className="client-logo"
-            />
+          <div key={c.file} className="client-chip" title={c.name}>
+            <div style={{ position: "relative", width: "100%", height: "100%" }}>
+              <Image
+                src={`/clients/${c.file}`}
+                alt={c.name}
+                fill
+                sizes="176px"
+                style={{ objectFit: "contain", padding: "2px" }}
+              />
+            </div>
           </div>
         ))}
       </div>

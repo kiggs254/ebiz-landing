@@ -31,10 +31,10 @@
   --pink-ink: oklch(0.48 0.16 352);
   --good: oklch(0.58 0.12 150);
 
-  --display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --display: var(--font-space-grotesk), 'Space Grotesk', system-ui, -apple-system, sans-serif;
   --serif: var(--display); /* legacy alias — headings now use Space Grotesk */
-  --sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --sans: var(--font-inter), 'Inter', system-ui, -apple-system, sans-serif;
+  --mono: var(--font-jetbrains), 'JetBrains Mono', ui-monospace, monospace;
   --max: 1280px;
 }
 

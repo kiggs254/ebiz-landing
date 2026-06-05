@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import CTA from "@/components/CTA";
@@ -20,6 +21,7 @@ function Tile({ img, h }: { img: string; h: number }) {
   return (
     <div
       style={{
+        position: "relative",
         borderRadius: 14,
         overflow: "hidden",
         border: "1px solid var(--line-soft)",
@@ -28,10 +30,12 @@ function Tile({ img, h }: { img: string; h: number }) {
         background: "var(--bg-2)",
       }}
     >
-      <img
+      <Image
         src={`/products/${img}.jpg`}
         alt=""
-        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+        fill
+        sizes="(max-width: 900px) 50vw, 300px"
+        style={{ objectFit: "cover" }}
       />
     </div>
   );

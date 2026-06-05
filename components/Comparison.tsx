@@ -2,7 +2,7 @@ import { Check, Cross, Dash, Section } from "./primitives";
 
 const ROWS: Array<[string, string, string, string, string]> = [
   ["M-Pesa & mobile money", "yes", "plugin", "plugin", "no"],
-  ["Your own dedicated server", "yes", "no", "yes", "no"],
+  ["Managed dedicated server (included)", "yes", "no", "yes", "no"],
   ["No transaction fees", "yes", "partial", "yes", "yes"],
   ["Multi-branch", "addon", "plus-only", "plugin", "no"],
   ["AI content generation", "built-in", "plugin", "plugin", "plugin"],

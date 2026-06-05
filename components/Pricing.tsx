@@ -1,7 +1,7 @@
 import { Check, Section } from "./primitives";
 
 const ALWAYS_INCLUDED = [
-  "Dedicated server hosting",
+  "Managed dedicated server + hosting",
   "SSL certificate",
   "Unlimited products & orders",
   "No per-transaction fees",
@@ -41,8 +41,9 @@ export default function Pricing() {
           className="section-lede"
           style={{ margin: "24px auto 0", textAlign: "center" }}
         >
-          Plus a one-time setup fee for custom storefront design and deployment —
-          quoted to scope.
+          Your dedicated server, hosting, updates, and support are all included in
+          the monthly fee — we manage everything. A one-time setup fee covers
+          custom storefront design and onboarding, quoted to scope.
         </p>
       </div>
 
@@ -105,8 +106,9 @@ export default function Pricing() {
             maxWidth: "46ch",
           }}
         >
-          Final pricing depends on your store size and the addons you need. Talk
-          to our team and we'll put together a plan that fits.
+          Final pricing depends on your store size and the addons you need —
+          hosting on a dedicated server we manage is always included. Talk to our
+          team and we'll put together a plan that fits.
         </p>
         <div
           style={{

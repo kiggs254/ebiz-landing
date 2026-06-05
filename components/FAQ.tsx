@@ -9,8 +9,8 @@ const FAQS = [
     a: "No. We do not take a cut of your sales. You pay your payment gateway (M-Pesa, Pesapal, Paystack, or your card processor) their standard fees, and E-biz charges only the flat monthly subscription.",
   },
   {
-    q: "Do I really get my own dedicated server?",
-    a: "Yes. Every E-biz deployment runs on its own server with its own database — no shared hosting, no noisy neighbours. You own your data and can export it any time.",
+    q: "Do I get my own dedicated server, and who manages it?",
+    a: "You get your own dedicated server with its own database — no shared hosting, no noisy neighbours. We fully manage it for you (uptime, backups, security, updates), and it's included in your monthly subscription, so there's no separate hosting bill and nothing for you to set up or maintain. You still own your data and can export it any time.",
   },
   {
     q: "How long does a launch take?",

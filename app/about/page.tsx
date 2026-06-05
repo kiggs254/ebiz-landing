@@ -28,8 +28,8 @@ const VALUES: Array<{ title: string; body: string; color: string }> = [
     color: "var(--blue, #3b6ea5)",
   },
   {
-    title: "You own your stack",
-    body: "Every deployment runs on its own server and database — no shared hosting, no noisy neighbours, your data is yours.",
+    title: "Hosting, handled",
+    body: "Every store runs on its own dedicated server and database, fully managed by us and included in the subscription — no shared hosting, no server to maintain. Your data is still yours.",
     color: "var(--violet, #7c5cbf)",
   },
 ];
@@ -89,7 +89,8 @@ export default function AboutPage() {
               E-biz brings the whole operation into one calm dashboard: products,
               orders, customers, payments, and marketing, with every Kenyan payment
               method built in and 20+ addons you can switch on as you grow. It is
-              shippable worldwide and deployed on infrastructure you control.
+              shippable worldwide and runs on a dedicated server we manage for
+              you — hosting included, nothing for you to maintain.
             </p>
           </div>
         </Section>

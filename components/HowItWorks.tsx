@@ -9,9 +9,9 @@ const STEPS = [
   },
   {
     n: "02",
-    title: "We deploy on your own server",
-    body: "Dedicated hardware, your data, your domain — no noisy neighbours. We handle uptime, backups, and security so you don't have to.",
-    detail: ["Dedicated server", "SSL + custom domain", "Health monitoring"],
+    title: "We host it on a dedicated server we manage",
+    body: "Your own dedicated server — fully managed by us and included in your subscription. We handle uptime, backups, and security, so there's no separate hosting bill and nothing for you to set up.",
+    detail: ["Managed dedicated server", "SSL + custom domain", "Health monitoring"],
   },
   {
     n: "03",

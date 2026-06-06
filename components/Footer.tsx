@@ -14,7 +14,7 @@ export default function Footer() {
           className="footer-grid"
           style={{
             display: "grid",
-            gridTemplateColumns: "2fr 1fr 1fr 1fr",
+            gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr",
             gap: 32,
             marginBottom: 48,
           }}
@@ -40,6 +40,12 @@ export default function Footer() {
                 ["Addons", "/features#all-addons"],
                 ["Pricing", "/#pricing"],
                 ["Book a demo", "/contact"],
+              ]],
+              ["Developers", [
+                ["API reference", "/docs"],
+                ["Authentication", "/docs/authentication"],
+                ["Webhooks", "/docs/webhooks"],
+                ["Quick reference", "/docs/quick-reference"],
               ]],
               ["Company", [
                 ["About", "/about"],

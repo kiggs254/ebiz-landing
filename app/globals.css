@@ -404,7 +404,7 @@ h2.section-title em { font-style: normal; color: var(--title-accent, var(--accen
   .feat-card:hover img { transform: none; }
 }
 
-/* Client logo cloud — each mark sits in a uniform light rounded chip so the
+/* Client logo cloud: each mark sits in a uniform light rounded chip so the
  * row reads as one consistent size regardless of each logo's aspect ratio. */
 .client-chip {
   display: inline-flex;
@@ -434,6 +434,30 @@ h2.section-title em { font-style: normal; color: var(--title-accent, var(--accen
 @media (max-width: 640px) {
   .client-chip { width: 138px; height: 76px; padding: 12px 16px; }
   .client-logo { max-height: 40px; max-width: 96px; }
+}
+
+/* Client logo carousel (auto-scrolling marquee) */
+.logo-marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+.logo-track {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  width: max-content;
+  animation: mq 38s linear infinite;
+}
+.logo-track .client-chip { flex: 0 0 auto; }
+.logo-marquee:hover .logo-track { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .logo-marquee {
+    overflow-x: auto;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .logo-track { animation: none; }
 }
 
 /* Legal / long-form document pages (privacy, terms, cookies). */

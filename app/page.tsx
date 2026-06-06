@@ -18,13 +18,13 @@ export default function HomePage() {
       <Nav />
       <main>
         <Hero />
-        <LogoCloud />
         <Features />
         <Payments />
         <Industries />
         <VideoBand />
         <Comparison />
         <HowItWorks />
+        <LogoCloud />
         <Pricing />
         <FAQ />
         <CTA />

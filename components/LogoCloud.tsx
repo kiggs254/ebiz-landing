@@ -15,8 +15,8 @@ export default function LogoCloud() {
   return (
     <Section
       id="logos"
-      ariaLabel="Merchants powered by E-biz"
-      style={{ paddingTop: 56, paddingBottom: 56 }}
+      ariaLabel="Brands powered by E-biz"
+      style={{ paddingTop: 64, paddingBottom: 64 }}
     >
       <div style={{ textAlign: "center", marginBottom: 32 }}>
         <span
@@ -31,28 +31,30 @@ export default function LogoCloud() {
           Trusted by modern commerce teams
         </span>
       </div>
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: "28px 32px",
-        }}
-      >
-        {clients.map((c) => (
-          <div key={c.file} className="client-chip" title={c.name}>
-            <div style={{ position: "relative", width: "100%", height: "100%" }}>
-              <Image
-                src={`/clients/${c.file}`}
-                alt={c.name}
-                fill
-                sizes="176px"
-                style={{ objectFit: "contain", padding: "2px" }}
-              />
-            </div>
-          </div>
-        ))}
+
+      <div className="logo-marquee">
+        <div className="logo-track">
+          {[0, 1, 2].map((rep) =>
+            clients.map((c) => (
+              <div
+                key={`${rep}-${c.file}`}
+                className="client-chip"
+                title={c.name}
+                aria-hidden={rep > 0}
+              >
+                <div style={{ position: "relative", width: "100%", height: "100%" }}>
+                  <Image
+                    src={`/clients/${c.file}`}
+                    alt={rep === 0 ? c.name : ""}
+                    fill
+                    sizes="176px"
+                    style={{ objectFit: "contain", padding: "2px" }}
+                  />
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </Section>
   );

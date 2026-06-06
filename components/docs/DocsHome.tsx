@@ -17,6 +17,9 @@ export function DocsHome({ overview }: { overview: string }) {
         Build on E-biz. The REST API lets you manage products, orders, customers,
         branches, and payments, with API keys, webhooks, and realtime events. If
         you have used WooCommerce&apos;s REST API, this will feel familiar.
+        Building a custom shopfront instead? See the{" "}
+        <Link href="/docs/storefront">Storefront API</Link> - the public,
+        session-based API for headless storefronts.
       </p>
 
       <div className="dc-facts">

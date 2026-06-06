@@ -40,6 +40,18 @@ export const DOC_GROUPS: DocGroup[] = [
     ],
   },
   {
+    label: "Storefront API",
+    items: [
+      { slug: "storefront", title: "Overview" },
+      { slug: "storefront-catalog", title: "Catalog & discovery" },
+      { slug: "storefront-search", title: "AI search & recommendations" },
+      { slug: "storefront-cart", title: "Cart & wishlist" },
+      { slug: "storefront-checkout", title: "Checkout & payments" },
+      { slug: "storefront-customers", title: "Customer accounts" },
+      { slug: "storefront-content", title: "Content & engagement" },
+    ],
+  },
+  {
     label: "Guides",
     items: [
       { slug: "woocommerce", title: "WooCommerce compatibility" },

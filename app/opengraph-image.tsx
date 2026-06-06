@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "E-biz — The commerce command center for modern brands";
+export const alt = "E-biz: The commerce command center for modern brands";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -58,7 +58,7 @@ export default function OpengraphImage() {
             <span style={{ color: "#B5532E" }}>for modern brands.</span>
           </div>
           <div style={{ fontSize: 30, color: "#5C5B54", marginTop: 28, maxWidth: 960, lineHeight: 1.35 }}>
-            Sell online, in-store &amp; on WhatsApp — M-Pesa, Pesapal, Paystack, cards &amp; cash built in.
+            Sell online, in-store, and on WhatsApp. M-Pesa, Pesapal, Paystack, cards, and cash built in.
           </div>
         </div>
 

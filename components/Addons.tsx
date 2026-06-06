@@ -124,7 +124,7 @@ export default function Addons() {
         </div>
         <p className="section-lede" style={{ marginTop: 0, maxWidth: 380 }}>
           From multi-branch and subscriptions to AI, WhatsApp commerce, and a full
-          REST API — switch addons on and your dashboard adapts. Switch them off
+          REST API. Switch addons on and your dashboard adapts. Switch them off
           and they disappear. No clutter, no bloat.
         </p>
       </div>
@@ -375,7 +375,7 @@ export default function Addons() {
                 background: "var(--violet)",
               }}
             />
-            Try toggling — your sidebar updates instantly.
+            Try toggling, and your sidebar updates instantly.
           </div>
         </div>
       </div>

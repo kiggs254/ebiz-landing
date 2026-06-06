@@ -18,7 +18,7 @@ const INDUSTRIES = [
       ["Fulfillment", "< 24h"],
     ],
     sample: {
-      product: "Trail Runner — Edition 02",
+      product: "Trail Runner Edition 02",
       price: "$96",
       stock: "12 in stock",
     },

@@ -10,7 +10,7 @@ const FAQS = [
   },
   {
     q: "Do I get my own dedicated server, and who manages it?",
-    a: "You get your own dedicated server with its own database — no shared hosting, no noisy neighbours. We fully manage it for you (uptime, backups, security, updates), and it's included in your monthly subscription, so there's no separate hosting bill and nothing for you to set up or maintain. You still own your data and can export it any time.",
+    a: "You get your own dedicated server with its own database, with no shared hosting and no noisy neighbours. We fully manage it for you (uptime, backups, security, updates), and it's included in your monthly subscription, so there's no separate hosting bill and nothing for you to set up or maintain. You still own your data and can export it any time.",
   },
   {
     q: "How long does a launch take?",
@@ -18,15 +18,15 @@ const FAQS = [
   },
   {
     q: "Can I customize the storefront myself later?",
-    a: "Absolutely. Your storefront can be restyled, extended, or completely replaced any time — and your admin dashboard keeps working either way. We'll make the changes for you, or your own team can.",
+    a: "Absolutely. Your storefront can be restyled, extended, or completely replaced any time, and your admin dashboard keeps working either way. We'll make the changes for you, or your own team can.",
   },
   {
     q: "What if I outgrow the platform?",
-    a: "You won't get locked in. Your store and all your data are yours to keep and export at any time — take them elsewhere if you ever need to. No hostage situations.",
+    a: "You won't get locked in. Your store and all your data are yours to keep and export at any time, so you can take them elsewhere if you ever need to.",
   },
   {
     q: "Can I sell internationally?",
-    a: "Yes. E-biz deploys globally — shipping zones cover 194 countries and multi-currency is built in, so you can sell wherever your customers are.",
+    a: "Yes. E-biz deploys globally. Shipping zones cover 194 countries and multi-currency is built in, so you can sell wherever your customers are.",
   },
 ];
 

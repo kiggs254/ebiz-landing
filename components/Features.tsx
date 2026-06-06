@@ -15,13 +15,13 @@ type Feature = {
 const FEATURES: Feature[] = [
   {
     title: "Real-time order desk",
-    body: "Orders land the moment they're placed. Status workflow, internal notes, shipment tracking, invoices — all in one fast desk.",
+    body: "Orders land the moment they're placed. Status workflow, internal notes, shipment tracking, invoices, all in one fast desk.",
     accent: "orders",
     span: 2,
   },
   {
     title: "AI catalog",
-    body: "Generate product descriptions, SEO copy, and category blurbs in seconds — so your catalog is ready to sell, faster.",
+    body: "Generate product descriptions, SEO copy, and category blurbs in seconds, so your catalog is ready to sell faster.",
     accent: "ai",
     span: 1,
   },
@@ -127,7 +127,7 @@ export default function Features() {
           </h2>
         </div>
         <p className="section-lede" style={{ marginTop: 0, maxWidth: 380 }}>
-          Products, orders, customers, payments, marketing — every workflow your
+          Products, orders, customers, payments, marketing. Every workflow your
           team runs, in one fast, keyboard-friendly dashboard.
         </p>
       </div>

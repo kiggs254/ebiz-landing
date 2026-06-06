@@ -27,16 +27,16 @@ export default function CookiesPage() {
       <h2>2. Types of cookies we use</h2>
       <ul>
         <li>
-          <strong>Strictly necessary</strong> — required for the site and your
+          <strong>Strictly necessary</strong>: required for the site and your
           account to function, including security and session management. These
           cannot be switched off.
         </li>
         <li>
-          <strong>Preferences</strong> — remember choices such as your theme
+          <strong>Preferences</strong>: remember choices such as your theme
           (light/dark) and language.
         </li>
         <li>
-          <strong>Analytics</strong> — help us understand how visitors use the
+          <strong>Analytics</strong>: help us understand how visitors use the
           site so we can improve it. These are aggregated and, where required,
           set only with your consent.
         </li>

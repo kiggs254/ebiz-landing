@@ -346,6 +346,64 @@ h2.section-title em { font-style: normal; color: var(--title-accent, var(--accen
   .video-band-media { display: none; }
 }
 
+/* ---------------- Motion ---------------- */
+@keyframes heroUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: none; }
+}
+.hero-anim {
+  opacity: 0;
+  animation: heroUp 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+/* scroll-reveal (toggled by ScrollReveal.tsx on below-fold elements) */
+.r-anim {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: opacity, transform;
+}
+.r-anim.r-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* image zoom on card hover */
+.lift img,
+.feat-card img {
+  transition: transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.lift:hover img,
+.feat-card:hover img {
+  transform: scale(1.05);
+}
+
+/* micro-interactions */
+.tag {
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.tag:hover {
+  border-color: var(--line-soft);
+  transform: translateY(-1px);
+}
+.arrow {
+  transition: transform 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .hero-anim { animation: none !important; opacity: 1 !important; }
+  .r-anim {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .lift:hover img,
+  .feat-card:hover img { transform: none; }
+}
+
 /* Client logo cloud — each mark sits in a uniform light rounded chip so the
  * row reads as one consistent size regardless of each logo's aspect ratio. */
 .client-chip {

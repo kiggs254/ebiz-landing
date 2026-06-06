@@ -30,7 +30,7 @@ export default function Footer() {
               }}
             >
               The headless commerce platform for modern brands. Sell online,
-              in-store, and on WhatsApp — every way your customers pay.
+              in-store, and on WhatsApp, however your customers want to pay.
             </p>
           </div>
           {(

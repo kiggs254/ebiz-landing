@@ -64,7 +64,7 @@ const FLOW = [
   {
     step: "1. Customer pays",
     title: "Any rail, one checkout",
-    body: "STK push, card, bank, mobile money, COD — same flow.",
+    body: "STK push, card, bank, mobile money, or COD. Same flow either way.",
     color: "var(--blue-ink)",
   },
   {
@@ -76,7 +76,7 @@ const FLOW = [
   {
     step: "3. You ship",
     title: "Notifications fire",
-    body: "Email, SMS, WhatsApp — to staff and buyer.",
+    body: "Email, SMS, and WhatsApp, to both staff and buyer.",
     color: "var(--teal-ink)",
   },
 ];
@@ -110,8 +110,8 @@ export default function Payments() {
         </div>
         <p className="section-lede" style={{ marginTop: 0, maxWidth: 360 }}>
           No fighting with Stripe or PayPal. No transaction fees on top. Your
-          customers pay the way they already do — card, bank, mobile money, or
-          cash — and E-biz reconciles every cent.
+          customers pay the way they already do, whether that's card, bank,
+          mobile money, or cash, and E-biz reconciles every cent.
         </p>
       </div>
 

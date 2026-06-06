@@ -85,8 +85,8 @@ export default function Comparison() {
           </h2>
         </div>
         <p className="section-lede" style={{ marginTop: 0, maxWidth: 380 }}>
-          Honest comparison. The features global platforms charge extra for — or
-          simply don&apos;t offer — are the ones built into E-biz&apos;s core.
+          An honest comparison. The features global platforms charge extra for, or
+          simply don&apos;t offer, are the ones built into E-biz&apos;s core.
         </p>
       </div>
 

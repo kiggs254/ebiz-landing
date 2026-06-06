@@ -1,5 +1,5 @@
 // A distinct mini-infographic for every addon, colour-keyed to its category hue.
-// Pure component (no "use client") — usable from server or client components.
+// Pure component (no "use client"), usable from server or client components.
 
 import type { Hue } from "./featuresData";
 
@@ -212,7 +212,7 @@ export function AddonVisual({ kind, hue }: { kind: string; hue: Hue }) {
             <div style={{ fontSize: 10.5, color: "var(--ink-2)", marginTop: 6, lineHeight: 1.4 }}>
               “Great quality, arrived fast!”
             </div>
-            <div style={{ ...mono, fontSize: 9, color: "var(--ink-3)", marginTop: 5 }}>— Sofia R. · verified buyer</div>
+            <div style={{ ...mono, fontSize: 9, color: "var(--ink-3)", marginTop: 5 }}>Sofia R. · verified buyer</div>
           </div>
         </div>
       );

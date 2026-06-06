@@ -18,7 +18,7 @@ export default function LegalDoc({
   eyebrow?: string;
   title: string;
   updated: string;
-  /** Route path (e.g. "/privacy") — used for the BreadcrumbList. */
+  /** Route path (e.g. "/privacy"), used for the BreadcrumbList. */
   path?: string;
   children: ReactNode;
 }) {

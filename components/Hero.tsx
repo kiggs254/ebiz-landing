@@ -593,7 +593,7 @@ export default function Hero() {
           }}
         >
           <div style={{ minWidth: 0 }}>
-            <span className="tag" style={{ marginBottom: 18 }}>
+            <span className="tag hero-anim" style={{ marginBottom: 18 }}>
               <span
                 aria-hidden
                 style={{
@@ -607,7 +607,7 @@ export default function Hero() {
             </span>
 
             <h1
-              className="serif"
+              className="serif hero-anim"
               style={{
                 fontSize: "clamp(34px, 3.8vw, 56px)",
                 fontWeight: 600,
@@ -615,6 +615,7 @@ export default function Hero() {
                 letterSpacing: "-0.03em",
                 margin: "16px 0 0",
                 textWrap: "balance",
+                animationDelay: "0.08s",
               }}
             >
               The commerce command center{" "}
@@ -624,6 +625,7 @@ export default function Hero() {
             </h1>
 
             <p
+              className="hero-anim"
               style={{
                 fontSize: 18,
                 lineHeight: 1.55,
@@ -631,15 +633,17 @@ export default function Hero() {
                 maxWidth: "46ch",
                 margin: "22px 0 0",
                 textWrap: "pretty",
+                animationDelay: "0.16s",
               }}
             >
-              Sell online, in-store, and on WhatsApp — with M-Pesa, Pesapal,
-              Paystack, cards, and cash built in. Run your whole operation from one
+              Sell online, in-store, and on WhatsApp, with M-Pesa, Pesapal,
+              Paystack, cards, and cash built in. Run the whole thing from one
               calm dashboard.
             </p>
 
             <div
-              style={{ display: "flex", gap: 12, marginTop: 28, flexWrap: "wrap" }}
+              className="hero-anim"
+              style={{ display: "flex", gap: 12, marginTop: 28, flexWrap: "wrap", animationDelay: "0.24s" }}
             >
               <a href="#cta" className="btn btn-primary">
                 Book a live demo <span className="arrow">→</span>
@@ -650,6 +654,7 @@ export default function Hero() {
             </div>
 
             <div
+              className="hero-anim"
               style={{
                 marginTop: 22,
                 display: "flex",
@@ -657,6 +662,7 @@ export default function Hero() {
                 gap: 10,
                 color: "var(--ink-3)",
                 fontSize: 13,
+                animationDelay: "0.30s",
               }}
             >
               <span style={{ display: "flex" }} aria-hidden>
@@ -678,13 +684,13 @@ export default function Hero() {
                 )}
               </span>
               <span>
-                One dashboard for online, in-store &amp; WhatsApp — selling in 194
+                One dashboard for online, in-store, and WhatsApp, selling in 194
                 countries.
               </span>
             </div>
           </div>
 
-          <div className="hero-visual" style={{ position: "relative", minWidth: 0 }}>
+          <div className="hero-visual hero-anim" style={{ position: "relative", minWidth: 0, animationDelay: "0.14s" }}>
             <div
               aria-hidden
               style={{

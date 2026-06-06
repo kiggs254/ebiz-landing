@@ -39,7 +39,7 @@ export default function VideoBand() {
         <p className="video-band-lede">
           Approve orders on the train. Restock from the warehouse floor. Reply to
           a customer over coffee. E-biz is fast, responsive, and runs wherever
-          you do — on any device, in real time.
+          you do, on any device, in real time.
         </p>
         <div className="video-band-chips">
           {["Real-time orders", "Works on any device", "WhatsApp built-in"].map(

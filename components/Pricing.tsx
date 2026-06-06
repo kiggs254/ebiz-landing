@@ -42,7 +42,7 @@ export default function Pricing() {
           style={{ margin: "24px auto 0", textAlign: "center" }}
         >
           Your dedicated server, hosting, updates, and support are all included in
-          the monthly fee — we manage everything. A one-time setup fee covers
+          the monthly fee, and we manage everything. A one-time setup fee covers
           custom storefront design and onboarding, quoted to scope.
         </p>
       </div>
@@ -106,8 +106,8 @@ export default function Pricing() {
             maxWidth: "46ch",
           }}
         >
-          Final pricing depends on your store size and the addons you need —
-          hosting on a dedicated server we manage is always included. Talk to our
+          Final pricing depends on your store size and the addons you need.
+          Hosting on a dedicated server we manage is always included. Talk to our
           team and we'll put together a plan that fits.
         </p>
         <div

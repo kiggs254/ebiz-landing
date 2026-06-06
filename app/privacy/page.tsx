@@ -4,7 +4,7 @@ import LegalDoc from "@/components/LegalDoc";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "How E-biz collects, uses, stores, and protects personal data — in line with Kenya's Data Protection Act, 2019.",
+    "How E-biz collects, uses, stores, and protects personal data, in line with Kenya's Data Protection Act, 2019.",
   alternates: { canonical: "https://e-biz.co.ke/privacy" },
 };
 
@@ -34,14 +34,14 @@ export default function PrivacyPage() {
       <h2>2. Information we collect</h2>
       <h3>Information you provide</h3>
       <ul>
-        <li>Account details — name, business name, email address, and phone number.</li>
-        <li>Billing information — your plan, billing address, and tax details. Card and mobile-money payments are processed by our payment partners; we do not store full card numbers.</li>
-        <li>Content you submit — products, orders, messages, and support requests.</li>
+        <li>Account details: your name, business name, email address, and phone number.</li>
+        <li>Billing information: your plan, billing address, and tax details. Card and mobile-money payments are processed by our payment partners; we do not store full card numbers.</li>
+        <li>Content you submit: products, orders, messages, and support requests.</li>
       </ul>
       <h3>Information we collect automatically</h3>
       <ul>
-        <li>Usage and device data — IP address, browser type, pages visited, and timestamps.</li>
-        <li>Cookies and similar technologies — see our <a href="/cookies">Cookie Policy</a>.</li>
+        <li>Usage and device data: IP address, browser type, pages visited, and timestamps.</li>
+        <li>Cookies and similar technologies: see our <a href="/cookies">Cookie Policy</a>.</li>
       </ul>
 
       <h2>3. How we use your information</h2>
@@ -89,8 +89,8 @@ export default function PrivacyPage() {
       <h2>8. Security</h2>
       <p>
         Each E-biz deployment runs on its own server with its own database. We
-        apply technical and organisational measures — including encryption in
-        transit, access controls, and regular backups — to protect your data. No
+        apply technical and organisational measures, including encryption in
+        transit, access controls, and regular backups, to protect your data. No
         method of transmission or storage is completely secure, and we cannot
         guarantee absolute security.
       </p>

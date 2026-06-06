@@ -8,7 +8,7 @@ import { JsonLd, breadcrumb } from "@/components/JsonLd";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Get in touch with the E-biz team — book a demo, ask a question, or talk to sales. Based in Nairobi, Kenya.",
+    "Get in touch with the E-biz team. Book a demo, ask a question, or talk to sales. We're based in Nairobi, Kenya.",
   alternates: { canonical: "https://e-biz.co.ke/contact" },
 };
 

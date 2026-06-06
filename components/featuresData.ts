@@ -1,4 +1,4 @@
-// Shared catalog of what E-biz does — used by the home Features teaser and the
+// Shared catalog of what E-biz does, used by the home Features teaser and the
 // dedicated /features page. Plain data module (no "use client") so it can be
 // imported by both server and client components. Copy is written for business
 // owners, not developers.
@@ -22,7 +22,7 @@ export const CORE_FEATURES: Array<{
 }> = [
   {
     title: "Real-time order desk",
-    body: "Every order lands in one place the moment it's placed. Update status, add notes, send invoices, and track delivery — without switching tabs or refreshing.",
+    body: "Every order lands in one place the moment it's placed. Update status, add notes, send invoices, and track delivery, without switching tabs or refreshing.",
     visual: "orders",
     hue: hue("var(--accent)", "var(--accent-soft)", "var(--accent-ink)"),
   },
@@ -40,7 +40,7 @@ export const CORE_FEATURES: Array<{
   },
   {
     title: "Customers & loyalty",
-    body: "Know your customers — order history, addresses, and segments — and bring them back with reward points that work right at checkout.",
+    body: "Know your customers, their order history, addresses, and segments, and bring them back with reward points that work right at checkout.",
     visual: "customers",
     hue: hue("var(--pink)", "var(--pink-soft)", "var(--pink-ink)"),
   },
@@ -70,7 +70,7 @@ export const CATEGORIES: Array<{
 
 export const ADDONS: Array<{ name: string; desc: string; cat: string; icon: string }> = [
   // Operations
-  { name: "Multi-Branch", desc: "Run several shops or warehouses from one account — each with its own stock, prices, and payment options.", cat: "ops", icon: "branch" },
+  { name: "Multi-Branch", desc: "Run several shops or warehouses from one account, each with its own stock, prices, and payment options.", cat: "ops", icon: "branch" },
   { name: "Subscriptions", desc: "Sell recurring orders like weekly boxes or monthly plans, with automatic reminders by email and WhatsApp.", cat: "ops", icon: "repeat" },
   { name: "Stock Management", desc: "Always know what's in stock, get low-stock alerts, and let customers back-order when you run out.", cat: "ops", icon: "box" },
   { name: "Taxes", desc: "Apply the right tax automatically by location and product, shown the way your customers expect.", cat: "ops", icon: "percent" },
@@ -78,13 +78,13 @@ export const ADDONS: Array<{ name: string; desc: string; cat: string; icon: stri
 
   // Catalog
   { name: "Brands", desc: "Organize products by brand, with dedicated brand pages and filters shoppers can browse.", cat: "catalog", icon: "tag" },
-  { name: "Reviews", desc: "Collect customer reviews and approve them before they go live — social proof that sells.", cat: "catalog", icon: "chat" },
+  { name: "Reviews", desc: "Collect customer reviews and approve them before they go live. It's the social proof that sells.", cat: "catalog", icon: "chat" },
   { name: "Ratings", desc: "Show star ratings and averages on every product to build trust at a glance.", cat: "catalog", icon: "star" },
   { name: "Multi-Currency", desc: "Let customers shop and pay in their own currency, with exchange rates that update automatically.", cat: "catalog", icon: "coin" },
 
   // Marketing & Growth
   { name: "Loyalty Points", desc: "Reward repeat customers with points they earn and redeem at checkout, verified by one-time code.", cat: "growth", icon: "gift" },
-  { name: "Marketing Automation", desc: "Win back abandoned carts, request reviews, and send follow-ups — automatically.", cat: "growth", icon: "megaphone" },
+  { name: "Marketing Automation", desc: "Win back abandoned carts, request reviews, and send follow-ups, all automatically.", cat: "growth", icon: "megaphone" },
   { name: "Google Tag Manager", desc: "Measure sales and conversions and plug in your marketing pixels, with no code changes.", cat: "growth", icon: "target" },
 
   // Messaging
@@ -94,7 +94,7 @@ export const ADDONS: Array<{ name: string; desc: string; cat: string; icon: stri
   // AI
   { name: "AI Catalog", desc: "Generate product descriptions, SEO copy, and category blurbs in seconds.", cat: "ai", icon: "sparkles" },
   { name: "AI Search", desc: "Help shoppers find exactly what they want with smart search and personalized recommendations.", cat: "ai", icon: "search" },
-  { name: "AI Images", desc: "Create and clean up product photos automatically — studio-quality without the studio.", cat: "ai", icon: "image" },
+  { name: "AI Images", desc: "Create and clean up product photos automatically. Studio quality, without the studio.", cat: "ai", icon: "image" },
 
   // Integrations & data
   { name: "REST API + Webhooks", desc: "Connect E-biz to the other tools you use and automate the busywork.", cat: "integrations", icon: "code" },

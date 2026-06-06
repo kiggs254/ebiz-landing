@@ -8,19 +8,19 @@ import { JsonLd, breadcrumb } from "@/components/JsonLd";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "E-biz is the commerce command center for modern brands — sell online, in-store, and on WhatsApp, with every Kenyan payment method built in.",
+    "E-biz is the commerce command center for modern brands. Sell online, in-store, and on WhatsApp, with every Kenyan payment method built in.",
   alternates: { canonical: "https://e-biz.co.ke/about" },
 };
 
 const VALUES: Array<{ title: string; body: string; color: string }> = [
   {
     title: "Built for operators",
-    body: "No developers required. If you can run a shop, you can run E-biz — every feature is a toggle, not a ticket.",
+    body: "No developers required. If you can run a shop, you can run E-biz. Every feature is a toggle, not a ticket.",
     color: "var(--accent)",
   },
   {
     title: "Every way Kenya pays",
-    body: "M-Pesa, Pesapal, Paystack, cards, bank transfer, and cash — reconciled in one place, automatically.",
+    body: "M-Pesa, Pesapal, Paystack, cards, bank transfer, and cash, all reconciled in one place, automatically.",
     color: "var(--good)",
   },
   {
@@ -30,7 +30,7 @@ const VALUES: Array<{ title: string; body: string; color: string }> = [
   },
   {
     title: "Hosting, handled",
-    body: "Every store runs on its own dedicated server and database, fully managed by us and included in the subscription — no shared hosting, no server to maintain. Your data is still yours.",
+    body: "Every store runs on its own dedicated server and database, fully managed by us and included in the subscription. No shared hosting, no server to maintain. Your data is still yours.",
     color: "var(--violet, #7c5cbf)",
   },
 ];
@@ -72,7 +72,7 @@ export default function AboutPage() {
             </h1>
             <p className="section-lede" style={{ marginTop: 20 }}>
               E-biz is the Ecommerce Management System behind a growing roster of
-              African retailers — pharmacies, grocers, fashion labels, auto-parts
+              African retailers: pharmacies, grocers, fashion labels, auto-parts
               dealers, and more. We give business owners one place to sell
               everywhere their customers are, and the operational tools to run it
               all without a tech team.
@@ -89,7 +89,7 @@ export default function AboutPage() {
               Most commerce software is either too simple to run a real business
               or too complex to use without engineers. Merchants ended up stitching
               together a point-of-sale here, a website there, a spreadsheet for
-              stock, and a WhatsApp line for orders — none of it talking to the
+              stock, and a WhatsApp line for orders, with none of it talking to the
               others.
             </p>
             <p style={{ color: "var(--ink-2)", fontSize: 16, lineHeight: 1.7, margin: 0 }}>
@@ -97,7 +97,7 @@ export default function AboutPage() {
               orders, customers, payments, and marketing, with every Kenyan payment
               method built in and 20+ addons you can switch on as you grow. It is
               shippable worldwide and runs on a dedicated server we manage for
-              you — hosting included, nothing for you to maintain.
+              you, with hosting included and nothing for you to maintain.
             </p>
           </div>
         </Section>

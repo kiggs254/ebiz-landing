@@ -13,7 +13,7 @@ import { JsonLd, breadcrumb } from "@/components/JsonLd";
 export const metadata: Metadata = {
   title: "Features",
   description:
-    "Everything E-biz does — order management, AI catalog, multi-location stock, loyalty, WhatsApp commerce, and 20+ toggleable addons. Built for business owners, no developers required.",
+    "Everything E-biz does: order management, AI catalog, multi-location stock, loyalty, WhatsApp commerce, and 20+ toggleable addons. Built for business owners, no developers required.",
   alternates: { canonical: "https://e-biz.co.ke/features" },
 };
 
@@ -81,8 +81,8 @@ export default function FeaturesPage() {
                 <span style={{ color: "var(--violet-ink)" }}>in one place.</span>
               </h1>
               <p className="section-lede" style={{ marginTop: 20 }}>
-                E-biz runs your whole business — orders, products, customers,
-                payments, and marketing — then lets you switch on 20+ addons as you
+                E-biz runs your whole business: orders, products, customers,
+                payments, and marketing. Then you switch on 20+ addons as you
                 grow. No developers required.
               </p>
               <div style={{ display: "flex", gap: 12, marginTop: 28, flexWrap: "wrap" }}>
@@ -181,7 +181,7 @@ export default function FeaturesPage() {
             The essentials, included.
           </h2>
           <p className="section-lede" style={{ marginBottom: 44 }}>
-            These come switched on from day one — the foundation every store runs
+            These come switched on from day one. They're the foundation every store runs
             on.
           </p>
           <div
@@ -257,7 +257,7 @@ export default function FeaturesPage() {
             Switch on exactly <em>what you need.</em>
           </h2>
           <p className="section-lede" style={{ marginBottom: 48 }}>
-            Every addon is one toggle away in your dashboard — and all of them are
+            Every addon is one toggle away in your dashboard, and they're all
             included in the Full plan.
           </p>
 

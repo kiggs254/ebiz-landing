@@ -124,8 +124,7 @@ export default function Nav() {
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
           <ThemeToggle className="nav-icon-btn" />
           <a
-            href="/#cta"
-            onClick={go("cta")}
+            href="https://manager.e-biz.co.ke/"
             className="nav-signin"
             style={{ fontSize: 13.5, color: "var(--ink-3)", padding: "8px 12px" }}
           >

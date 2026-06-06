@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Logo } from "./primitives";
+import { ThemeToggle } from "./ThemeToggle";
 
 const NAV_LINKS: Array<{ id: string; label: string; href: string; page?: boolean }> = [
   { id: "features", label: "Features", href: "/features", page: true },
@@ -121,9 +122,11 @@ export default function Nav() {
           })}
         </nav>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          <ThemeToggle className="nav-icon-btn" />
           <a
             href="/#cta"
             onClick={go("cta")}
+            className="nav-signin"
             style={{ fontSize: 13.5, color: "var(--ink-3)", padding: "8px 12px" }}
           >
             Sign in

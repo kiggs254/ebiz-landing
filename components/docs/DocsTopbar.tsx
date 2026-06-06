@@ -1,34 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { Logo } from "@/components/primitives";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { DocsSearch, type SearchEntry } from "./DocsSearch";
-
-function ThemeToggle() {
-  const [dark, setDark] = useState(false);
-  useEffect(() => {
-    const d = localStorage.getItem("ebiz-theme") === "dark";
-    document.documentElement.dataset.theme = d ? "dark" : "light";
-    setDark(d);
-  }, []);
-  const toggle = () => {
-    const d = !dark;
-    setDark(d);
-    document.documentElement.dataset.theme = d ? "dark" : "light";
-    localStorage.setItem("ebiz-theme", d ? "dark" : "light");
-  };
-  return (
-    <button
-      type="button"
-      className="dc-icon-btn"
-      onClick={toggle}
-      aria-label="Toggle dark mode"
-    >
-      {dark ? "☀" : "☾"}
-    </button>
-  );
-}
 
 export function DocsTopbar({ index }: { index: SearchEntry[] }) {
   const toggleNav = () =>
@@ -54,7 +29,7 @@ export function DocsTopbar({ index }: { index: SearchEntry[] }) {
       </div>
       <div className="dc-topbar-right">
         <DocsSearch index={index} />
-        <ThemeToggle />
+        <ThemeToggle className="dc-icon-btn" />
         <Link href="/" className="dc-topbar-back">
           Back to site
         </Link>

@@ -154,7 +154,7 @@ export default function FAQ() {
           alignItems: "flex-start",
         }}
       >
-        <div style={{ position: "sticky", top: 96 }}>
+        <div className="faq-aside" style={{ position: "sticky", top: 96 }}>
           <span className="eyebrow">FAQ</span>
           <h2 className="section-title">
             Questions,

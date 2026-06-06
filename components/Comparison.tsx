@@ -1,5 +1,7 @@
 import { Check, Cross, Dash, Section } from "./primitives";
 
+const PLATFORMS = ["E-biz", "Shopify", "WooCommerce", "BigCommerce"];
+
 const ROWS: Array<[string, string, string, string, string]> = [
   ["M-Pesa & mobile money", "yes", "plugin", "plugin", "no"],
   ["Managed dedicated server (included)", "yes", "no", "yes", "no"],
@@ -99,7 +101,7 @@ export default function Comparison() {
         }}
       >
         <div
-          className="cmp-row"
+          className="cmp-row cmp-head"
           style={{
             display: "grid",
             gridTemplateColumns: "1.4fr 1fr 1fr 1fr 1fr",
@@ -159,20 +161,18 @@ export default function Comparison() {
               background: i % 2 ? "transparent" : "var(--bg)",
             }}
           >
-            <div style={{ fontWeight: 500, fontSize: 14 }}>{r[0]}</div>
-            <div
-              style={{
-                padding: "6px 10px",
-                background: "var(--accent-soft)",
-                borderRadius: 6,
-                width: "fit-content",
-              }}
-            >
-              <Cell value={r[1]} />
+            <div className="cmp-feature" style={{ fontWeight: 500, fontSize: 14 }}>
+              {r[0]}
             </div>
-            <Cell value={r[2]} />
-            <Cell value={r[3]} />
-            <Cell value={r[4]} />
+            {[r[1], r[2], r[3], r[4]].map((val, ci) => (
+              <div
+                key={ci}
+                className={`cmp-cell${ci === 0 ? " cmp-cell-primary" : ""}`}
+              >
+                <span className="cmp-cell-label">{PLATFORMS[ci]}</span>
+                <Cell value={val} />
+              </div>
+            ))}
           </div>
         ))}
       </div>

@@ -294,6 +294,10 @@ h2.section-title em { font-style: normal; color: var(--title-accent, var(--accen
   .arch-grid { grid-template-columns: 1fr !important; }
   .how-grid { grid-template-columns: 1fr !important; }
   .how-line { display: none; }
+  .contact-grid { grid-template-columns: 1fr !important; gap: 36px !important; }
+}
+@media (max-width: 600px) {
+  .cf-row { grid-template-columns: 1fr !important; }
 }
 @media (max-width: 760px) {
   .pricing-grid { grid-template-columns: 1fr !important; }

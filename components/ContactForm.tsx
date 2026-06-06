@@ -5,7 +5,7 @@ import { useState } from "react";
 const inputStyle: React.CSSProperties = {
   width: "100%",
   fontFamily: "inherit",
-  fontSize: 14.5,
+  fontSize: 16,
   color: "var(--ink)",
   background: "var(--bg)",
   border: "1px solid var(--line-soft)",
@@ -62,7 +62,7 @@ export default function ContactForm() {
         gap: 16,
       }}
     >
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+      <div className="cf-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
         <div>
           <label htmlFor="cf-name" style={labelStyle}>Name</label>
           <input id="cf-name" style={inputStyle} value={name} onChange={(e) => setName(e.target.value)} required />

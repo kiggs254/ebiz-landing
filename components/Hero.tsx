@@ -389,7 +389,6 @@ const MockDashboard = () => (
               key={i}
               style={{
                 border: "1px solid var(--line-softer)",
-                borderTop: `2px solid ${s.bar}`,
                 borderRadius: 8,
                 padding: "9px 10px",
                 background: "var(--bg)",

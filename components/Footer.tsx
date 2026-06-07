@@ -39,7 +39,7 @@ export default function Footer() {
                 ["Features", "/features"],
                 ["Addons", "/features#all-addons"],
                 ["Pricing", "/#pricing"],
-                ["Book a demo", "/contact"],
+                ["Get started", "/get-started"],
               ]],
               ["Developers", [
                 ["API reference", "/docs"],

@@ -87,7 +87,7 @@ export default function CTA() {
             }}
           >
             <a
-              href="#"
+              href="/get-started"
               className="btn"
               style={{
                 background: "var(--bg)",
@@ -95,7 +95,7 @@ export default function CTA() {
                 border: "1px solid var(--bg)",
               }}
             >
-              Book a live demo <span className="arrow">→</span>
+              Get started <span className="arrow">→</span>
             </a>
             <a
               href="mailto:hello@e-biz.co.ke"

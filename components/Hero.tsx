@@ -722,8 +722,8 @@ export default function Hero() {
               className="hero-anim"
               style={{ display: "flex", gap: 12, marginTop: 28, flexWrap: "wrap", animationDelay: "0.24s" }}
             >
-              <a href="#cta" className="btn btn-primary">
-                Book a live demo <span className="arrow">→</span>
+              <a href="/get-started" className="btn btn-primary">
+                Get started <span className="arrow">→</span>
               </a>
               <a href="/features" className="btn btn-ghost">
                 See all features

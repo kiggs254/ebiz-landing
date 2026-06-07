@@ -486,10 +486,41 @@ h2.section-title em { font-style: normal; color: var(--title-accent, var(--accen
   transition: transform 0.2s ease;
 }
 
+/* ---------------- Onboarding wizard ---------------- */
+@keyframes wizFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+.wiz-step { animation: wizFade 0.35s ease both; }
+.wiz-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--line-soft);
+  background: var(--bg);
+  color: var(--ink-2);
+  font-size: 14.5px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.12s ease;
+}
+.wiz-chip:hover { border-color: var(--ink-4); transform: translateY(-1px); }
+.wiz-chip[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-weight: 500;
+}
+.wiz-chip[aria-pressed="true"]::before { content: "✓"; font-size: 12px; }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .hero-anim { animation: none !important; opacity: 1 !important; }
   .hero-title-accent { animation: none !important; }
+  .wiz-step { animation: none !important; }
+  .wiz-chip:hover { transform: none; }
   .r-anim {
     opacity: 1 !important;
     transform: none !important;

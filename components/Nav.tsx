@@ -131,12 +131,11 @@ export default function Nav() {
             Sign in
           </a>
           <a
-            href="/#cta"
-            onClick={go("cta")}
+            href="/get-started"
             className="btn btn-primary"
             style={{ padding: "10px 18px", fontSize: 13.5 }}
           >
-            Book a demo
+            Get started
             <span className="arrow">→</span>
           </a>
         </div>

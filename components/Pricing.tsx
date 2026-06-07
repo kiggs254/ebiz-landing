@@ -133,7 +133,7 @@ export default function Pricing() {
             Contact sales <span className="arrow">→</span>
           </a>
           <a
-            href="/contact"
+            href="/get-started"
             style={{
               padding: "14px 26px",
               borderRadius: 999,
@@ -143,7 +143,7 @@ export default function Pricing() {
               fontWeight: 500,
             }}
           >
-            Book a live demo
+            Get started
           </a>
         </div>
       </div>

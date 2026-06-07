@@ -177,6 +177,93 @@ export function AddonIcon({ name, size = 22 }: { name?: string; size?: number })
           <path d="M12 8.5v7M8.5 12h7" />
         </svg>
       );
+    // --- Admin nav / dashboard icons (lucide-matched) ---
+    case "grid": // LayoutDashboard
+      return (
+        <svg {...common}>
+          <rect x="3" y="3" width="7" height="9" rx="1" />
+          <rect x="14" y="3" width="7" height="5" rx="1" />
+          <rect x="14" y="12" width="7" height="9" rx="1" />
+          <rect x="3" y="16" width="7" height="5" rx="1" />
+        </svg>
+      );
+    case "cart": // ShoppingCart
+      return (
+        <svg {...common}>
+          <circle cx="8" cy="21" r="1" />
+          <circle cx="19" cy="21" r="1" />
+          <path d="M2.5 3h2l2.4 12a1.6 1.6 0 0 0 1.6 1.3h9a1.6 1.6 0 0 0 1.6-1.3L21 7H6" />
+        </svg>
+      );
+    case "users": // Users
+      return (
+        <svg {...common}>
+          <path d="M16 20v-1.5a4 4 0 0 0-4-4H6.5a4 4 0 0 0-4 4V20" />
+          <circle cx="9.2" cy="7.5" r="3.5" />
+          <path d="M21.5 20v-1.5a4 4 0 0 0-3-3.85" />
+          <path d="M15.5 4.15a4 4 0 0 1 0 7.5" />
+        </svg>
+      );
+    case "bars": // BarChart3
+      return (
+        <svg {...common}>
+          <path d="M3 3v18h18" />
+          <path d="M18 17V8" />
+          <path d="M13 17V5" />
+          <path d="M8 17v-4" />
+        </svg>
+      );
+    case "card": // CreditCard
+      return (
+        <svg {...common}>
+          <rect x="2.5" y="5" width="19" height="14" rx="2.5" />
+          <path d="M2.5 10h19" />
+        </svg>
+      );
+    case "palette": // Appearance
+      return (
+        <svg {...common}>
+          <path d="M12 3a9 9 0 1 0 0 18 1.5 1.5 0 0 0 1.1-2.5 1.5 1.5 0 0 1 1.1-2.5H16a5 5 0 0 0 5-5c0-3.9-4-6-9-6z" />
+          <circle cx="7.5" cy="11.5" r="1" fill="currentColor" stroke="none" />
+          <circle cx="9.5" cy="7.5" r="1" fill="currentColor" stroke="none" />
+          <circle cx="14" cy="7" r="1" fill="currentColor" stroke="none" />
+          <circle cx="16.5" cy="10.5" r="1" fill="currentColor" stroke="none" />
+        </svg>
+      );
+    case "gear": // Settings
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="3" />
+          <path d="M19.4 13a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+        </svg>
+      );
+    case "pill": // Prescriptions
+      return (
+        <svg {...common}>
+          <path d="M10.5 20.5l10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7z" />
+          <path d="M8.5 8.5l7 7" />
+        </svg>
+      );
+    case "dollar": // DollarSign
+      return (
+        <svg {...common}>
+          <path d="M12 2v20" />
+          <path d="M17 5.5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+        </svg>
+      );
+    case "calendar":
+      return (
+        <svg {...common}>
+          <rect x="3.5" y="4.5" width="17" height="16" rx="2.5" />
+          <path d="M16 3v4M8 3v4M3.5 10h17" />
+        </svg>
+      );
+    case "chevron-down":
+      return (
+        <svg {...common}>
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      );
     default:
       return (
         <svg {...common}>

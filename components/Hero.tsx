@@ -1,6 +1,7 @@
 "use client";
 
 import { Logo, useCountUp } from "./primitives";
+import { AddonIcon } from "./icons";
 
 const StatItem = ({
   value,
@@ -213,75 +214,109 @@ const MockDashboard = () => (
       </span>
     </div>
 
-    <div style={{ display: "grid", gridTemplateColumns: "160px 1fr", minHeight: 430 }}>
+    <div style={{ display: "grid", gridTemplateColumns: "178px 1fr", minHeight: 446 }}>
       <aside
         style={{
           borderRight: "1px solid var(--line-softer)",
-          padding: "18px 12px",
+          padding: "16px 10px",
           background: "var(--bg-2)",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 18 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "0 6px",
+            marginBottom: 14,
+          }}
+        >
           <Logo size={16} />
         </div>
         {(
           [
-            ["Dashboard", true],
-            ["Orders", false, "24"],
-            ["Products", false],
-            ["Customers", false],
-            ["Marketing", false],
-            ["Analytics", false],
-            ["Settings", false],
-          ] as Array<[string, boolean, string?]>
-        ).map(([label, active, badge], i) => (
+            { label: "Dashboard", icon: "grid", active: true },
+            { label: "Orders", icon: "cart", badge: "24", badgeColor: "var(--accent)" },
+            { label: "Subscriptions", icon: "repeat" },
+            { label: "Prescriptions", icon: "pill", badge: "3", badgeColor: "var(--violet)" },
+            { label: "Customers", icon: "users" },
+            { label: "Analytics", icon: "bars" },
+            { label: "Marketing", icon: "megaphone", badge: "5", badgeColor: "var(--blue)" },
+            { label: "Catalog", icon: "box", chevron: true },
+            { label: "WhatsApp Store", icon: "chat", badge: "2", badgeColor: "var(--green)" },
+            { label: "Shipping", icon: "truck" },
+            { label: "Transactions", icon: "card" },
+            { label: "Appearance", icon: "palette" },
+            { label: "Settings", icon: "gear" },
+          ] as Array<{
+            label: string;
+            icon: string;
+            active?: boolean;
+            badge?: string;
+            badgeColor?: string;
+            chevron?: boolean;
+          }>
+        ).map((item, i) => (
           <div
             key={i}
             style={{
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              padding: "7px 9px",
+              padding: "6px 8px",
               borderRadius: 6,
-              fontSize: 12,
-              fontWeight: active ? 600 : 400,
-              color: active ? "var(--ink)" : "var(--ink-3)",
-              background: active ? "var(--bg)" : "transparent",
-              border: active ? "1px solid var(--line-softer)" : "1px solid transparent",
-              marginBottom: 2,
+              fontSize: 11.5,
+              fontWeight: item.active ? 600 : 450,
+              color: item.active ? "var(--accent-ink)" : "var(--ink-3)",
+              background: item.active ? "var(--accent-soft)" : "transparent",
+              marginBottom: 1,
             }}
           >
-            <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ display: "flex", alignItems: "center", gap: 9, minWidth: 0 }}>
               <span
                 style={{
-                  width: 12,
-                  height: 12,
-                  borderRadius: 3,
-                  background: active ? "var(--accent)" : "var(--bg-3)",
-                  opacity: active ? 1 : 0.7,
+                  display: "flex",
+                  flexShrink: 0,
+                  color: item.active ? "var(--accent)" : "var(--ink-4)",
                 }}
-              />
-              {label}
+              >
+                <AddonIcon name={item.icon} size={14} />
+              </span>
+              <span
+                style={{
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {item.label}
+              </span>
             </span>
-            {badge && (
+            {item.badge && (
               <span
                 style={{
                   fontFamily: "var(--mono)",
-                  fontSize: 10,
-                  background: "var(--accent)",
+                  fontSize: 9,
+                  background: item.badgeColor,
                   color: "#fff",
-                  padding: "1px 6px",
+                  padding: "1px 5px",
                   borderRadius: 999,
+                  flexShrink: 0,
                 }}
               >
-                {badge}
+                {item.badge}
+              </span>
+            )}
+            {item.chevron && (
+              <span style={{ display: "flex", flexShrink: 0, color: "var(--ink-4)" }}>
+                <AddonIcon name="chevron-down" size={12} />
               </span>
             )}
           </div>
         ))}
       </aside>
 
-      <main style={{ padding: "20px 20px" }}>
+      <main style={{ padding: "18px 16px" }}>
         <div
           style={{
             display: "flex",
@@ -314,80 +349,107 @@ const MockDashboard = () => (
               Welcome back, Sofia
             </div>
           </div>
-          <div style={{ display: "flex", gap: 6 }}>
-            {(["7d", "30d", "90d"] as const).map((p) => (
-              <span
-                key={p}
-                style={{
-                  padding: "4px 9px",
-                  fontSize: 10.5,
-                  fontFamily: "var(--mono)",
-                  border: p === "30d" ? "1px solid var(--ink)" : "1px solid var(--line-softer)",
-                  borderRadius: 999,
-                  color: p === "30d" ? "var(--ink)" : "var(--ink-3)",
-                }}
-              >
-                {p}
-              </span>
-            ))}
-          </div>
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "5px 10px",
+              fontSize: 10.5,
+              fontFamily: "var(--mono)",
+              border: "1px solid var(--line-softer)",
+              borderRadius: 8,
+              color: "var(--ink-3)",
+              whiteSpace: "nowrap",
+            }}
+          >
+            <AddonIcon name="calendar" size={12} /> Last 30 days
+            <AddonIcon name="chevron-down" size={11} />
+          </span>
         </div>
 
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 10,
-            marginBottom: 16,
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: 8,
+            marginBottom: 14,
           }}
         >
           {(
             [
-              ["Revenue", "$184k", "+12.4%", true, "var(--blue)"],
-              ["Orders", "482", "+8.1%", true, "var(--violet)"],
-              ["Avg. order", "$382", "−2.3%", false, "var(--teal)"],
-            ] as Array<[string, string, string, boolean, string]>
-          ).map(([k, v, delta, up, accent], i) => (
+              { k: "Revenue", v: "$184k", delta: "+12.4%", up: true, icon: "dollar", bar: "var(--green)", tint: "var(--green-soft)", ink: "var(--green-ink)" },
+              { k: "Orders", v: "482", delta: "+8.1%", up: true, icon: "cart", bar: "var(--blue)", tint: "var(--blue-soft)", ink: "var(--blue-ink)" },
+              { k: "Customers", v: "1,029", delta: "+5.2%", up: true, icon: "users", bar: "var(--violet)", tint: "var(--violet-soft)", ink: "var(--violet-ink)" },
+              { k: "Products", v: "318", delta: "+6 new", up: true, icon: "box", bar: "var(--accent)", tint: "var(--accent-soft)", ink: "var(--accent-ink)" },
+            ] as Array<{ k: string; v: string; delta: string; up: boolean; icon: string; bar: string; tint: string; ink: string }>
+          ).map((s, i) => (
             <div
               key={i}
               style={{
                 border: "1px solid var(--line-softer)",
-                borderTop: `2px solid ${accent}`,
+                borderTop: `2px solid ${s.bar}`,
                 borderRadius: 8,
-                padding: "11px 12px",
+                padding: "9px 10px",
                 background: "var(--bg)",
               }}
             >
               <div
                 style={{
-                  fontSize: 10,
-                  color: "var(--ink-3)",
-                  fontFamily: "var(--mono)",
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 4,
                 }}
               >
-                {k}
+                <span
+                  style={{
+                    fontSize: 9,
+                    color: "var(--ink-3)",
+                    fontFamily: "var(--mono)",
+                    letterSpacing: "0.05em",
+                    textTransform: "uppercase",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {s.k}
+                </span>
+                <span
+                  style={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: 6,
+                    background: s.tint,
+                    color: s.ink,
+                    display: "grid",
+                    placeItems: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <AddonIcon name={s.icon} size={12} />
+                </span>
               </div>
               <div
                 style={{
                   fontFamily: "var(--display)",
                   fontWeight: 600,
-                  fontSize: 20,
-                  marginTop: 4,
+                  fontSize: 18,
+                  marginTop: 6,
                   letterSpacing: "-0.02em",
                 }}
               >
-                {v}
+                {s.v}
               </div>
               <div
                 style={{
-                  fontSize: 11,
-                  color: up ? "var(--good)" : "var(--accent)",
+                  fontSize: 9.5,
+                  color: s.up ? "var(--good)" : "var(--accent)",
                   marginTop: 2,
                 }}
               >
-                {delta}
+                {s.delta}
               </div>
             </div>
           ))}
@@ -405,46 +467,40 @@ const MockDashboard = () => (
             style={{
               display: "flex",
               justifyContent: "space-between",
+              alignItems: "flex-start",
               marginBottom: 10,
             }}
           >
-            <div style={{ fontSize: 11.5, fontWeight: 500 }}>Revenue · last 30 days</div>
-            <div
+            <div>
+              <div style={{ fontSize: 12, fontWeight: 600 }}>Sales Overview</div>
+              <div style={{ fontSize: 10, color: "var(--ink-3)", marginTop: 1 }}>
+                Monthly revenue performance
+              </div>
+            </div>
+            <span
               style={{
                 display: "flex",
-                gap: 12,
+                alignItems: "center",
+                gap: 5,
                 fontSize: 10.5,
                 color: "var(--ink-3)",
               }}
             >
-              <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                <span
-                  style={{
-                    width: 8,
-                    height: 2,
-                    background: "var(--ink)",
-                    borderRadius: 2,
-                  }}
-                />
-                This period
-              </span>
-              <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                <span
-                  style={{
-                    width: 8,
-                    height: 2,
-                    background: "var(--ink-4)",
-                    borderRadius: 2,
-                  }}
-                />
-                Previous
-              </span>
-            </div>
+              <span
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: 999,
+                  background: "var(--accent)",
+                }}
+              />
+              Revenue
+            </span>
           </div>
           <svg
-            viewBox="0 0 600 160"
+            viewBox="0 0 600 150"
             width="100%"
-            height="110"
+            height="100"
             preserveAspectRatio="none"
             aria-hidden
           >
@@ -452,22 +508,15 @@ const MockDashboard = () => (
               <line
                 key={i}
                 x1="0"
-                y1={40 * i + 20}
+                y1={38 * i + 18}
                 x2="600"
-                y2={40 * i + 20}
+                y2={38 * i + 18}
                 stroke="var(--line-softer)"
                 strokeDasharray="2 4"
               />
             ))}
             <path
-              d="M0 110 C 80 90, 140 120, 200 100 S 360 80, 420 95 S 540 110, 600 90"
-              stroke="var(--ink-4)"
-              strokeWidth="1.4"
-              fill="none"
-              opacity="0.5"
-            />
-            <path
-              d="M0 100 C 60 80, 120 95, 180 70 S 300 40, 360 55 S 480 30, 540 25 L600 18 L600 160 L0 160 Z"
+              d="M0 100 C 60 80, 120 95, 180 70 S 300 40, 360 55 S 480 30, 540 25 L600 18 L600 150 L0 150 Z"
               fill="var(--accent-soft)"
             />
             <path
@@ -489,26 +538,32 @@ const MockDashboard = () => (
         >
           <div
             style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
               padding: "10px 14px",
               borderBottom: "1px solid var(--line-softer)",
-              fontSize: 11.5,
-              fontWeight: 500,
             }}
           >
-            Recent orders
+            <span style={{ fontSize: 11.5, fontWeight: 600 }}>Recent orders</span>
+            <span
+              style={{ fontSize: 10, color: "var(--accent-ink)", fontWeight: 500 }}
+            >
+              View all
+            </span>
           </div>
           {(
             [
-              ["#SF-3041", "S. Rivera", "$420", "paid", "M-Pesa"],
-              ["#SF-3040", "M. Chen", "$1,286", "shipped", "Card"],
-              ["#SF-3039", "L. Müller", "$98", "pending", "COD"],
+              ["#3041", "S. Rivera", "$420", "fulfilled", "Apr 27"],
+              ["#3040", "M. Chen", "$1,286", "processing", "Apr 27"],
+              ["#3039", "L. Müller", "$98", "pending", "Apr 26"],
             ] as Array<[string, string, string, string, string]>
           ).map((row, i) => (
             <div
               key={i}
               style={{
                 display: "grid",
-                gridTemplateColumns: "84px 1fr 78px 72px 60px",
+                gridTemplateColumns: "50px 1fr 60px 84px 48px",
                 gap: 8,
                 padding: "8px 14px",
                 fontSize: 11,
@@ -519,27 +574,36 @@ const MockDashboard = () => (
               }}
             >
               <span>{row[0]}</span>
-              <span style={{ fontFamily: "var(--sans)" }}>{row[1]}</span>
+              <span
+                style={{
+                  fontFamily: "var(--sans)",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {row[1]}
+              </span>
               <span>{row[2]}</span>
               <span
                 style={{
                   display: "inline-flex",
                   justifyContent: "center",
-                  padding: "2px 8px",
+                  padding: "2px 6px",
                   borderRadius: 999,
                   background:
-                    row[3] === "paid"
+                    row[3] === "fulfilled"
                       ? "oklch(0.94 0.05 150)"
-                      : row[3] === "shipped"
+                      : row[3] === "processing"
                       ? "oklch(0.94 0.04 240)"
                       : "oklch(0.94 0.04 80)",
                   color:
-                    row[3] === "paid"
+                    row[3] === "fulfilled"
                       ? "oklch(0.4 0.08 150)"
-                      : row[3] === "shipped"
+                      : row[3] === "processing"
                       ? "oklch(0.4 0.08 240)"
                       : "oklch(0.45 0.08 60)",
-                  fontSize: 10,
+                  fontSize: 9,
                 }}
               >
                 {row[3]}

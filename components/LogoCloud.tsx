@@ -1,17 +1,55 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState } from "react";
 import { Section } from "./primitives";
 
-const clients = [
-  { name: "Cleanshelf", file: "cleanshelf.png" },
-  { name: "Orca Deco", file: "orca.png" },
-  { name: "Home Chef", file: "homechef.png" },
-  { name: "Mamas Market", file: "mamas-market.png" },
-  { name: "Thyme Pharmacy", file: "thyme.png" },
-  { name: "IoT Systems", file: "iot-systems.png" },
-  { name: "Episode Technologies", file: "episode.png" },
-] as const;
+const MANAGER_API = (
+  process.env.NEXT_PUBLIC_MANAGER_API || "https://manager.e-biz.co.ke"
+).replace(/\/$/, "");
+
+// Bundled fallback — shown until/unless the Manager has logos configured, and
+// if the Manager is unreachable. Keeps the carousel populated either way.
+const FALLBACK: Logo[] = [
+  { name: "Cleanshelf", src: "/clients/cleanshelf.png" },
+  { name: "Orca Deco", src: "/clients/orca.png" },
+  { name: "Home Chef", src: "/clients/homechef.png" },
+  { name: "Mamas Market", src: "/clients/mamas-market.png" },
+  { name: "Thyme Pharmacy", src: "/clients/thyme.png" },
+  { name: "IoT Systems", src: "/clients/iot-systems.png" },
+  { name: "Episode Technologies", src: "/clients/episode.png" },
+];
+
+type Logo = { name: string; src: string; link?: string | null };
+type ApiLogo = { id: number; name: string; url: string; link: string | null };
 
 export default function LogoCloud() {
+  const [logos, setLogos] = useState<Logo[]>(FALLBACK);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`${MANAGER_API}/api/public/website/logos`);
+        const json = (await res.json()) as { status?: string; data?: ApiLogo[] };
+        if (
+          !cancelled &&
+          json.status === "success" &&
+          Array.isArray(json.data) &&
+          json.data.length > 0
+        ) {
+          setLogos(
+            json.data.map((d) => ({ name: d.name, src: `${MANAGER_API}${d.url}`, link: d.link }))
+          );
+        }
+      } catch {
+        /* keep the bundled fallback */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <Section
       id="logos"
@@ -35,20 +73,19 @@ export default function LogoCloud() {
       <div className="logo-marquee">
         <div className="logo-track">
           {[0, 1, 2].map((rep) =>
-            clients.map((c) => (
+            logos.map((c, i) => (
               <div
-                key={`${rep}-${c.file}`}
+                key={`${rep}-${i}-${c.src}`}
                 className="client-chip"
                 title={c.name}
                 aria-hidden={rep > 0}
               >
                 <div style={{ position: "relative", width: "100%", height: "100%" }}>
-                  <Image
-                    src={`/clients/${c.file}`}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={c.src}
                     alt={rep === 0 ? c.name : ""}
-                    fill
-                    sizes="176px"
-                    style={{ objectFit: "contain", padding: "2px" }}
+                    style={{ width: "100%", height: "100%", objectFit: "contain", padding: "2px" }}
                   />
                 </div>
               </div>

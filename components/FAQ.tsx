@@ -13,6 +13,10 @@ const FAQS = [
     a: "You get your own dedicated server with its own database, with no shared hosting and no noisy neighbours. We fully manage it for you (uptime, backups, security, updates), and it's included in your monthly subscription, so there's no separate hosting bill and nothing for you to set up or maintain. You still own your data and can export it any time.",
   },
   {
+    q: "Can I get email on my own domain?",
+    a: "Yes. We can optionally set up professional email on your domain (like sales@yourbrand.com), included with your managed hosting. It's configured for deliverability with SPF, DKIM, and DMARC, so your order and marketing emails land in the inbox, not spam.",
+  },
+  {
     q: "How long does a launch take?",
     a: "Typically 2–4 weeks from contract signing to your first sale. Discovery + design takes 1–2 weeks; deployment, catalog migration, and training take another 1–2.",
   },

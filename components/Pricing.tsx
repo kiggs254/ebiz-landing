@@ -3,6 +3,7 @@ import { Check, Section } from "./primitives";
 const ALWAYS_INCLUDED = [
   "Managed dedicated server + hosting",
   "SSL certificate",
+  "Optional domain email hosting",
   "Unlimited products & orders",
   "No per-transaction fees",
   "No revenue share",

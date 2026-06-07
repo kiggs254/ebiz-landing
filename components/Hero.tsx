@@ -60,14 +60,31 @@ const MARQUEE_DOTS = [
 
 const HeroMarquee = () => {
   const items = [
-    "M-Pesa",
-    "Pesapal",
-    "Paystack",
-    "Card",
-    "Apple Pay",
-    "Bank transfer",
-    "Mobile money",
-    "Cash on Delivery",
+    "Orders",
+    "Products",
+    "Customers",
+    "Inventory",
+    "Payments",
+    "Analytics",
+    "Multi-branch",
+    "Subscriptions",
+    "Loyalty points",
+    "Marketing automation",
+    "Coupons & discounts",
+    "Reviews & ratings",
+    "Brands",
+    "Multi-currency",
+    "Taxes",
+    "Distance shipping",
+    "WhatsApp commerce",
+    "WhatsApp storefront",
+    "AI catalog",
+    "AI search",
+    "AI images",
+    "Headless storefront",
+    "REST API & webhooks",
+    "WooCommerce migration",
+    "Prescriptions",
   ];
   const all = [...items, ...items, ...items];
   return (
@@ -89,7 +106,7 @@ const HeroMarquee = () => {
           display: "flex",
           gap: 48,
           whiteSpace: "nowrap",
-          animation: "mq 32s linear infinite",
+          animation: "mq 72s linear infinite",
           width: "max-content",
         }}
       >

@@ -743,22 +743,28 @@ export default function Hero() {
               }}
             >
               <span style={{ display: "flex" }} aria-hidden>
-                {["var(--violet)", "var(--blue)", "var(--teal)", "var(--pink)"].map(
-                  (c, i) => (
-                    <span
-                      key={i}
-                      style={{
-                        width: 22,
-                        height: 22,
-                        borderRadius: "50%",
-                        background: c,
-                        border: "2px solid var(--bg)",
-                        marginLeft: i === 0 ? 0 : -7,
-                        display: "inline-block",
-                      }}
-                    />
-                  )
-                )}
+                {[
+                  "/people/person-4.jpg",
+                  "/people/person-5.jpg",
+                  "/people/person-6.jpg",
+                  "/people/person-7.jpg",
+                ].map((src, i) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={i}
+                    src={src}
+                    alt=""
+                    style={{
+                      width: 24,
+                      height: 24,
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                      border: "2px solid var(--bg)",
+                      marginLeft: i === 0 ? 0 : -8,
+                      display: "inline-block",
+                    }}
+                  />
+                ))}
               </span>
               <span>
                 One dashboard for online, in-store, and WhatsApp, selling in 194

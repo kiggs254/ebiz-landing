@@ -264,6 +264,14 @@ export function AddonIcon({ name, size = 22 }: { name?: string; size?: number })
           <path d="M6 9l6 6 6-6" />
         </svg>
       );
+    case "newspaper": // Blogs
+      return (
+        <svg {...common}>
+          <path d="M19 20H5a2 2 0 0 1-2-2V6a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v12a2 2 0 0 0 2 2 2 2 0 0 0 2-2V8h-3" />
+          <path d="M6.5 8.5h6v5h-6z" />
+          <path d="M15 9h0M15 12h0" />
+        </svg>
+      );
     default:
       return (
         <svg {...common}>

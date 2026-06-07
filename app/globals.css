@@ -425,9 +425,9 @@ h2.section-title em { font-style: normal; color: var(--title-accent, var(--accen
 
 /* Hero headline — oversized display type + animated gradient accent */
 .hero-title {
-  font-size: clamp(42px, 6.2vw, 88px);
-  line-height: 0.98;
-  letter-spacing: -0.038em;
+  font-size: clamp(40px, 5.4vw, 76px);
+  line-height: 0.99;
+  letter-spacing: -0.036em;
 }
 .hero-title-accent {
   font-style: normal;

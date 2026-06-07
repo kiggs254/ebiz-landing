@@ -607,21 +607,16 @@ export default function Hero() {
             </span>
 
             <h1
-              className="serif hero-anim"
+              className="display hero-title hero-anim"
               style={{
-                fontSize: "clamp(34px, 3.8vw, 56px)",
                 fontWeight: 600,
-                lineHeight: 1.04,
-                letterSpacing: "-0.03em",
-                margin: "16px 0 0",
+                margin: "18px 0 0",
                 textWrap: "balance",
                 animationDelay: "0.08s",
               }}
             >
               The commerce command center{" "}
-              <em style={{ color: "var(--accent-ink)", fontStyle: "normal" }}>
-                for modern brands.
-              </em>
+              <em className="hero-title-accent">for modern brands.</em>
             </h1>
 
             <p

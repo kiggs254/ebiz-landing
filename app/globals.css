@@ -423,6 +423,33 @@ h2.section-title em { font-style: normal; color: var(--title-accent, var(--accen
   animation: heroUp 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
+/* Hero headline — oversized display type + animated gradient accent */
+.hero-title {
+  font-size: clamp(42px, 6.2vw, 88px);
+  line-height: 0.98;
+  letter-spacing: -0.038em;
+}
+.hero-title-accent {
+  font-style: normal;
+  background-image: linear-gradient(
+    100deg,
+    var(--accent) 0%,
+    var(--pink) 28%,
+    var(--violet) 50%,
+    var(--pink) 72%,
+    var(--accent) 100%
+  );
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: heroShimmer 9s linear infinite;
+}
+@keyframes heroShimmer {
+  to { background-position: -220% center; }
+}
+
 /* scroll-reveal (toggled by ScrollReveal.tsx on below-fold elements) */
 .r-anim {
   opacity: 0;
@@ -462,6 +489,7 @@ h2.section-title em { font-style: normal; color: var(--title-accent, var(--accen
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .hero-anim { animation: none !important; opacity: 1 !important; }
+  .hero-title-accent { animation: none !important; }
   .r-anim {
     opacity: 1 !important;
     transform: none !important;

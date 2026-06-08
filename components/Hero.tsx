@@ -744,10 +744,10 @@ export default function Hero() {
             >
               <span style={{ display: "flex", flexShrink: 0 }} aria-hidden>
                 {[
-                  "/people/person-4.jpg",
-                  "/people/person-5.jpg",
-                  "/people/person-6.jpg",
-                  "/people/person-7.jpg",
+                  "/people/person-4.png",
+                  "/people/person-5.png",
+                  "/people/person-6.png",
+                  "/people/person-7.png",
                 ].map((src, i) => (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -755,12 +755,10 @@ export default function Hero() {
                     src={src}
                     alt=""
                     style={{
-                      width: 24,
-                      height: 24,
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                      border: "2px solid var(--bg)",
-                      marginLeft: i === 0 ? 0 : -8,
+                      width: 30,
+                      height: 30,
+                      objectFit: "contain",
+                      marginLeft: i === 0 ? 0 : -6,
                       display: "inline-block",
                     }}
                   />

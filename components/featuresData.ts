@@ -100,4 +100,5 @@ export const ADDONS: Array<{ name: string; desc: string; cat: string; icon: stri
   { name: "REST API + Webhooks", desc: "Connect E-biz to the other tools you use and automate the busywork.", cat: "integrations", icon: "code" },
   { name: "WooCommerce Migration", desc: "Moving from WooCommerce? Bring your products, customers, and orders across in bulk.", cat: "integrations", icon: "download" },
   { name: "Prescriptions", desc: "For pharmacies: collect, verify, and track prescriptions right at checkout.", cat: "integrations", icon: "medical" },
+  { name: "Custom plugins & ERP", desc: "Need something unique? We build custom plugins for your workflows and connect your ERP, accounting, or logistics systems.", cat: "integrations", icon: "code" },
 ];

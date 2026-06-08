@@ -111,7 +111,8 @@ export default function Payments() {
         <p className="section-lede" style={{ marginTop: 0, maxWidth: 360 }}>
           No fighting with Stripe or PayPal. No transaction fees on top. Your
           customers pay the way they already do, whether that's card, bank,
-          mobile money, or cash, and E-biz reconciles every cent.
+          mobile money, or cash, and E-biz reconciles every cent. Need another
+          gateway? We integrate whatever your market uses.
         </p>
       </div>
 

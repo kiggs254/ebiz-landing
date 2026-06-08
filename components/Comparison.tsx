@@ -12,7 +12,8 @@ const ROWS: Array<[string, string, string, string, string]> = [
   ["Connect your other tools", "included", "paid", "free", "included"],
   ["WhatsApp integration", "built-in", "plugin", "plugin", "plugin"],
   ["You own your data", "yes", "no", "yes", "no"],
-  ["Local + global gateways", "all 4", "stripe-only", "plugins", "limited"],
+  ["Local + global gateways", "built-in", "stripe-only", "plugins", "limited"],
+  ["Custom plugins & ERP integration", "yes", "plugin", "plugin", "plugin"],
 ];
 
 const Cell = ({ value }: { value: string }) => {
@@ -33,7 +34,6 @@ const Cell = ({ value }: { value: string }) => {
     addon: { icon: <Check />, label: "Addon", color: "var(--good)", strong: true },
     "built-in": { icon: <Check />, label: "Built-in", color: "var(--good)", strong: true },
     included: { icon: <Check />, label: "Included", color: "var(--good)", strong: true },
-    "all 4": { icon: <Check />, label: "All 4", color: "var(--good)", strong: true },
     "stripe-only": {
       icon: <Dash />,
       label: "Stripe only",

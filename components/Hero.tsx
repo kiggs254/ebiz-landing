@@ -806,7 +806,7 @@ export default function Hero() {
           }}
         >
           <StatItem value={20} suffix="+" label="Addons" color="var(--violet-ink)" />
-          <StatItem value={4} label="Payment gateways" color="var(--accent-ink)" />
+          <StatItem value={3} label="Sales channels" color="var(--accent-ink)" />
           <StatItem
             value={0}
             suffix="%"

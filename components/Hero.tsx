@@ -735,13 +735,14 @@ export default function Hero() {
                 marginTop: 22,
                 display: "flex",
                 alignItems: "center",
-                gap: 10,
+                gap: 12,
                 color: "var(--ink-3)",
                 fontSize: 13,
+                lineHeight: 1.45,
                 animationDelay: "0.30s",
               }}
             >
-              <span style={{ display: "flex" }} aria-hidden>
+              <span style={{ display: "flex", flexShrink: 0 }} aria-hidden>
                 {[
                   "/people/person-4.jpg",
                   "/people/person-5.jpg",

@@ -210,9 +210,9 @@ export function FeatureVisual({ kind, hue }: { kind: AccentKey; hue: Hue }) {
       <div style={{ ...base, padding: 14 }}>
         {(
           [
-            ["Sofia R.", "Gold", 1480, "/people/person-1.jpg"],
-            ["James O.", "Silver", 920, "/people/person-2.jpg"],
-            ["Mia T.", "Gold", 2240, "/people/person-3.jpg"],
+            ["Sofia R.", "Gold", 1480, "/people/person-7.png"],
+            ["James O.", "Silver", 920, "/people/person-4.png"],
+            ["Mia T.", "Gold", 2240, "/people/person-5.png"],
           ] as Array<[string, string, number, string]>
         ).map((c, i) => (
           <div
@@ -229,7 +229,7 @@ export function FeatureVisual({ kind, hue }: { kind: AccentKey; hue: Hue }) {
             <img
               src={c[3]}
               alt=""
-              style={{ width: 26, height: 26, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+              style={{ width: 30, height: 30, objectFit: "contain", flexShrink: 0 }}
             />
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 11.5, fontWeight: 500 }}>{c[0]}</div>

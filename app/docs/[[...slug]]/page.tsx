@@ -37,9 +37,9 @@ export function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: { slug?: string[] };
+  params: Promise<{ slug?: string[] }>;
 }): Promise<Metadata> {
-  const slug = params.slug?.[0];
+  const slug = (await params).slug?.[0];
   if (!slug)
     return {
       title: "API reference",
@@ -59,9 +59,9 @@ export async function generateMetadata({
 export default async function DocsPage({
   params,
 }: {
-  params: { slug?: string[] };
+  params: Promise<{ slug?: string[] }>;
 }) {
-  const slug = params.slug?.[0];
+  const slug = (await params).slug?.[0];
 
   if (!slug) {
     let overview = "";

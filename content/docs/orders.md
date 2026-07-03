@@ -11,7 +11,7 @@
 | `status` | string | - | Filter: `pending`, `processing`, `completed`, `cancelled` |
 | `search` | string | - | Search by order number or customer email |
 
-Each order in the list includes an **`items`** array (full line rows, not only a count). Every element includes **`product`** (with **`images`**, primary **`category`**, **`categories`**, **`brand`**, **`tags`**) and **`variant`** when applicable, matching `GET /orders/:id`. **`items_count`** is also set for convenience.
+Each order in the list includes an **`items`** array (full line rows, not only a count). Every element includes **`product`** (with **`images`**, primary **`category`**, **`categories`**, **`brand`**, **`tags`**) and **`variant`** when applicable, matching `GET /orders/:id`. **`items_count`** is also set for convenience. Each order also carries its **`addresses`** array (shipping / billing), including the delivery **`place_id`** and **`latitude`** / **`longitude`** when they were captured at checkout — see `GET /orders/:id` below.
 
 **Example Request:**
 
@@ -169,7 +169,10 @@ curl -X GET "https://your-store.com/api/v1/orders/123" \
           "city": "Nairobi",
           "state": "Nairobi",
           "zip": "00100",
-          "country": "Kenya"
+          "country": "Kenya",
+          "latitude": -1.2676,
+          "longitude": 36.8108,
+          "place_id": "ChIJw8dw9L4RLxgRN6VaR-iGxQY"
         }
       ],
       "notes": [],
@@ -180,6 +183,16 @@ curl -X GET "https://your-store.com/api/v1/orders/123" \
   }
 }
 ```
+
+**Delivery geolocation on returned addresses:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `latitude` | number \| null | Delivery latitude captured at checkout (map pin / device geolocation). `null` when not collected. |
+| `longitude` | number \| null | Delivery longitude captured at checkout. `null` when not collected. |
+| `place_id` | string \| null | Google Place ID of the delivery point, when the storefront resolved one. `null` when not collected. |
+
+> These fields are populated from the coordinates the storefront collects at checkout (used for distance-based shipping). They are **only present on orders placed after this feature shipped** — orders created before it, or through channels that don't collect a location (POS, phone orders, most API imports), return `null`/omit them. You may also send them yourself on `POST /orders` (see the Address Fields below).
 
 ---
 

@@ -33,6 +33,12 @@ export const DOC_GROUPS: DocGroup[] = [
     ],
   },
   {
+    label: "Marketing & loyalty",
+    items: [
+      { slug: "marketing", title: "Marketing & loyalty" },
+    ],
+  },
+  {
     label: "Realtime & events",
     items: [
       { slug: "webhooks", title: "Webhooks" },

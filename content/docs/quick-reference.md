@@ -83,10 +83,52 @@
 - `DELETE /webhooks/:id` - Delete webhook
 - `GET /webhooks/:id/deliveries` - Get webhook delivery logs
 
-**Marketing:**
-- `GET /marketing` - List coupons
-- `POST /marketing` - Create coupon
-- `GET /marketing/:id/usage` - Get coupon usage
+**Marketing — Overview:**
+- `GET /marketing` - Marketing overview (aggregate counts + loyalty stats)
+- `POST /marketing/subscribe` - Newsletter subscription (public, no auth)
+
+**Marketing — Contacts:**
+- `GET /marketing/contacts` - List contacts (paginated, searchable)
+- `GET /marketing/contacts/stats` - Contact statistics
+- `POST /marketing/contacts` - Create contact
+- `PUT /marketing/contacts/:id` - Update contact
+- `DELETE /marketing/contacts/:id` - Delete contact
+
+**Marketing — Coupons:**
+- `GET /marketing/coupons` - List coupons (paginated, searchable)
+- `GET /marketing/coupons/stats` - Coupon statistics
+- `POST /marketing/coupons` - Create coupon
+- `GET /marketing/coupons/:id` - Get coupon
+- `PUT /marketing/coupons/:id` - Update coupon
+- `DELETE /marketing/coupons/:id` - Delete coupon
+- `GET /marketing/coupons/:id/usage` - Coupon usage history
+- `POST /marketing/coupons/:id/validate` - Validate coupon (with discount preview)
+
+**Marketing — Loyalty:**
+- `GET /marketing/loyalty/config` - Loyalty program configuration
+- `GET /marketing/loyalty/stats` - Loyalty statistics
+- `GET /marketing/loyalty/balances` - List customer balances (paginated, searchable)
+- `GET /marketing/loyalty/balances/:customer_id` - Single customer balance
+- `POST /marketing/loyalty/adjust` - Adjust loyalty points
+- `GET /marketing/loyalty/ledger` - Points ledger (filtered, paginated)
+- `GET /marketing/loyalty/registrations` - List registrations
+- `PUT /marketing/loyalty/registrations/:id` - Approve/reject registration
+
+**Marketing — Abandoned Carts:**
+- `GET /marketing/abandoned-carts` - List abandoned carts
+- `GET /marketing/abandoned-carts/count/unviewed` - Unviewed count
+- `PATCH /marketing/abandoned-carts/:id/view` - Mark as viewed
+- `DELETE /marketing/abandoned-carts/:id` - Delete cart
+- `POST /marketing/abandoned-carts/:id/trigger-automation` - Trigger recovery
+
+**Marketing — Automation:**
+- `GET /marketing/automation/status` - Addon status
+- `GET /marketing/automation/campaigns` - List campaigns
+- `GET /marketing/automation/campaigns/:type` - Get campaign
+- `PUT /marketing/automation/campaigns/:type` - Update campaign
+- `GET /marketing/automation/runs` - Automation run history
+- `GET /marketing/automation/template-variables` - Template variables
+- `POST /marketing/automation/templates/enhance` - AI-enhance template
 
 **Settings:**
 - `GET /settings` - Get all settings

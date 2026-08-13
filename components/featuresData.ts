@@ -99,6 +99,8 @@ export const ADDONS: Array<{ name: string; desc: string; cat: string; icon: stri
   // Integrations & data
   { name: "REST API + Webhooks", desc: "Connect E-biz to the other tools you use and automate the busywork.", cat: "integrations", icon: "code" },
   { name: "WooCommerce Migration", desc: "Moving from WooCommerce? Bring your products, customers, and orders across in bulk.", cat: "integrations", icon: "download" },
+  { name: "Affiliate & E-Wallet", desc: "Customers share a referral link and QR code, their friend gets a discount, and they earn commission into a wallet they can withdraw or spend on their own orders.", cat: "growth", icon: "gift" },
+  { name: "Distributors & Trade Pricing", desc: "Dealers apply for trade pricing and you approve them. Volume discounts come from MOQ bands — with a per-distributor override — and apply automatically at checkout.", cat: "growth", icon: "percent" },
   { name: "Prescriptions", desc: "For pharmacies: collect, verify, and track prescriptions right at checkout.", cat: "integrations", icon: "medical" },
   { name: "Custom plugins & ERP", desc: "Need something unique? We build custom plugins for your workflows and connect your ERP, accounting, or logistics systems.", cat: "integrations", icon: "code" },
 ];

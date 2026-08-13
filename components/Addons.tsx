@@ -34,6 +34,8 @@ const ADDONS = [
 
   { key: "loyalty", name: "Loyalty Points", desc: "Earn & redeem, OTP-verified at checkout.", cat: "growth" },
   { key: "marketing", name: "Marketing Automation", desc: "Abandoned cart, review requests, recs.", cat: "growth" },
+  { key: "affiliate", name: "Affiliate & E-Wallet", desc: "Referral links, QR codes & commission into a wallet.", cat: "growth" },
+  { key: "distributors", name: "Distributors", desc: "Trade pricing with MOQ volume bands for dealers.", cat: "growth" },
   { key: "gtm", name: "Google Tag Manager", desc: "E-commerce events & enhanced conversions.", cat: "growth" },
 
   { key: "whatsapp", name: "WhatsApp", desc: "Template messaging & order notifications.", cat: "messaging" },

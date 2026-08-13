@@ -153,7 +153,7 @@ const softwareJsonLd = {
   operatingSystem: "Web",
   url: SITE_URL,
   description:
-    "A headless e-commerce platform with M-Pesa, Pesapal, Paystack, cards, bank transfer and Cash on Delivery built in. 20+ toggleable addons including multi-branch inventory, multi-currency, AI catalog, loyalty, subscriptions, REST API and WhatsApp commerce. Deployed on a managed dedicated server, hosting included.",
+    "A headless e-commerce platform with M-Pesa, Pesapal, Paystack, cards, bank transfer and Cash on Delivery built in. 20+ toggleable addons including multi-branch inventory, multi-currency, AI catalog, loyalty, subscriptions, affiliate referrals with an e-wallet, distributor trade pricing, REST API and WhatsApp commerce. Deployed on a managed dedicated server, hosting included.",
   featureList: [
     "Online store",
     "In-store point of sale",

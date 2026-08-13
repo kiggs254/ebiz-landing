@@ -70,6 +70,8 @@ const HeroMarquee = () => {
     "Multi-branch",
     "Subscriptions",
     "Loyalty points",
+    "Affiliate referrals",
+    "Distributor pricing",
     "Marketing automation",
     "Coupons & discounts",
     "Reviews & ratings",

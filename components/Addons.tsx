@@ -39,7 +39,6 @@ const ADDONS = [
   { key: "gtm", name: "Google Tag Manager", desc: "E-commerce events & enhanced conversions.", cat: "growth" },
 
   { key: "whatsapp", name: "WhatsApp", desc: "Template messaging & order notifications.", cat: "messaging" },
-  { key: "wastorefront", name: "WhatsApp Storefront", desc: "Browse, checkout & pay inside WhatsApp.", cat: "messaging" },
 
   { key: "ai", name: "AI Catalog", desc: "Descriptions, SEO copy & blurbs in seconds.", cat: "ai" },
   { key: "aisearch", name: "AI Search", desc: "Semantic search & personalized recommendations.", cat: "ai" },
@@ -89,7 +88,7 @@ export default function Addons() {
     ["Reviews", enabled.reviews, "var(--violet)"],
     ["Loyalty", enabled.loyalty, "var(--accent)"],
     ["Marketing", enabled.marketing, "var(--accent)"],
-    ["WhatsApp", enabled.whatsapp || enabled.wastorefront, "var(--green)"],
+    ["WhatsApp", enabled.whatsapp, "var(--green)"],
     ["AI Studio", enabled.ai || enabled.aisearch || enabled.aiimage, "var(--pink)"],
     ["Prescriptions", enabled.prescriptions, "var(--teal)"],
     ["Developers", enabled.api, "var(--teal)"],

@@ -89,7 +89,6 @@ export const ADDONS: Array<{ name: string; desc: string; cat: string; icon: stri
 
   // Messaging
   { name: "WhatsApp", desc: "Send order updates, reminders, and confirmations straight to customers on WhatsApp.", cat: "messaging", icon: "bubble" },
-  { name: "WhatsApp Storefront", desc: "Let customers browse your catalog, order, and pay without ever leaving WhatsApp.", cat: "messaging", icon: "bag" },
 
   // AI
   { name: "AI Catalog", desc: "Generate product descriptions, SEO copy, and category blurbs in seconds.", cat: "ai", icon: "sparkles" },

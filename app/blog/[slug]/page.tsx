@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import Nav from "@/components/Nav";
+import Footer from "@/components/Footer";
+import { Section } from "@/components/primitives";
 import { Doc } from "@/components/docs/Markdown";
 import { getPost, listPosts, formatDate, readingMinutes } from "@/lib/blog";
 
@@ -61,6 +64,17 @@ export default async function BlogPostPage({ params }: { params: Params }) {
   const url = `${SITE_URL}/blog/${post.slug}`;
   const minutes = readingMinutes(post.content);
 
+  // Related posts share a tag; falling back to the newest keeps the rail
+  // populated on a young blog rather than rendering an empty section.
+  const all = await listPosts();
+  const related = all
+    .filter((p) => p.slug !== post.slug)
+    .sort((a, b) => {
+      const overlap = (x: typeof a) => x.tags?.filter((t) => post.tags?.includes(t)).length || 0;
+      return overlap(b) - overlap(a);
+    })
+    .slice(0, 3);
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -90,48 +104,81 @@ export default async function BlogPostPage({ params }: { params: Params }) {
   };
 
   return (
-    <main className="page">
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
+      <Nav />
+      <main>
+        <Section id="post-top" ariaLabel={post.title}>
+          <nav className="blog-crumbs" aria-label="Breadcrumb">
+            <Link href="/blog">← All posts</Link>
+          </nav>
 
-      <nav className="blog-crumbs" aria-label="Breadcrumb">
-        <Link href="/blog">← Blog</Link>
-      </nav>
+          <article className="blog-article">
+            <header>
+              {post.tags?.length > 0 && <span className="blog-kicker">{post.tags[0]}</span>}
+              <h1>{post.title}</h1>
+              <p className="blog-meta">
+                {post.published_at && (
+                  <time dateTime={post.published_at}>{formatDate(post.published_at)}</time>
+                )}
+                {post.author && <> · {post.author}</>}
+                <> · {minutes} min read</>
+              </p>
+              {post.cover_image_url && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img className="blog-hero" src={post.cover_image_url} alt="" />
+              )}
+            </header>
 
-      <article className="blog-article">
-        <header>
-          <h1>{post.title}</h1>
-          <p className="blog-meta">
-            {post.published_at && <time dateTime={post.published_at}>{formatDate(post.published_at)}</time>}
-            {post.author && <span> · {post.author}</span>}
-            <span> · {minutes} min read</span>
-          </p>
-          {post.cover_image_url && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img className="blog-hero" src={post.cover_image_url} alt="" />
+            <div className="doc blog-body">
+              <Doc source={post.content} />
+            </div>
+
+            {post.tags?.length > 0 && (
+              <footer className="blog-tags blog-tags-end">
+                {post.tags.map((t) => (
+                  <span key={t}>{t}</span>
+                ))}
+              </footer>
+            )}
+          </article>
+
+          <aside className="blog-cta">
+            <h2>Ready to sell online?</h2>
+            <p>Storefront, in-store and WhatsApp — from one dashboard, hosting included.</p>
+            <Link href="/get-started" className="btn btn-primary">Get started</Link>
+          </aside>
+
+          {related.length > 0 && (
+            <section className="blog-related" aria-label="More posts">
+              <h2>Keep reading</h2>
+              <ul className="blog-grid">
+                {related.map((p) => (
+                  <li key={p.slug} className="blog-card">
+                    <Link href={`/blog/${p.slug}`}>
+                      {p.cover_image_url && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img className="blog-cover" src={p.cover_image_url} alt="" loading="lazy" />
+                      )}
+                      <div className="blog-card-body">
+                        {p.published_at && (
+                          <time dateTime={p.published_at}>{formatDate(p.published_at)}</time>
+                        )}
+                        <h3>{p.title}</h3>
+                        {p.excerpt && <p>{p.excerpt}</p>}
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
           )}
-        </header>
-
-        <div className="doc">
-          <Doc source={post.content} />
-        </div>
-
-        {post.tags?.length > 0 && (
-          <footer className="blog-tags">
-            {post.tags.map((t) => (
-              <span key={t}>{t}</span>
-            ))}
-          </footer>
-        )}
-      </article>
-
-      <aside className="blog-cta">
-        <h2>Ready to sell online?</h2>
-        <p>Storefront, in-store and WhatsApp — from one dashboard.</p>
-        <Link href="/get-started" className="btn">Get started</Link>
-      </aside>
-    </main>
+        </Section>
+      </main>
+      <Footer />
+    </>
   );
 }

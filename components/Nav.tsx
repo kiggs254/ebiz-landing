@@ -10,6 +10,7 @@ const NAV_LINKS: Array<{ id: string; label: string; href: string; page?: boolean
   { id: "industries", label: "Who it's for", href: "/#industries" },
   { id: "comparison", label: "Compare", href: "/#comparison" },
   { id: "pricing", label: "Pricing", href: "/#pricing" },
+  { id: "blog", label: "Blog", href: "/blog", page: true },
 ];
 
 export default function Nav() {

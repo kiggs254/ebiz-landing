@@ -49,6 +49,7 @@ export default function Footer() {
               ]],
               ["Company", [
                 ["About", "/about"],
+                ["Blog", "/blog"],
                 ["Contact", "/contact"],
               ]],
               ["Legal", [

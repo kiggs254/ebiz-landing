@@ -2,6 +2,7 @@ import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
 import LogoCloud from "@/components/LogoCloud";
 import Features from "@/components/Features";
+import Assistant from "@/components/Assistant";
 import Payments from "@/components/Payments";
 import Industries from "@/components/Industries";
 import VideoBand from "@/components/VideoBand";
@@ -19,6 +20,7 @@ export default function HomePage() {
       <main>
         <Hero />
         <Features />
+        <Assistant />
         <Payments />
         <Industries />
         <VideoBand />

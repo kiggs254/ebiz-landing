@@ -337,6 +337,10 @@ h2.section-title em { font-style: normal; color: var(--title-accent, var(--accen
     font-weight: 600;
   }
 }
+@media (max-width: 900px) {
+  .assistant-grid { grid-template-columns: 1fr !important; gap: 36px !important; }
+}
+
 @media (max-width: 540px) {
   .rail-grid { grid-template-columns: 1fr !important; }
 }
@@ -710,3 +714,9 @@ h2.section-title em { font-style: normal; color: var(--title-accent, var(--accen
   font-family: var(--display); font-weight: 600; letter-spacing: -0.02em;
   font-size: 1.5rem; margin: 0 0 1.5rem;
 }
+
+/* A tag that is a link needs a hover the generic .tag rule does not give it —
+   .tag:hover recolours the border to the value it already has. */
+.tag-link { cursor: pointer; }
+.tag-link:hover { border-color: var(--accent); color: var(--ink); }
+.tag-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }

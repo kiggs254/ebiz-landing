@@ -40,6 +40,7 @@ const ADDONS = [
 
   { key: "whatsapp", name: "WhatsApp", desc: "Template messaging & order notifications.", cat: "messaging" },
 
+  { key: "assistant", name: "Store Assistant", desc: "Chat that builds pages, banners & menus — every change reversible.", cat: "ai" },
   { key: "ai", name: "AI Catalog", desc: "Descriptions, SEO copy & blurbs in seconds.", cat: "ai" },
   { key: "aisearch", name: "AI Search", desc: "Semantic search & personalized recommendations.", cat: "ai" },
   { key: "aiimage", name: "AI Images", desc: "Generate & enhance product photography.", cat: "ai" },

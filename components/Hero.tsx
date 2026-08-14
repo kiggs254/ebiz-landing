@@ -674,7 +674,13 @@ export default function Hero() {
           }}
         >
           <div style={{ minWidth: 0 }}>
-            <span className="tag hero-anim" style={{ marginBottom: 18 }}>
+            {/* Anchors to the Assistant section — the badge announces the
+                newest thing, so it should take you to it. */}
+            <a
+              href="#assistant"
+              className="tag tag-link hero-anim"
+              style={{ marginBottom: 18, textDecoration: "none", color: "inherit" }}
+            >
               <span
                 aria-hidden
                 style={{
@@ -684,8 +690,11 @@ export default function Hero() {
                   background: "var(--accent)",
                 }}
               />
-              v4.2 · Now with AI catalog generation
-            </span>
+              v4.3 · Now with the Store Assistant
+              <span aria-hidden style={{ marginLeft: 2, opacity: 0.55 }}>
+                &rarr;
+              </span>
+            </a>
 
             <h1
               className="display hero-title hero-anim"

@@ -91,6 +91,7 @@ export const ADDONS: Array<{ name: string; desc: string; cat: string; icon: stri
   { name: "WhatsApp", desc: "Send order updates, reminders, and confirmations straight to customers on WhatsApp.", cat: "messaging", icon: "bubble" },
 
   // AI
+  { name: "Store Assistant", desc: "A chat in your settings that makes the change for you — pages, banners, menus, SEO — and shows you exactly what it did, with an undo button on every edit.", cat: "ai", icon: "chat" },
   { name: "AI Catalog", desc: "Generate product descriptions, SEO copy, and category blurbs in seconds.", cat: "ai", icon: "sparkles" },
   { name: "AI Search", desc: "Help shoppers find exactly what they want with smart search and personalized recommendations.", cat: "ai", icon: "search" },
   { name: "AI Images", desc: "Create and clean up product photos automatically. Studio quality, without the studio.", cat: "ai", icon: "image" },

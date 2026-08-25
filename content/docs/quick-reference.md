@@ -30,6 +30,7 @@
 - `DELETE /products/:id` - Delete product
 - `POST /products/import` - Import products from CSV
 - `GET /products/export` - Export products to CSV
+- `POST /products/popularity/recalculate` - Rebuild popularity scores from paid orders
 
 **Categories:**
 - `GET /categories` - List all categories

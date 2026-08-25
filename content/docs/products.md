@@ -12,6 +12,8 @@
 | `status` | string | - | Filter: `active`, `draft`, `archived` |
 | `category_id` | integer | - | Filter by category |
 | `brand_id` | integer | - | Filter by brand |
+| `sort_by` | string | `created_at` | `price`, `name`, `created_at`, `updated_at`, `popularity_score`. Anything else falls back to `created_at` |
+| `sort_order` | string | `desc` | `asc` or `desc` |
 
 **Example Request:**
 
@@ -47,6 +49,7 @@ curl -X GET "https://your-store.com/api/v1/products?page=1&limit=20&status=activ
         ],
         "tags": [],
         "variants": [],
+        "popularity_score": 42,
         "created_at": "2026-01-15T10:00:00.000Z",
         "updated_at": "2026-01-15T10:00:00.000Z"
       }
@@ -256,3 +259,43 @@ Returns a CSV file with all products. Supports same query params as list (`searc
 
 ---
 
+### Popularity score
+
+Every product carries a read-only `popularity_score`: the number of units sold across all
+orders that are **paid** and not **cancelled**. It is a plain unit count, not a rate or a
+weighted ranking, so a product sold 40 times in one order scores the same as one sold once in
+40 orders.
+
+The score is recalculated for the whole catalog nightly at **04:00 server time**. It is not
+updated as orders come in, so a product bought this morning keeps yesterday's score until the
+next run. Writes to `popularity_score` through `POST`/`PUT /products` are ignored — the nightly
+job is the only writer.
+
+Sort by it with `sort_by=popularity_score` on the admin API, or `sort=best_sellers` on the
+[storefront catalog](/docs/storefront-catalog).
+
+---
+
+### POST /products/popularity/recalculate - Recalculate scores
+
+Rebuilds `popularity_score` for every product immediately, instead of waiting for the nightly
+run. Useful right after a bulk order import, when the scores would otherwise be a day behind.
+
+This rewrites the whole catalog in two statements, so treat it as an occasional operation —
+it is not something to call per order.
+
+```bash
+curl -X POST "https://your-store.com/api/v1/products/popularity/recalculate" \
+  -u "ck_xxx:cs_yyy"
+```
+
+**Example Response (200):**
+
+```json
+{
+  "status": "success",
+  "message": "Popularity scores recalculated"
+}
+```
+
+---

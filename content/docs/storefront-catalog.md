@@ -16,7 +16,7 @@ Returns published products with pagination. Supports filtering, search, and sort
 | `tag_slug` | string | Filter by tag slug |
 | `featured` | boolean | `true` to return only featured products |
 | `on_sale` | boolean | `true` to return only products with an active sale price |
-| `sort` | string | `newest` (default), `price_asc`, `price_desc`, `best_sellers` |
+| `sort` | string | `newest` (default), `price_asc`, `price_desc`, `best_sellers` (`popularity` is accepted as an alias) |
 | `branch_id` | number | Optional. Only when the branches addon is enabled |
 
 ```bash
@@ -45,7 +45,8 @@ curl "https://your-store-api.example.com/api/v1/storefront/products?category_slu
         "brand": { "id": 3, "name": "Northwind", "slug": "northwind" },
         "images": [{ "id": 1, "url": "https://.../tr02.jpg", "alt": "Trail Runner", "order": 0 }],
         "variants": [],
-        "tags": [{ "id": 5, "name": "New", "slug": "new" }]
+        "tags": [{ "id": 5, "name": "New", "slug": "new" }],
+        "popularity_score": 42
       }
     ],
     "total": 137,
@@ -56,6 +57,10 @@ curl "https://your-store-api.example.com/api/v1/storefront/products?category_slu
 ```
 
 A variable product (`product_type: "variable"`) includes a `variants[]` array; each variant has its own `price`, `sale_price`, `sku`, and `attributes_json`.
+
+`popularity_score` is the number of units sold across paid, non-cancelled orders. It is what
+`sort=best_sellers` orders by, and it is recalculated nightly rather than live — so it will not
+change between a purchase and the next run. Ties fall back to newest first.
 
 ### GET /storefront/products/by-ids - Get several products by ID
 

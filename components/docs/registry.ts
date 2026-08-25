@@ -55,6 +55,7 @@ export const DOC_GROUPS: DocGroup[] = [
       { slug: "storefront-checkout", title: "Checkout & payments" },
       { slug: "storefront-customers", title: "Customer accounts" },
       { slug: "storefront-content", title: "Content & engagement" },
+      { slug: "storefront-reservations", title: "Table reservations" },
     ],
   },
   {

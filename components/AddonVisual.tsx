@@ -433,6 +433,43 @@ export function AddonVisual({ kind, hue }: { kind: string; hue: Hue }) {
         </div>
       );
 
+    case "calendar":
+      return (
+        <div style={wrap}>
+          <Header hue={hue}>Reservations · today</Header>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 4 }}>
+            {Array.from({ length: 14 }).map((_, i) => {
+              const booked = [2, 4, 5, 8, 9, 11].includes(i);
+              return (
+                <div
+                  key={i}
+                  style={{
+                    height: 22,
+                    borderRadius: 4,
+                    background: booked ? hue.color : "var(--bg)",
+                    border: booked ? "none" : "1px solid var(--line-softer)",
+                    opacity: booked ? 0.95 : 0.8,
+                  }}
+                />
+              );
+            })}
+          </div>
+          <div
+            style={{
+              ...mono,
+              marginTop: 10,
+              color: "var(--ink-3)",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <span>18:00</span>
+            <span>19:00</span>
+            <span>20:00</span>
+            <span>21:00</span>
+          </div>
+        </div>
+      );
     case "medical":
       return (
         <div style={wrap}>

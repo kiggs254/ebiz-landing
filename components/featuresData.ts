@@ -75,6 +75,9 @@ export const ADDONS: Array<{ name: string; desc: string; cat: string; icon: stri
   { name: "Stock Management", desc: "Always know what's in stock, get low-stock alerts, and let customers back-order when you run out.", cat: "ops", icon: "box" },
   { name: "Taxes", desc: "Apply the right tax automatically by location and product, shown the way your customers expect.", cat: "ops", icon: "percent" },
   { name: "Distance Shipping", desc: "Charge delivery based on distance so shipping prices are always fair and accurate.", cat: "ops", icon: "truck" },
+  { name: "Area Rate Cards", desc: "Import your courier's price list — corridors and drop points — and checkout picks the exact rate for the customer's address.", cat: "ops", icon: "truck" },
+  { name: "Delivery Riders", desc: "Run your own delivery team. Assign a rider to an order, message them the pickup and drop on WhatsApp, hand them a printed packing slip.", cat: "ops", icon: "truck" },
+  { name: "Reservations", desc: "Take table bookings from your storefront. Set opening hours, per-slot capacity and areas, send confirmation and reminder messages, review each booking as it comes in.", cat: "ops", icon: "calendar" },
 
   // Catalog
   { name: "Brands", desc: "Organize products by brand, with dedicated brand pages and filters shoppers can browse.", cat: "catalog", icon: "tag" },
@@ -88,7 +91,8 @@ export const ADDONS: Array<{ name: string; desc: string; cat: string; icon: stri
   { name: "Google Tag Manager", desc: "Measure sales and conversions and plug in your marketing pixels, with no code changes.", cat: "growth", icon: "target" },
 
   // Messaging
-  { name: "WhatsApp", desc: "Send order updates, reminders, and confirmations straight to customers on WhatsApp.", cat: "messaging", icon: "bubble" },
+  { name: "WhatsApp Cloud", desc: "Official Meta Business API. Approved templates, buttons and rich media — the version WhatsApp themselves prefer for business messaging.", cat: "messaging", icon: "bubble" },
+  { name: "WhatsApp Self-Hosted", desc: "Send from your own WhatsApp number instead of a Business API one. No template approval, no per-message fee — a pairing QR you scan with the shop phone. Good for smaller stores that just want the messages to go.", cat: "messaging", icon: "bubble" },
 
   // AI
   { name: "Store Assistant", desc: "A chat in your settings that makes the change for you — pages, banners, menus, SEO — and shows you exactly what it did, with an undo button on every edit.", cat: "ai", icon: "chat" },

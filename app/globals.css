@@ -721,98 +721,271 @@ h2.section-title em { font-style: normal; color: var(--title-accent, var(--accen
 .tag-link:hover { border-color: var(--accent); color: var(--ink); }
 .tag-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
-/* ---------------- Hero — Live Signals ---------------- */
-.hero-shell { position: relative; z-index: 1; }
-.hero-broadsheet {
-  display: grid;
-  grid-template-columns: 1.15fr 1fr;
-  gap: 56px;
-  align-items: start;
-  padding-top: 24px;
-}
-.hero-left { min-width: 0; }
-.hero-right { min-width: 0; position: relative; }
+/* ---------------- Hero — Poster ---------------- */
+/* One dark, full-bleed shader poster. Type is the primary visual gesture;
+   the mesh is the ground. Below it, on the site's warm off-white, sits a
+   quiet stats + cities pairing. */
 
-/* The headline: pushed hard. Editorial scale, controlled tracking, a single
-   italic accent word carried by .hero-title-accent (already defined). */
-.hero-headline {
-  font-weight: 500;
-  font-size: clamp(48px, 6.6vw, 96px);
-  line-height: 0.94;
-  letter-spacing: -0.045em;
-  color: var(--ink);
-  margin: 22px 0 0;
-  text-wrap: balance;
+.hero-poster {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 0 !important;
+  border-top: none;
+  color: #F6F1E4;
 }
-.hero-lede {
-  font-family: var(--sans);
-  font-size: 17px;
-  line-height: 1.55;
-  color: var(--ink-3);
-  max-width: 46ch;
-  margin: 26px 0 0;
-  text-wrap: pretty;
+.hero-mesh {
+  position: absolute !important;
+  inset: 0;
+  width: 100%;
+  height: 88vh;
+  min-height: 640px;
+  z-index: 0;
 }
-.hero-avatars {
-  margin-top: 24px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.hero-mesh-wire { opacity: 0.28; mix-blend-mode: screen; }
+
+.hero-vignette {
+  position: absolute;
+  inset: 0;
+  height: 88vh;
+  min-height: 640px;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 100% at 50% 0%, transparent 45%, rgba(14, 14, 12, 0.55) 100%),
+    linear-gradient(180deg, rgba(14, 14, 12, 0.25) 0%, transparent 25%, transparent 70%, rgba(14, 14, 12, 0.7) 100%);
 }
 
-/* The signals wall — vertical stack of tiny cards, each nudged sideways to
-   feel pinned rather than gridded. */
-.hero-signals {
+.hero-poster-inner {
+  position: relative;
+  z-index: 2;
+  min-height: 88vh;
+  min-height: calc(100dvh - 80px);
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  justify-content: center;
+  padding-top: 96px;
+  padding-bottom: 120px;
+}
+
+.poster-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  align-self: flex-start;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.22em;
+  color: rgba(246, 241, 228, 0.72);
+  padding: 8px 14px;
+  border: 1px solid rgba(246, 241, 228, 0.15);
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  background: rgba(14, 14, 12, 0.18);
+}
+.poster-eyebrow-dot {
+  width: 6px; height: 6px; border-radius: 999px;
+  background: #E67B45;
+  box-shadow: 0 0 0 4px rgba(230, 123, 69, 0.18);
+  animation: signalPulse 1.8s ease-in-out infinite;
+}
+
+/* The line the whole design is about. Enormous, tight, single weight.
+   No gradient text — colour restraint is the point. */
+.poster-headline {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(56px, 11.5vw, 176px);
+  line-height: 0.88;
+  letter-spacing: -0.052em;
+  color: #F6F1E4;
+  margin: 32px 0 0;
+  text-wrap: balance;
+}
+.poster-accent {
+  color: #E67B45;
+  font-style: normal;
   position: relative;
-  z-index: 1;
 }
-.signal {
-  opacity: 0;
-  animation: signalIn 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
-  transform-origin: 50% 100%;
-}
-.signal-a { animation-delay: 0.35s; margin-right: 24px; }
-.signal-b { animation-delay: 0.50s; margin-left: 32px; }
-.signal-c { animation-delay: 0.65s; margin-right: 12px; }
-.signal-d { animation-delay: 0.80s; margin-left: 20px; }
 
-@keyframes signalIn {
-  from { opacity: 0; transform: translateY(14px) scale(0.985); }
-  to   { opacity: 1; transform: none; }
+.poster-sub {
+  margin: 30px 0 0;
+  max-width: 44ch;
+  font-family: var(--sans);
+  font-size: clamp(17px, 1.6vw, 21px);
+  line-height: 1.45;
+  color: rgba(246, 241, 228, 0.78);
+  text-wrap: pretty;
 }
-@keyframes signalPulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 0 3px rgba(216, 108, 66, 0.14); }
-  50%      { transform: scale(1.15); box-shadow: 0 0 0 5px rgba(216, 108, 66, 0.08); }
-}
-@keyframes sparkDraw { to { stroke-dashoffset: 0; } }
 
-/* Stats strip — editorial rule marks, tabular numerals, mono labels. */
-.hero-stats {
+.poster-ctas {
+  margin-top: 40px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.poster-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 15px 26px;
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 14.5px;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+.poster-btn-primary {
+  background: #F6F1E4;
+  color: #0E0E0C;
+}
+.poster-btn-primary:hover { transform: translateY(-1px); background: #FFFFFF; }
+.poster-btn-primary span { transition: transform 0.2s ease; display: inline-block; }
+.poster-btn-primary:hover span { transform: translateX(3px); }
+.poster-btn-ghost {
+  background: rgba(14, 14, 12, 0.14);
+  color: #F6F1E4;
+  border: 1px solid rgba(246, 241, 228, 0.28);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.poster-btn-ghost:hover { border-color: rgba(246, 241, 228, 0.55); }
+
+/* Corner beacon — a living heartbeat. Small enough that it is a detail,
+   not a subject, but big enough to be noticed on a second look. */
+.poster-beacon {
+  position: absolute;
+  bottom: 44px;
+  right: 44px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+}
+.poster-beacon-caption {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  color: rgba(246, 241, 228, 0.68);
+  text-transform: uppercase;
+}
+
+.poster-fade {
+  position: absolute;
+  left: 0; right: 0;
+  bottom: -1px;
+  height: 220px;
+  pointer-events: none;
+  z-index: 2;
+  background: linear-gradient(180deg, transparent 0%, rgba(14, 14, 12, 0.55) 55%, var(--bg) 100%);
+}
+
+/* Below the dark poster — back on the warm off-white. Stats strip + cities
+   wire. Editorial rule marks, tabular numerals. */
+.hero-under {
+  position: relative;
+  z-index: 2;
+  background: var(--bg);
+  padding-top: 56px;
+  padding-bottom: 8px;
+}
+.stats-strip {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 48px;
-  margin-top: 72px;
   padding-top: 8px;
-  padding-bottom: 6px;
+  padding-bottom: 8px;
+}
+.stat-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  padding-top: 14px;
+}
+.stat-rule {
+  position: absolute;
+  top: 0; left: 0;
+  width: 24px; height: 2px;
+  background: var(--ink);
+}
+.stat-value {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(28px, 3.4vw, 40px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.stat-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
 }
 
-/* Mobile: single column, signals sit under headline; kill the sideways
-   offsets so they read clean stacked. */
-@media (max-width: 980px) {
-  .hero-broadsheet {
-    grid-template-columns: 1fr;
-    gap: 44px;
-  }
-  .signal-a, .signal-b, .signal-c, .signal-d { margin-left: 0; margin-right: 0; }
-  .hero-stats { grid-template-columns: repeat(2, 1fr); gap: 32px; margin-top: 56px; }
+.wire-strip {
+  margin-top: 40px;
+  border-top: 1px solid var(--line-softer);
+  border-bottom: 1px solid var(--line-softer);
+  overflow: hidden;
+  padding: 10px 0;
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  background: var(--bg);
+}
+.wire-track {
+  display: flex;
+  gap: 36px;
+  white-space: nowrap;
+  width: max-content;
+  animation: mq 88s linear infinite;
+}
+.wire-lead {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.wire-city {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.wire-bullet {
+  width: 4px; height: 4px; border-radius: 999px;
+  background: var(--accent);
+  opacity: 0.7;
 }
 
-/* Respect prefers-reduced-motion — cut the stagger, keep the layout. */
+/* Mobile: shrink the mesh to a tidy 78vh, drop stats to 2 columns, hide
+   the corner beacon (it becomes noise on small screens). */
+@media (max-width: 900px) {
+  .hero-mesh, .hero-vignette { height: 78vh; min-height: 560px; }
+  .hero-poster-inner { min-height: 78vh; padding-top: 72px; padding-bottom: 96px; }
+  .poster-headline { font-size: clamp(48px, 13vw, 96px); line-height: 0.92; }
+  .stats-strip { grid-template-columns: repeat(2, 1fr); gap: 28px; }
+  .poster-beacon { display: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .signal, .hero-anim { animation: none !important; opacity: 1 !important; transform: none !important; }
-  .hero-title-accent { animation: none !important; }
+  .poster-eyebrow-dot { animation: none; }
 }
 

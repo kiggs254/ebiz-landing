@@ -738,8 +738,10 @@ h2.section-title em { font-style: normal; color: var(--title-accent, var(--accen
   position: absolute !important;
   inset: 0;
   width: 100%;
-  height: 88vh;
-  min-height: 640px;
+  /* Trimmed from 88vh — the shorter section suits the smaller headline
+     and stops the fold from feeling padded. */
+  height: 78vh;
+  min-height: 560px;
   z-index: 0;
 }
 .hero-mesh-wire { opacity: 0.28; mix-blend-mode: screen; }
@@ -747,8 +749,8 @@ h2.section-title em { font-style: normal; color: var(--title-accent, var(--accen
 .hero-vignette {
   position: absolute;
   inset: 0;
-  height: 88vh;
-  min-height: 640px;
+  height: 78vh;
+  min-height: 560px;
   z-index: 1;
   pointer-events: none;
   background:
@@ -759,13 +761,13 @@ h2.section-title em { font-style: normal; color: var(--title-accent, var(--accen
 .hero-poster-inner {
   position: relative;
   z-index: 2;
-  min-height: 88vh;
-  min-height: calc(100dvh - 80px);
+  min-height: 78vh;
+  min-height: min(760px, calc(100dvh - 80px));
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-top: 96px;
-  padding-bottom: 120px;
+  padding-top: 72px;
+  padding-bottom: 88px;
 }
 
 .poster-eyebrow {
@@ -796,12 +798,17 @@ h2.section-title em { font-style: normal; color: var(--title-accent, var(--accen
 .poster-headline {
   font-family: var(--display);
   font-weight: 700;
-  font-size: clamp(56px, 11.5vw, 176px);
-  line-height: 0.88;
-  letter-spacing: -0.052em;
+  /* Was clamp(56px, 11.5vw, 176px) — landed too big on typical 1440-1680px
+     screens: "Sell" filled a whole line by itself. Kept the range tight now
+     so a normal desktop tops out around 96-108px, still commanding but
+     doesn't eat the fold. */
+  font-size: clamp(44px, 6.2vw, 108px);
+  line-height: 0.92;
+  letter-spacing: -0.045em;
   color: #F6F1E4;
-  margin: 32px 0 0;
+  margin: 24px 0 0;
   text-wrap: balance;
+  max-width: 20ch;
 }
 .poster-accent {
   color: #E67B45;
@@ -978,9 +985,10 @@ h2.section-title em { font-style: normal; color: var(--title-accent, var(--accen
 /* Mobile: shrink the mesh to a tidy 78vh, drop stats to 2 columns, hide
    the corner beacon (it becomes noise on small screens). */
 @media (max-width: 900px) {
-  .hero-mesh, .hero-vignette { height: 78vh; min-height: 560px; }
-  .hero-poster-inner { min-height: 78vh; padding-top: 72px; padding-bottom: 96px; }
-  .poster-headline { font-size: clamp(48px, 13vw, 96px); line-height: 0.92; }
+  .hero-mesh, .hero-vignette { height: 68vh; min-height: 480px; }
+  .hero-poster-inner { min-height: 68vh; padding-top: 56px; padding-bottom: 72px; }
+  .poster-headline { font-size: clamp(40px, 10.5vw, 72px); line-height: 0.94; max-width: none; }
+  .poster-sub { font-size: 15.5px; }
   .stats-strip { grid-template-columns: repeat(2, 1fr); gap: 28px; }
   .poster-beacon { display: none; }
 }

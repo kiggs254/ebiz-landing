@@ -1,836 +1,666 @@
 "use client";
 
-import { Logo, useCountUp } from "./primitives";
-import { AddonIcon } from "./icons";
+/**
+ * Hero — "Live Signals".
+ *
+ * The old hero was Text | Screenshot: a fine pattern that reads like every
+ * other SaaS home page ever shipped. This replaces the screenshot with a wall
+ * of tiny live product moments — an order coming in, a WhatsApp confirmation,
+ * a rider assigned, revenue ticking up — that IS the product firing. The
+ * message is not "here is a picture of a dashboard"; it is "here is what your
+ * dashboard is doing right now".
+ *
+ * All CSS-only motion. One orchestrated page-load stagger, then a slow
+ * lifetime pulse the eye barely registers unless it looks. No layout thrash,
+ * no libraries.
+ */
 
-const StatItem = ({
-  value,
-  suffix = "",
-  prefix = "",
-  label,
-  decimals = 0,
-  color = "var(--ink)",
-}: {
-  value: number;
-  suffix?: string;
-  prefix?: string;
-  label: string;
-  decimals?: number;
-  color?: string;
-}) => {
-  const [ref, display] = useCountUp(value, { decimals });
-  return (
-    <div ref={ref} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-      <div
-        style={{
-          fontFamily: "var(--display)",
-          fontWeight: 600,
-          fontSize: 38,
-          lineHeight: 1,
-          letterSpacing: "-0.03em",
-          color,
-        }}
-      >
-        {prefix}
-        {display}
-        {suffix}
-      </div>
-      <div
-        style={{
-          fontFamily: "var(--mono)",
-          fontSize: 11,
-          letterSpacing: "0.12em",
-          textTransform: "uppercase",
-          color: "var(--ink-3)",
-        }}
-      >
-        {label}
-      </div>
-    </div>
-  );
-};
+import Image from "next/image";
+import { useCountUp } from "./primitives";
 
-const MARQUEE_DOTS = [
-  "var(--accent)",
-  "var(--blue)",
-  "var(--violet)",
-  "var(--teal)",
-  "var(--pink)",
-  "var(--green)",
+// ─── Ticker along the top: where the real merchants are ───────────────────
+const CITIES = [
+  "Nairobi",
+  "Kampala",
+  "Kigali",
+  "Accra",
+  "Lagos",
+  "Dar es Salaam",
+  "Kumasi",
+  "Mombasa",
+  "Addis Ababa",
+  "Kinshasa",
+  "Lusaka",
+  "Douala",
 ];
 
-const HeroMarquee = () => {
-  const items = [
-    "Orders",
-    "Products",
-    "Customers",
-    "Inventory",
-    "Payments",
-    "Analytics",
-    "Multi-branch",
-    "Subscriptions",
-    "Loyalty points",
-    "Affiliate referrals",
-    "Distributor pricing",
-    "Marketing automation",
-    "Coupons & discounts",
-    "Reviews & ratings",
-    "Brands",
-    "Multi-currency",
-    "Taxes",
-    "Distance shipping",
-    "WhatsApp commerce",
-    "AI catalog",
-    "AI search",
-    "AI images",
-    "Headless storefront",
-    "REST API & webhooks",
-    "WooCommerce migration",
-    "Prescriptions",
-  ];
-  const all = [...items, ...items, ...items];
+function TopWire() {
+  const all = [...CITIES, ...CITIES, ...CITIES];
   return (
     <div
       aria-hidden
       style={{
-        overflow: "hidden",
         borderTop: "1px solid var(--line-softer)",
         borderBottom: "1px solid var(--line-softer)",
-        padding: "14px 0",
-        maskImage:
-          "linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent)",
-        WebkitMaskImage:
-          "linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent)",
+        overflow: "hidden",
+        maskImage: "linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent)",
+        WebkitMaskImage: "linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent)",
+        padding: "9px 0",
+        background: "var(--bg)",
       }}
     >
       <div
         style={{
           display: "flex",
-          gap: 48,
+          gap: 36,
           whiteSpace: "nowrap",
-          animation: "mq 72s linear infinite",
           width: "max-content",
+          animation: "mq 88s linear infinite",
         }}
       >
-        {all.map((it, i) => (
-          <span
-            key={i}
-            style={{
-              fontFamily: "var(--mono)",
-              fontSize: 12,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              color: "var(--ink-3)",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 12,
-            }}
-          >
-            <span
-              style={{
-                width: 5,
-                height: 5,
-                borderRadius: "50%",
-                background: MARQUEE_DOTS[i % MARQUEE_DOTS.length],
-                opacity: 0.85,
-              }}
-            />
-            {it}
+        <span className="wire-lead" style={wireLead}>Live from E-biz merchants</span>
+        {all.map((c, i) => (
+          <span key={i} style={wireDot}>
+            <span aria-hidden style={wireBullet} />
+            {c}
           </span>
         ))}
       </div>
     </div>
   );
-};
+}
 
-const MockDashboard = () => (
-  <div
-    role="img"
-    aria-label="E-biz admin dashboard preview with revenue chart, KPI cards, and recent orders"
-    style={{
-      borderRadius: 14,
-      border: "1px solid var(--line-soft)",
-      background: "var(--bg)",
-      overflow: "hidden",
-      boxShadow:
-        "0 60px 120px -50px rgba(14,14,12,0.25), 0 30px 60px -30px rgba(14,14,12,0.18)",
-      position: "relative",
-    }}
-  >
-    <div
-      style={{
-        height: 38,
-        borderBottom: "1px solid var(--line-softer)",
-        display: "flex",
-        alignItems: "center",
-        padding: "0 14px",
-        gap: 10,
-        background: "var(--bg-2)",
-      }}
-    >
-      <div style={{ display: "flex", gap: 6 }}>
-        {["#E97171", "#E9C271", "#7DC97A"].map((c) => (
+// ─── Signal cards ────────────────────────────────────────────────────────
+// Each card is a tiny fragment of the admin — small, high-fidelity, with a
+// stagger delay. Deliberately not perfectly aligned: the cards nudge left or
+// right by a few px so the eye reads them as pinned, not gridded.
+
+function SignalNewOrder() {
+  const [ref, kes] = useCountUp(4850, { duration: 1600 });
+  return (
+    <div ref={ref} className="signal signal-a" style={signalCard}>
+      <SignalHead label="Order · just now" dot="var(--accent)" />
+      <div style={rowBetween}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <span style={monoTag}>ORD-2411-8827</span>
+          <span style={cardTitle}>Grace Wanjiku</span>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
+          <span style={priceLarge}>KSh {kes}</span>
+          <span style={mpesaPill}>M-PESA</span>
+        </div>
+      </div>
+      <div style={statusRail}>
+        <StatusTick label="Placed" active />
+        <StatusTick label="Processing" active pulse />
+        <StatusTick label="Packed" />
+        <StatusTick label="Delivered" />
+      </div>
+    </div>
+  );
+}
+
+function SignalWhatsApp() {
+  return (
+    <div className="signal signal-b" style={{ ...signalCard, paddingBottom: 14 }}>
+      <SignalHead label="WhatsApp · 2m ago" dot="var(--green)" />
+      <div style={{ display: "flex", gap: 10, alignItems: "flex-end" }}>
+        <div
+          aria-hidden
+          style={{
+            width: 32,
+            height: 32,
+            borderRadius: 999,
+            background: "var(--green-soft)",
+            display: "grid",
+            placeItems: "center",
+            color: "var(--green-ink)",
+            fontFamily: "var(--mono)",
+            fontSize: 12,
+            fontWeight: 700,
+            flexShrink: 0,
+          }}
+        >
+          MA
+        </div>
+        <div style={waBubble}>
+          <div style={{ fontSize: 13, lineHeight: 1.45, color: "var(--ink)" }}>
+            Booking confirmed 🎉<br />
+            2 guests · Fri 12 Sep, 7:30 PM<br />
+            <span style={{ color: "var(--ink-3)", fontSize: 12 }}>Ref RSV-GYX53L</span>
+          </div>
+          <div style={waMeta}>
+            <span>19:04</span>
+            <TickTicks />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SignalRider() {
+  return (
+    <div className="signal signal-c" style={signalCard}>
+      <SignalHead label="Rider · 4m ago" dot="var(--blue)" />
+      <div style={rowBetween}>
+        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          <div style={mapPin}>
+            <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden>
+              <path
+                d="M12 22s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z"
+                fill="none"
+                stroke="var(--blue-ink)"
+                strokeWidth="1.8"
+                strokeLinejoin="round"
+              />
+              <circle cx="12" cy="10" r="2.4" fill="var(--blue-ink)" />
+            </svg>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <span style={cardTitle}>John Kariuki</span>
+            <span style={{ ...monoTag, color: "var(--ink-3)" }}>KGD 5657 · Motorbike</span>
+          </div>
+        </div>
+        <a href="tel:+254712345678" style={callBtn} aria-label="Call rider">
+          Call
+        </a>
+      </div>
+      <div style={{ ...monoTag, marginTop: 12, color: "var(--ink-3)" }}>
+        Assigned to ORD-2411-8811 · Karen → Kilimani
+      </div>
+    </div>
+  );
+}
+
+function SignalRevenue() {
+  const [ref, val] = useCountUp(184500, { duration: 1800 });
+  // Simple ascending sparkline that draws itself via a stroke-dashoffset trick.
+  const points = "0,42 26,38 52,40 78,32 104,34 130,26 156,22 182,14 208,10";
+  return (
+    <div ref={ref} className="signal signal-d" style={signalCard}>
+      <SignalHead label="Today · so far" dot="var(--violet)" />
+      <div style={rowBetween}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <span style={monoTag}>REVENUE</span>
           <span
-            key={c}
             style={{
-              width: 10,
-              height: 10,
-              borderRadius: "50%",
-              background: c,
-              opacity: 0.7,
+              fontFamily: "var(--display)",
+              fontWeight: 600,
+              fontSize: 26,
+              lineHeight: 1,
+              letterSpacing: "-0.02em",
+              color: "var(--ink)",
+              fontVariantNumeric: "tabular-nums",
+            }}
+          >
+            KSh {val}
+          </span>
+          <span style={{ ...monoTag, color: "var(--good)" }}>▲ 18.4% vs yesterday</span>
+        </div>
+        <svg viewBox="0 0 220 56" width="118" height="34" aria-hidden style={{ overflow: "visible" }}>
+          <defs>
+            <linearGradient id="spk" x1="0" x2="1">
+              <stop offset="0" stopColor="var(--accent)" />
+              <stop offset="1" stopColor="var(--violet)" />
+            </linearGradient>
+          </defs>
+          <polyline
+            points={points}
+            fill="none"
+            stroke="url(#spk)"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{
+              strokeDasharray: 260,
+              strokeDashoffset: 260,
+              animation: "sparkDraw 1.6s ease-out 0.6s forwards",
             }}
           />
-        ))}
+          <circle cx="208" cy="10" r="3" fill="var(--violet)">
+            <animate attributeName="opacity" values="0.2;1;0.2" dur="2.2s" repeatCount="indefinite" />
+          </circle>
+        </svg>
       </div>
-      <div
-        style={{
-          flex: 1,
-          background: "var(--bg)",
-          height: 22,
-          borderRadius: 6,
-          border: "1px solid var(--line-softer)",
-          fontFamily: "var(--mono)",
-          fontSize: 10.5,
-          color: "var(--ink-3)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 6,
-        }}
-      >
-        <span
-          style={{
-            width: 9,
-            height: 9,
-            borderRadius: 999,
-            border: "1.5px solid var(--ink-4)",
-          }}
-        />
-        admin.northwind.com / dashboard
-      </div>
-      <span
-        style={{ fontFamily: "var(--mono)", fontSize: 10.5, color: "var(--ink-4)" }}
-      >
-        ● live
-      </span>
     </div>
+  );
+}
 
-    <div style={{ display: "grid", gridTemplateColumns: "178px 1fr", minHeight: 446 }}>
-      <aside
-        style={{
-          borderRight: "1px solid var(--line-softer)",
-          padding: "16px 10px",
-          background: "var(--bg-2)",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            padding: "0 6px",
-            marginBottom: 14,
-          }}
-        >
-          <Logo size={16} />
-        </div>
-        {(
-          [
-            { label: "Dashboard", icon: "grid", active: true },
-            { label: "Orders", icon: "cart", badge: "24", badgeColor: "var(--accent)" },
-            { label: "Catalog", icon: "box", chevron: true },
-            { label: "Subscriptions", icon: "repeat" },
-            { label: "Prescriptions", icon: "pill", badge: "3", badgeColor: "var(--violet)" },
-            { label: "Customers", icon: "users" },
-            { label: "Analytics", icon: "bars" },
-            { label: "Marketing", icon: "megaphone", badge: "5", badgeColor: "var(--blue)" },
-            { label: "Blogs", icon: "newspaper" },
-            { label: "Shipping", icon: "truck" },
-            { label: "Transactions", icon: "card" },
-            { label: "Appearance", icon: "palette" },
-            { label: "Settings", icon: "gear" },
-          ] as Array<{
-            label: string;
-            icon: string;
-            active?: boolean;
-            badge?: string;
-            badgeColor?: string;
-            chevron?: boolean;
-          }>
-        ).map((item, i) => (
-          <div
-            key={i}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: "6px 8px",
-              borderRadius: 6,
-              fontSize: 11.5,
-              fontWeight: item.active ? 600 : 450,
-              color: item.active ? "var(--accent-ink)" : "var(--ink-3)",
-              background: item.active ? "var(--accent-soft)" : "transparent",
-              marginBottom: 1,
-            }}
-          >
-            <span style={{ display: "flex", alignItems: "center", gap: 9, minWidth: 0 }}>
-              <span
-                style={{
-                  display: "flex",
-                  flexShrink: 0,
-                  color: item.active ? "var(--accent)" : "var(--ink-4)",
-                }}
-              >
-                <AddonIcon name={item.icon} size={14} />
-              </span>
-              <span
-                style={{
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {item.label}
-              </span>
-            </span>
-            {item.badge && (
-              <span
-                style={{
-                  fontFamily: "var(--mono)",
-                  fontSize: 9,
-                  background: item.badgeColor,
-                  color: "#fff",
-                  padding: "1px 5px",
-                  borderRadius: 999,
-                  flexShrink: 0,
-                }}
-              >
-                {item.badge}
-              </span>
-            )}
-            {item.chevron && (
-              <span style={{ display: "flex", flexShrink: 0, color: "var(--ink-4)" }}>
-                <AddonIcon name="chevron-down" size={12} />
-              </span>
-            )}
-          </div>
-        ))}
-      </aside>
+// ─── Small helpers used inside the signal cards ──────────────────────────
 
-      <main style={{ padding: "18px 16px" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            marginBottom: 18,
-          }}
-        >
-          <div>
-            <div
-              style={{
-                fontFamily: "var(--mono)",
-                fontSize: 10.5,
-                color: "var(--ink-3)",
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-              }}
-            >
-              Today · 27 Apr
-            </div>
-            <div
-              style={{
-                fontFamily: "var(--display)",
-                fontWeight: 600,
-                fontSize: 20,
-                marginTop: 4,
-                letterSpacing: "-0.02em",
-              }}
-            >
-              Welcome back, Sofia
-            </div>
-          </div>
-          <span
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-              padding: "5px 10px",
-              fontSize: 10.5,
-              fontFamily: "var(--mono)",
-              border: "1px solid var(--line-softer)",
-              borderRadius: 8,
-              color: "var(--ink-3)",
-              whiteSpace: "nowrap",
-            }}
-          >
-            <AddonIcon name="calendar" size={12} /> Last 30 days
-            <AddonIcon name="chevron-down" size={11} />
-          </span>
-        </div>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: 8,
-            marginBottom: 14,
-          }}
-        >
-          {(
-            [
-              { k: "Revenue", v: "$184k", delta: "+12.4%", up: true, icon: "dollar", bar: "var(--green)", tint: "var(--green-soft)", ink: "var(--green-ink)" },
-              { k: "Orders", v: "482", delta: "+8.1%", up: true, icon: "cart", bar: "var(--blue)", tint: "var(--blue-soft)", ink: "var(--blue-ink)" },
-              { k: "Customers", v: "1,029", delta: "+5.2%", up: true, icon: "users", bar: "var(--violet)", tint: "var(--violet-soft)", ink: "var(--violet-ink)" },
-              { k: "Products", v: "318", delta: "+6 new", up: true, icon: "box", bar: "var(--accent)", tint: "var(--accent-soft)", ink: "var(--accent-ink)" },
-            ] as Array<{ k: string; v: string; delta: string; up: boolean; icon: string; bar: string; tint: string; ink: string }>
-          ).map((s, i) => (
-            <div
-              key={i}
-              style={{
-                border: "1px solid var(--line-softer)",
-                borderRadius: 8,
-                padding: "9px 10px",
-                background: "var(--bg)",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: 4,
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: 9,
-                    color: "var(--ink-3)",
-                    fontFamily: "var(--mono)",
-                    letterSpacing: "0.05em",
-                    textTransform: "uppercase",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {s.k}
-                </span>
-                <span
-                  style={{
-                    width: 20,
-                    height: 20,
-                    borderRadius: 6,
-                    background: s.tint,
-                    color: s.ink,
-                    display: "grid",
-                    placeItems: "center",
-                    flexShrink: 0,
-                  }}
-                >
-                  <AddonIcon name={s.icon} size={12} />
-                </span>
-              </div>
-              <div
-                style={{
-                  fontFamily: "var(--display)",
-                  fontWeight: 600,
-                  fontSize: 18,
-                  marginTop: 6,
-                  letterSpacing: "-0.02em",
-                }}
-              >
-                {s.v}
-              </div>
-              <div
-                style={{
-                  fontSize: 9.5,
-                  color: s.up ? "var(--good)" : "var(--accent)",
-                  marginTop: 2,
-                }}
-              >
-                {s.delta}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div
-          style={{
-            border: "1px solid var(--line-softer)",
-            borderRadius: 8,
-            padding: "14px 16px",
-            marginBottom: 14,
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-              marginBottom: 10,
-            }}
-          >
-            <div>
-              <div style={{ fontSize: 12, fontWeight: 600 }}>Sales Overview</div>
-              <div style={{ fontSize: 10, color: "var(--ink-3)", marginTop: 1 }}>
-                Monthly revenue performance
-              </div>
-            </div>
-            <span
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 5,
-                fontSize: 10.5,
-                color: "var(--ink-3)",
-              }}
-            >
-              <span
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: 999,
-                  background: "var(--accent)",
-                }}
-              />
-              Revenue
-            </span>
-          </div>
-          <svg
-            viewBox="0 0 600 150"
-            width="100%"
-            height="100"
-            preserveAspectRatio="none"
-            aria-hidden
-          >
-            {[0, 1, 2, 3].map((i) => (
-              <line
-                key={i}
-                x1="0"
-                y1={38 * i + 18}
-                x2="600"
-                y2={38 * i + 18}
-                stroke="var(--line-softer)"
-                strokeDasharray="2 4"
-              />
-            ))}
-            <path
-              d="M0 100 C 60 80, 120 95, 180 70 S 300 40, 360 55 S 480 30, 540 25 L600 18 L600 150 L0 150 Z"
-              fill="var(--accent-soft)"
-            />
-            <path
-              d="M0 100 C 60 80, 120 95, 180 70 S 300 40, 360 55 S 480 30, 540 25 L600 18"
-              stroke="var(--accent)"
-              strokeWidth="1.8"
-              fill="none"
-            />
-            <circle cx="600" cy="18" r="3.5" fill="var(--accent)" />
-          </svg>
-        </div>
-
-        <div
-          style={{
-            border: "1px solid var(--line-softer)",
-            borderRadius: 8,
-            overflow: "hidden",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: "10px 14px",
-              borderBottom: "1px solid var(--line-softer)",
-            }}
-          >
-            <span style={{ fontSize: 11.5, fontWeight: 600 }}>Recent orders</span>
-            <span
-              style={{ fontSize: 10, color: "var(--accent-ink)", fontWeight: 500 }}
-            >
-              View all
-            </span>
-          </div>
-          {(
-            [
-              ["#3041", "S. Rivera", "$420", "fulfilled", "Apr 27"],
-              ["#3040", "M. Chen", "$1,286", "processing", "Apr 27"],
-              ["#3039", "L. Müller", "$98", "pending", "Apr 26"],
-            ] as Array<[string, string, string, string, string]>
-          ).map((row, i) => (
-            <div
-              key={i}
-              style={{
-                display: "grid",
-                gridTemplateColumns: "50px 1fr 60px 84px 48px",
-                gap: 8,
-                padding: "8px 14px",
-                fontSize: 11,
-                alignItems: "center",
-                borderTop: i ? "1px solid var(--line-softer)" : "none",
-                fontFamily: "var(--mono)",
-                color: "var(--ink-2)",
-              }}
-            >
-              <span>{row[0]}</span>
-              <span
-                style={{
-                  fontFamily: "var(--sans)",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {row[1]}
-              </span>
-              <span>{row[2]}</span>
-              <span
-                style={{
-                  display: "inline-flex",
-                  justifyContent: "center",
-                  padding: "2px 6px",
-                  borderRadius: 999,
-                  background:
-                    row[3] === "fulfilled"
-                      ? "oklch(0.94 0.05 150)"
-                      : row[3] === "processing"
-                      ? "oklch(0.94 0.04 240)"
-                      : "oklch(0.94 0.04 80)",
-                  color:
-                    row[3] === "fulfilled"
-                      ? "oklch(0.4 0.08 150)"
-                      : row[3] === "processing"
-                      ? "oklch(0.4 0.08 240)"
-                      : "oklch(0.45 0.08 60)",
-                  fontSize: 9,
-                }}
-              >
-                {row[3]}
-              </span>
-              <span style={{ color: "var(--ink-3)" }}>{row[4]}</span>
-            </div>
-          ))}
-        </div>
-      </main>
+function SignalHead({ label, dot }: { label: string; dot: string }) {
+  return (
+    <div style={sigHead}>
+      <span aria-hidden style={{ width: 6, height: 6, borderRadius: 999, background: dot }} />
+      {label}
     </div>
+  );
+}
 
-    <div
-      style={{
-        position: "absolute",
-        right: -14,
-        top: 96,
-        background: "var(--bg)",
-        border: "1px solid var(--line-soft)",
-        borderRadius: 10,
-        padding: "10px 12px",
-        boxShadow: "0 20px 40px -20px rgba(14,14,12,0.25)",
-        display: "flex",
-        gap: 10,
-        alignItems: "center",
-        fontSize: 12,
-        animation: "pulse 3s ease-in-out infinite",
-      }}
-    >
+function StatusTick({ label, active, pulse }: { label: string; active?: boolean; pulse?: boolean }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, flex: 1 }}>
       <span
         style={{
-          width: 26,
-          height: 26,
-          borderRadius: 8,
-          background: "var(--accent-soft)",
-          color: "var(--accent-ink)",
-          display: "grid",
-          placeItems: "center",
-          fontFamily: "var(--mono)",
-          fontSize: 11,
-          fontWeight: 600,
+          width: pulse ? 9 : 7,
+          height: pulse ? 9 : 7,
+          borderRadius: 999,
+          background: active ? "var(--accent)" : "var(--bg-3)",
+          boxShadow: pulse ? "0 0 0 4px rgba(216, 108, 66, 0.14)" : "none",
+          animation: pulse ? "signalPulse 1.6s ease-in-out infinite" : "none",
         }}
-      >
-        M
+      />
+      <span style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.05em", color: active ? "var(--ink-2)" : "var(--ink-4)", textTransform: "uppercase" }}>
+        {label}
       </span>
-      <div>
-        <div style={{ fontWeight: 500 }}>New order · $420</div>
-        <div style={{ color: "var(--ink-3)", fontSize: 11 }}>M-Pesa · just now</div>
-      </div>
     </div>
-  </div>
-);
+  );
+}
+
+function TickTicks() {
+  return (
+    <span aria-hidden style={{ display: "inline-flex", gap: 1, color: "var(--good)" }}>
+      <svg viewBox="0 0 14 10" width="14" height="10">
+        <path d="M1 5 L5 9 L13 1" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+      <svg viewBox="0 0 14 10" width="14" height="10" style={{ marginLeft: -6 }}>
+        <path d="M1 5 L5 9 L13 1" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </span>
+  );
+}
+
+// ─── The section ─────────────────────────────────────────────────────────
 
 export default function Hero() {
   return (
-    <section
-      id="hero"
-      data-section="hero"
-      style={{ paddingTop: 40, paddingBottom: 0, borderTop: "none" }}
-    >
-      <div className="container">
-        <div
-          className="hero-grid"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1.05fr 0.95fr",
-            gap: 48,
-            alignItems: "center",
-          }}
-        >
-          <div style={{ minWidth: 0 }}>
-            {/* Anchors to the Assistant section — the badge announces the
-                newest thing, so it should take you to it. */}
-            <a
-              href="#assistant"
-              className="tag tag-link hero-anim"
-              style={{ marginBottom: 18, textDecoration: "none", color: "inherit" }}
-            >
-              <span
-                aria-hidden
-                style={{
-                  width: 6,
-                  height: 6,
-                  borderRadius: 999,
-                  background: "var(--accent)",
-                }}
-              />
-              v4.3 · Now with the Store Assistant
-              <span aria-hidden style={{ marginLeft: 2, opacity: 0.55 }}>
-                &rarr;
-              </span>
+    <section id="hero" data-section="hero" style={sectionStyle}>
+      {/* Background: two barely-there layers. A vertical column grid (broadsheet
+          rule) and a grain overlay. Together they give the whole thing paper. */}
+      <div aria-hidden style={gridOverlay} />
+      <div aria-hidden style={grainOverlay} />
+
+      <div className="container hero-shell">
+        <div className="hero-broadsheet">
+          {/* ─── LEFT: headline + CTA ─── */}
+          <div className="hero-left">
+            <a href="#assistant" className="tag tag-link hero-anim" style={{ textDecoration: "none", color: "inherit" }}>
+              <span aria-hidden style={{ width: 6, height: 6, borderRadius: 999, background: "var(--accent)" }} />
+              v4.3 · Store Assistant, live
+              <span aria-hidden style={{ marginLeft: 2, opacity: 0.55 }}>→</span>
             </a>
 
-            <h1
-              className="display hero-title hero-anim"
-              style={{
-                fontWeight: 600,
-                margin: "18px 0 0",
-                textWrap: "balance",
-                animationDelay: "0.08s",
-              }}
-            >
-              The commerce command center{" "}
-              <em className="hero-title-accent">for modern brands.</em>
+            <h1 className="display hero-headline hero-anim" style={{ animationDelay: "0.08s" }}>
+              One control tower.
+              <br />
+              Every order, every message,
+              <br />
+              every <em className="hero-title-accent">rider.</em>
             </h1>
 
-            <p
-              className="hero-anim"
-              style={{
-                fontSize: 18,
-                lineHeight: 1.55,
-                color: "var(--ink-3)",
-                maxWidth: "46ch",
-                margin: "22px 0 0",
-                textWrap: "pretty",
-                animationDelay: "0.16s",
-              }}
-            >
-              Sell online, in-store, and on WhatsApp, with M-Pesa, Pesapal,
-              Paystack, cards, and cash built in. Run the whole thing from one
-              calm dashboard.
+            <p className="hero-anim hero-lede" style={{ animationDelay: "0.18s" }}>
+              E-biz runs the online store, the counter, and the WhatsApp chat —
+              from one calm dashboard, with M-Pesa, Paystack, Pesapal, cards and cash
+              built in.
             </p>
 
-            <div
-              className="hero-anim"
-              style={{ display: "flex", gap: 12, marginTop: 28, flexWrap: "wrap", animationDelay: "0.24s" }}
-            >
+            <div className="hero-anim" style={{ display: "flex", gap: 12, marginTop: 30, flexWrap: "wrap", animationDelay: "0.28s" }}>
               <a href="/get-started" className="btn btn-primary">
                 Get started <span className="arrow">→</span>
               </a>
               <a href="/features" className="btn btn-ghost">
-                See all features
+                See it running
               </a>
             </div>
 
-            <div
-              className="hero-anim"
-              style={{
-                marginTop: 22,
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                color: "var(--ink-3)",
-                fontSize: 13,
-                lineHeight: 1.45,
-                animationDelay: "0.30s",
-              }}
-            >
+            <div className="hero-anim" style={{ ...factRow, animationDelay: "0.36s" }}>
+              <span style={factItem}>
+                <span aria-hidden style={{ ...factDot, background: "var(--accent)" }} />
+                No transaction fees
+              </span>
+              <span style={factItem}>
+                <span aria-hidden style={{ ...factDot, background: "var(--violet)" }} />
+                194 countries
+              </span>
+              <span style={factItem}>
+                <span aria-hidden style={{ ...factDot, background: "var(--teal)" }} />
+                Live in a day
+              </span>
+            </div>
+
+            <div className="hero-anim hero-avatars" style={{ animationDelay: "0.42s" }}>
               <span style={{ display: "flex", flexShrink: 0 }} aria-hidden>
-                {[
-                  "/people/person-4.png",
-                  "/people/person-5.png",
-                  "/people/person-6.png",
-                  "/people/person-7.png",
-                ].map((src, i) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    key={i}
-                    src={src}
+                {[4, 5, 6, 7].map((n, i) => (
+                  <Image
+                    key={n}
+                    src={`/people/person-${n}.png`}
                     alt=""
-                    style={{
-                      width: 30,
-                      height: 30,
-                      objectFit: "contain",
-                      marginLeft: i === 0 ? 0 : -6,
-                      display: "inline-block",
-                    }}
+                    width={28}
+                    height={28}
+                    style={{ marginLeft: i === 0 ? 0 : -8, borderRadius: 999, background: "var(--bg-2)", border: "2px solid var(--bg)" }}
                   />
                 ))}
               </span>
-              <span>
-                One dashboard for online, in-store, and WhatsApp, selling in 194
-                countries.
+              <span style={{ fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.05em", color: "var(--ink-3)", textTransform: "uppercase" }}>
+                Trusted by shops from Kilimani to Kumasi
               </span>
             </div>
           </div>
 
-          <div className="hero-visual hero-anim" style={{ position: "relative", minWidth: 0, animationDelay: "0.14s" }}>
-            <div
-              aria-hidden
-              style={{
-                position: "absolute",
-                inset: "-40px -6% 0%",
-                background:
-                  "radial-gradient(55% 50% at 25% 0%, var(--violet-soft), transparent 70%), radial-gradient(50% 50% at 85% 20%, var(--blue-soft), transparent 70%), radial-gradient(45% 45% at 60% 95%, var(--pink-soft), transparent 70%)",
-                filter: "blur(22px)",
-                pointerEvents: "none",
-                zIndex: 0,
-              }}
-            />
-            <div style={{ position: "relative", zIndex: 1 }}>
-              <MockDashboard />
+          {/* ─── RIGHT: the signals wall ─── */}
+          <div className="hero-right">
+            <div aria-hidden style={signalsBackdrop} />
+            <div className="hero-signals" aria-label="Live product moments">
+              <SignalNewOrder />
+              <SignalWhatsApp />
+              <SignalRider />
+              <SignalRevenue />
+            </div>
+            <div style={rightLegend} aria-hidden>
+              <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ width: 6, height: 6, borderRadius: 999, background: "var(--good)", boxShadow: "0 0 0 3px rgba(88, 168, 122, 0.16)", animation: "signalPulse 1.6s ease-in-out infinite" }} />
+                Streaming — sample data
+              </span>
+              <span>NBO · UTC+3</span>
             </div>
           </div>
         </div>
 
-        <div
-          className="stats-strip"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: 32,
-            marginTop: 72,
-            paddingTop: 32,
-            paddingBottom: 32,
-            borderTop: "1px solid var(--line-softer)",
-            borderBottom: "1px solid var(--line-softer)",
-          }}
-        >
-          <StatItem value={20} suffix="+" label="Addons" color="var(--violet-ink)" />
-          <StatItem value={3} label="Sales channels" color="var(--accent-ink)" />
-          <StatItem
-            value={0}
-            suffix="%"
-            label="Transaction fees"
-            color="var(--green-ink)"
-          />
-          <StatItem
-            value={194}
-            label="Countries shippable"
-            color="var(--teal-ink)"
-          />
+        {/* Stats strip — restyled with rule marks and mono labels */}
+        <div className="hero-anim hero-stats" style={{ animationDelay: "0.5s" }}>
+          <Stat label="Addons" value={26} suffix="+" tint="var(--violet-ink)" />
+          <Stat label="Sales channels" value={3} tint="var(--accent-ink)" />
+          <Stat label="Transaction fees" value={0} suffix="%" tint="var(--green-ink)" />
+          <Stat label="Countries shippable" value={194} tint="var(--teal-ink)" />
         </div>
       </div>
 
-      <div style={{ marginTop: 24 }}>
-        <HeroMarquee />
+      {/* Wire is full-bleed; live-cities marquee sits below the container */}
+      <div style={{ marginTop: 32 }}>
+        <TopWire />
       </div>
     </section>
   );
 }
+
+function Stat({ label, value, suffix, tint }: { label: string; value: number; suffix?: string; tint: string }) {
+  const [ref, out] = useCountUp(value);
+  return (
+    <div ref={ref} style={statCol}>
+      <span style={statRule} aria-hidden />
+      <span style={{ ...statValue, color: tint }}>
+        {out}
+        {suffix ?? ""}
+      </span>
+      <span style={statLabel}>{label}</span>
+    </div>
+  );
+}
+
+// ─── Inline styles for one-off pieces (the shared bits live in globals.css) ─
+
+const sectionStyle: React.CSSProperties = {
+  paddingTop: 36,
+  paddingBottom: 0,
+  position: "relative",
+  isolation: "isolate",
+  overflow: "hidden",
+};
+
+const gridOverlay: React.CSSProperties = {
+  position: "absolute",
+  inset: 0,
+  pointerEvents: "none",
+  zIndex: 0,
+  backgroundImage:
+    "linear-gradient(to right, rgba(14,14,12,0.045) 1px, transparent 1px)",
+  backgroundSize: "calc((min(100%, 1280px) - 64px) / 12) 100%",
+  backgroundPosition: "center top",
+  maskImage: "linear-gradient(to bottom, black 0%, black 68%, transparent 100%)",
+  WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 68%, transparent 100%)",
+};
+
+const grainOverlay: React.CSSProperties = {
+  position: "absolute",
+  inset: 0,
+  pointerEvents: "none",
+  zIndex: 0,
+  opacity: 0.35,
+  mixBlendMode: "multiply",
+  backgroundImage:
+    // ~140 tiny dots in an SVG data URI — cheap grain, no image.
+    "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")",
+};
+
+const wireLead: React.CSSProperties = {
+  fontFamily: "var(--mono)",
+  fontSize: 11,
+  letterSpacing: "0.14em",
+  textTransform: "uppercase",
+  color: "var(--ink-2)",
+  fontWeight: 600,
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 8,
+};
+
+const wireDot: React.CSSProperties = {
+  fontFamily: "var(--mono)",
+  fontSize: 11,
+  letterSpacing: "0.14em",
+  textTransform: "uppercase",
+  color: "var(--ink-3)",
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 10,
+};
+
+const wireBullet: React.CSSProperties = {
+  width: 4,
+  height: 4,
+  borderRadius: 999,
+  background: "var(--accent)",
+  opacity: 0.7,
+};
+
+const signalsBackdrop: React.CSSProperties = {
+  position: "absolute",
+  inset: "-40px -8% -20px",
+  zIndex: -1,
+  background:
+    "radial-gradient(60% 55% at 30% 20%, var(--violet-soft), transparent 70%), radial-gradient(50% 55% at 80% 60%, var(--accent-soft), transparent 70%), radial-gradient(45% 50% at 20% 95%, var(--teal-soft), transparent 70%)",
+  filter: "blur(30px)",
+  pointerEvents: "none",
+};
+
+const signalCard: React.CSSProperties = {
+  background: "var(--bg)",
+  border: "1px solid var(--line-soft)",
+  borderRadius: 14,
+  padding: "14px 16px 16px",
+  boxShadow:
+    "0 30px 60px -40px rgba(14,14,12,0.35), 0 12px 28px -16px rgba(14,14,12,0.15)",
+  display: "flex",
+  flexDirection: "column",
+  gap: 12,
+};
+
+const sigHead: React.CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 6,
+  fontFamily: "var(--mono)",
+  fontSize: 10,
+  letterSpacing: "0.14em",
+  textTransform: "uppercase",
+  color: "var(--ink-3)",
+};
+
+const rowBetween: React.CSSProperties = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "flex-start",
+  gap: 10,
+};
+
+const monoTag: React.CSSProperties = {
+  fontFamily: "var(--mono)",
+  fontSize: 10.5,
+  letterSpacing: "0.06em",
+  color: "var(--ink-3)",
+};
+
+const cardTitle: React.CSSProperties = {
+  fontFamily: "var(--display)",
+  fontWeight: 600,
+  fontSize: 15,
+  color: "var(--ink)",
+  letterSpacing: "-0.01em",
+};
+
+const priceLarge: React.CSSProperties = {
+  fontFamily: "var(--display)",
+  fontWeight: 600,
+  fontSize: 20,
+  lineHeight: 1,
+  color: "var(--ink)",
+  letterSpacing: "-0.02em",
+  fontVariantNumeric: "tabular-nums",
+};
+
+const mpesaPill: React.CSSProperties = {
+  fontFamily: "var(--mono)",
+  fontSize: 9.5,
+  fontWeight: 700,
+  letterSpacing: "0.08em",
+  background: "var(--green-soft)",
+  color: "var(--green-ink)",
+  padding: "3px 7px",
+  borderRadius: 5,
+};
+
+const statusRail: React.CSSProperties = {
+  display: "flex",
+  gap: 6,
+  paddingTop: 10,
+  borderTop: "1px dashed var(--line-softer)",
+};
+
+const waBubble: React.CSSProperties = {
+  background: "var(--green-soft)",
+  border: "1px solid rgba(38, 137, 74, 0.14)",
+  borderTopLeftRadius: 4,
+  borderTopRightRadius: 14,
+  borderBottomLeftRadius: 14,
+  borderBottomRightRadius: 14,
+  padding: "10px 12px 8px",
+  flex: 1,
+  minWidth: 0,
+};
+
+const waMeta: React.CSSProperties = {
+  display: "flex",
+  justifyContent: "flex-end",
+  alignItems: "center",
+  gap: 6,
+  marginTop: 4,
+  fontFamily: "var(--mono)",
+  fontSize: 10,
+  color: "var(--ink-4)",
+};
+
+const mapPin: React.CSSProperties = {
+  width: 30,
+  height: 30,
+  borderRadius: 8,
+  background: "var(--blue-soft)",
+  display: "grid",
+  placeItems: "center",
+  flexShrink: 0,
+};
+
+const callBtn: React.CSSProperties = {
+  fontFamily: "var(--mono)",
+  fontSize: 11,
+  letterSpacing: "0.08em",
+  color: "var(--ink)",
+  textTransform: "uppercase",
+  border: "1px solid var(--line-soft)",
+  padding: "6px 10px",
+  borderRadius: 6,
+  textDecoration: "none",
+  fontWeight: 600,
+  background: "var(--bg-2)",
+};
+
+const rightLegend: React.CSSProperties = {
+  marginTop: 16,
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  fontFamily: "var(--mono)",
+  fontSize: 10.5,
+  letterSpacing: "0.1em",
+  textTransform: "uppercase",
+  color: "var(--ink-3)",
+};
+
+const factRow: React.CSSProperties = {
+  display: "flex",
+  gap: 24,
+  marginTop: 26,
+  flexWrap: "wrap",
+};
+
+const factItem: React.CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 8,
+  fontFamily: "var(--mono)",
+  fontSize: 11.5,
+  letterSpacing: "0.08em",
+  textTransform: "uppercase",
+  color: "var(--ink-2)",
+  fontWeight: 600,
+};
+
+const factDot: React.CSSProperties = {
+  width: 8,
+  height: 8,
+  borderRadius: 2,
+};
+
+const statCol: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  gap: 6,
+  position: "relative",
+  paddingTop: 14,
+};
+
+const statRule: React.CSSProperties = {
+  position: "absolute",
+  top: 0,
+  left: 0,
+  width: 24,
+  height: 2,
+  background: "var(--ink)",
+};
+
+const statValue: React.CSSProperties = {
+  fontFamily: "var(--display)",
+  fontWeight: 600,
+  fontSize: 40,
+  lineHeight: 1,
+  letterSpacing: "-0.03em",
+  fontVariantNumeric: "tabular-nums",
+};
+
+const statLabel: React.CSSProperties = {
+  fontFamily: "var(--mono)",
+  fontSize: 11,
+  letterSpacing: "0.12em",
+  textTransform: "uppercase",
+  color: "var(--ink-3)",
+};

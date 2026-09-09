@@ -14,6 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const core: Array<[string, number, Freq]> = [
     ["", 1, "weekly"],
     ["features", 0.9, "monthly"],
+    ["app", 0.8, "monthly"],
     ["get-started", 0.9, "monthly"],
     ["docs", 0.7, "weekly"],
     ["blog", 0.8, "weekly"],

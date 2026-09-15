@@ -58,6 +58,53 @@ curl "https://your-store-api.example.com/api/v1/storefront/products?category_slu
 
 A variable product (`product_type: "variable"`) includes a `variants[]` array; each variant has its own `price`, `sale_price`, `sku`, and `attributes_json`.
 
+#### Branch prices and availability
+
+When the branches addon is on and you pass `branch_id`, the list, `by-ids` and single-product endpoints apply that branch's [options](/docs/branches#get-branchesconfig-branch-options):
+
+- **Per-branch pricing on:** `price`, `sale_price` and the sale dates on the product and its variants are the branch's own, and `branch_price: true` marks them.
+- **`branch_status`** on each product: `available`, `not_carried` or `sold_out` at that branch.
+- Products the branch doesn't carry are left out when the shop hides them, or listed with `branch_status: "not_carried"` when it shows them sold out.
+
+Without `branch_id` you get the shop-wide prices, as before.
+
+### GET /storefront/branch-stock - Live availability for a branch
+
+Uncached, so a statically rendered page can poll it.
+
+| Query param | Type | Description |
+| --- | --- | --- |
+| `branch_id` | number | Optional, branches addon only |
+
+```json
+{
+  "status": "success",
+  "data": {
+    "enabled": true,
+    "branch_id": 2,
+    "out_of_stock_product_ids": [118, 240],
+    "unavailable_product_ids": [77],
+    "sold_out_product_ids": [69],
+    "prices": { "84": { "price": "950.00", "sale_price": null, "sale_price_end_date": null } }
+  }
+}
+```
+
+- `out_of_stock_product_ids`: leave these out at this branch.
+- `unavailable_product_ids`: show these marked sold out at this branch.
+- `sold_out_product_ids`: sold out shop-wide.
+- `prices`: only when per-branch pricing is on. Variable products carry a `variants` map keyed by variant id.
+
+### GET /storefront/branches - Branches
+
+Active branches. When the shop uses ordering hours, each branch also has `ordering_hours` and:
+
+```json
+"ordering": { "accepting_now": false, "reason": "closed", "next_open_at": "2026-09-16T08:00:00.000Z", "message": null }
+```
+
+`reason` is `paused` or `closed`; `message` is the branch's own note for customers.
+
 `popularity_score` is the number of units sold across paid, non-cancelled orders. It is what
 `sort=best_sellers` orders by, and it is recalculated nightly rather than live — so it will not
 change between a purchase and the next run. Ties fall back to newest first.

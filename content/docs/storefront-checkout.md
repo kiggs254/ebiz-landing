@@ -106,6 +106,17 @@ Responds `201` with the created order (status `pending`, payment_status `pending
 
 Take the returned `order.id` into the payment step. The cart is cleared automatically on success.
 
+**Branch rules** (branches addon, per the shop's [branch options](/docs/branches#get-branchesconfig-branch-options)):
+
+| Situation | Response |
+|---|---|
+| `require_branch` is on and no `branch_id` was sent | `400` "Choose a branch to order from." |
+| No `branch_id`, a default branch is set | The order goes to the default branch |
+| The branch is paused or outside its ordering hours | `409` with the branch's message |
+| A line isn't carried, is sold out, or has fewer left than ordered at the branch | `409` naming the item |
+
+Lines are charged the branch price when per-branch pricing is on. The coupon, loyalty and distributor previews take the same optional `branch_id`, so their totals match checkout.
+
 ## Take payment
 
 ### POST /storefront/checkout/process-payment - Start payment

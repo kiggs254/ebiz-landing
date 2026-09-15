@@ -77,7 +77,7 @@ Removes every line from the current session's cart.
 
 ### POST /storefront/cart/validate-branch-stock - Validate stock for a branch
 
-Only relevant when the branches addon is on. Given a `branch_id` and cart lines, returns which lines are unavailable at that branch so you can prompt the shopper before checkout.
+Only relevant when the branches addon is on. Given a `branch_id` and cart lines, returns which lines are unavailable at that branch so you can prompt the shopper before checkout. A line counts as unavailable when the branch doesn't carry it or, with stock counts on, has fewer left than the line's quantity.
 
 | Body field | Type | Description |
 | --- | --- | --- |

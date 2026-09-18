@@ -20,7 +20,22 @@ const FALLBACK: Logo[] = [
 ];
 
 type Logo = { name: string; src: string; link?: string | null };
-type ApiLogo = { id: number; name: string; url: string; link: string | null };
+type ApiLogo = { id: number | string; name: string; url: string; link: string | null };
+
+/** Only ever link out to a real http(s) destination — never javascript:, data:
+ *  or a protocol-relative //host, all of which are things an admin-entered
+ *  string could otherwise smuggle into an href. */
+function safeExternalHref(link: string | null | undefined): string | null {
+  if (!link) return null;
+  const raw = link.trim();
+  if (!raw || raw.startsWith("//")) return null;
+  try {
+    const u = new URL(raw);
+    return u.protocol === "http:" || u.protocol === "https:" ? u.toString() : null;
+  } catch {
+    return null;
+  }
+}
 
 export default function LogoCloud() {
   const [logos, setLogos] = useState<Logo[]>(FALLBACK);
@@ -73,13 +88,9 @@ export default function LogoCloud() {
       <div className="logo-marquee">
         <div className="logo-track">
           {[0, 1, 2].map((rep) =>
-            logos.map((c, i) => (
-              <div
-                key={`${rep}-${i}-${c.src}`}
-                className="client-chip"
-                title={c.name}
-                aria-hidden={rep > 0}
-              >
+            logos.map((c, i) => {
+              const href = safeExternalHref(c.link);
+              const chip = (
                 <div style={{ position: "relative", width: "100%", height: "100%" }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -88,8 +99,36 @@ export default function LogoCloud() {
                     style={{ width: "100%", height: "100%", objectFit: "contain", padding: "2px" }}
                   />
                 </div>
-              </div>
-            ))
+              );
+              // The track is repeated three times to make the marquee loop
+              // seamlessly; only the first pass is real content. The copies are
+              // hidden from assistive tech and taken out of the tab order so a
+              // keyboard user doesn't walk the same seven links three times.
+              const duplicate = rep > 0;
+              return (
+                <div
+                  key={`${rep}-${i}-${c.src}`}
+                  className="client-chip"
+                  title={c.name}
+                  aria-hidden={duplicate}
+                >
+                  {href ? (
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${c.name} — opens in a new tab`}
+                      tabIndex={duplicate ? -1 : undefined}
+                      style={{ display: "block", width: "100%", height: "100%" }}
+                    >
+                      {chip}
+                    </a>
+                  ) : (
+                    chip
+                  )}
+                </div>
+              );
+            })
           )}
         </div>
       </div>

@@ -196,6 +196,39 @@ export default function AppPage() {
           </div>
 
           <div className="card" style={{ padding: 24, marginTop: 40, maxWidth: 720 }}>
+            <h3 style={{ fontSize: 16, margin: "0 0 10px" }}>What Android will ask you</h3>
+            <p style={{ color: "var(--ink-2)", fontSize: 15, lineHeight: 1.65, margin: "0 0 10px" }}>
+              The app is signed with our own release key, and every update is signed with
+              the same one. Android still shows two prompts for any app installed outside
+              the Play Store, whoever made it:
+            </p>
+            <ul
+              style={{
+                color: "var(--ink-2)",
+                fontSize: 15,
+                lineHeight: 1.65,
+                margin: "0 0 10px",
+                paddingLeft: 20,
+              }}
+            >
+              <li>
+                <strong>“Allow from this source”</strong> — permission for your browser to
+                install apps. Turn it on once.
+              </li>
+              <li>
+                <strong>Play Protect: “Unsafe app blocked” or “app not recognised”</strong> —
+                Google flags apps it has not seen before. Tap <strong>More details</strong>,
+                then <strong>Install anyway</strong>.
+              </li>
+            </ul>
+            <p style={{ color: "var(--ink-2)", fontSize: 15, lineHeight: 1.65, margin: 0 }}>
+              Neither means anything is wrong with the file. Only download it from this page,
+              and check that the app is <strong>E-biz (co.ebiz.mobile)</strong> before you
+              install.
+            </p>
+          </div>
+
+          <div className="card" style={{ padding: 24, marginTop: 22, maxWidth: 720 }}>
             <h3 style={{ fontSize: 16, margin: "0 0 8px" }}>Installing on a phone directly</h3>
             <p style={{ color: "var(--ink-2)", fontSize: 15, lineHeight: 1.65, margin: 0 }}>
               Open{" "}

@@ -29,7 +29,7 @@ curl -X GET "https://your-store.com/api/v1/customers?page=1&limit=20" \
         "email": "customer@example.com",
         "first_name": "Jane",
         "last_name": "Doe",
-        "phone": "+254712345678",
+        "phone": "+254700000002",
         "total_orders": 5,
         "total_spent": 12500,
         "addresses": [
@@ -55,6 +55,64 @@ curl -X GET "https://your-store.com/api/v1/customers?page=1&limit=20" \
 
 ---
 
+### POST /customers - Create Customer
+
+Create a new customer account. At minimum, an email address is required.
+
+**Auth:** API key or admin session required.
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `email` | string | Yes | Customer email address (must be unique) |
+| `first_name` | string | No | First name |
+| `last_name` | string | No | Last name |
+| `phone` | string | No | Phone number |
+| `password` | string | No | Password (minimum 6 characters). If omitted, customer must use password reset flow to log in. |
+
+**Example Request:**
+
+```bash
+curl -X POST "https://your-store.com/api/v1/customers" \
+  -u "ck_xxx:cs_yyy" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "jane@example.com",
+    "first_name": "Jane",
+    "last_name": "Doe",
+    "phone": "+254700000002",
+    "password": "SecurePass123"
+  }'
+```
+
+**Example Response (201):**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "customer": {
+      "id": 42,
+      "email": "jane@example.com",
+      "first_name": "Jane",
+      "last_name": "Doe",
+      "phone": "+254700000002",
+      "created_at": "2026-01-15T10:00:00.000Z"
+    }
+  }
+}
+```
+
+**Status Codes:**
+- `201` - Customer created successfully
+- `400` - Missing email or password too short
+- `409` - Customer with this email already exists
+
+**Gotchas:** Email addresses are case-insensitive and trimmed on both create and lookup. If password is omitted, the customer will need to request a password reset to set one for storefront login.
+
+---
+
 ### GET /customers/:id - Get Single Customer
 
 **Example Request:**
@@ -75,7 +133,7 @@ curl -X GET "https://your-store.com/api/v1/customers/42" \
       "email": "customer@example.com",
       "first_name": "Jane",
       "last_name": "Doe",
-      "phone": "+254712345678",
+      "phone": "+254700000002",
       "total_orders": 5,
       "total_spent": 12500,
       "addresses": [...],
@@ -86,6 +144,121 @@ curl -X GET "https://your-store.com/api/v1/customers/42" \
   }
 }
 ```
+
+---
+
+### POST /customers/:id/notes - Add Customer Note
+
+Add an internal note to a customer record. Notes are visible in the admin dashboard and used for order fulfillment context.
+
+**Auth:** API key or admin session required.
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `content` | string | Yes | Note text (author and timestamp added automatically) |
+
+**Example Request:**
+
+```bash
+curl -X POST "https://your-store.com/api/v1/customers/42/notes" \
+  -u "ck_xxx:cs_yyy" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "Customer prefers WhatsApp communication for delivery updates"
+  }'
+```
+
+**Example Response (201):**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "note": {
+      "id": 1,
+      "customer_id": 42,
+      "author_id": 5,
+      "content": "Customer prefers WhatsApp communication for delivery updates",
+      "created_at": "2026-01-15T10:15:00.000Z"
+    }
+  }
+}
+```
+
+**Status Codes:**
+- `201` - Note added successfully
+- `404` - Customer not found
+
+---
+
+### DELETE /customers/:id - Delete Customer
+
+Permanently delete a customer record and all associated data (addresses, notes, tags). Orders are not deleted but are disassociated from the customer.
+
+**Auth:** API key or admin session required.
+
+**Example Request:**
+
+```bash
+curl -X DELETE "https://your-store.com/api/v1/customers/42" \
+  -u "ck_xxx:cs_yyy"
+```
+
+**Example Response (200):**
+
+```json
+{
+  "status": "success",
+  "message": "Customer deleted"
+}
+```
+
+**Status Codes:**
+- `200` - Customer deleted successfully
+- `404` - Customer not found
+
+**Gotchas:** Deletion is permanent and cannot be undone. Existing orders remain in the system but are no longer linked to the customer (customer_id becomes NULL). This allows order history and reporting to remain intact even after customer deletion.
+
+---
+
+### PUT /customers/:id/password - Update Customer Password
+
+Set a new password for a customer account. Password must be at least 6 characters.
+
+**Auth:** API key or admin session required.
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `password` | string | Yes | New password (minimum 6 characters) |
+
+**Example Request:**
+
+```bash
+curl -X PUT "https://your-store.com/api/v1/customers/42/password" \
+  -u "ck_xxx:cs_yyy" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "password": "NewSecurePass123"
+  }'
+```
+
+**Example Response (200):**
+
+```json
+{
+  "status": "success",
+  "message": "Password updated"
+}
+```
+
+**Status Codes:**
+- `200` - Password updated successfully
+- `400` - Password too short (less than 6 characters) or missing
+- `404` - Customer not found
 
 ---
 
@@ -120,6 +293,303 @@ curl -X GET "https://your-store.com/api/v1/customers/42/loyalty" \
   }
 }
 ```
+
+---
+
+### GET /customers/loyalty-registrations - List Loyalty Registrations
+
+Fetch pending, approved, or rejected loyalty program registrations with customer information.
+
+**Auth:** API key or admin session required.
+
+**Query Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `status` | string | pending | Filter by status: `pending`, `approved`, `rejected`, or `all` |
+| `page` | integer | 1 | Page number |
+| `limit` | integer | 20 | Items per page |
+
+**Example Request:**
+
+```bash
+curl -X GET "https://your-store.com/api/v1/customers/loyalty-registrations?status=pending&page=1&limit=20" \
+  -u "ck_xxx:cs_yyy"
+```
+
+**Example Response (200):**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "registrations": [
+      {
+        "id": 1,
+        "customer_id": 42,
+        "full_name": "Jane Doe",
+        "phone": "+254700000002",
+        "status": "pending",
+        "id_image_url": null,
+        "rejection_reason": null,
+        "created_at": "2026-01-15T10:00:00.000Z",
+        "updated_at": "2026-01-15T10:00:00.000Z",
+        "customer": {
+          "id": 42,
+          "first_name": "Jane",
+          "last_name": "Doe",
+          "email": "jane@example.com",
+          "phone": "+254700000002",
+          "created_at": "2026-01-14T08:00:00.000Z"
+        }
+      }
+    ],
+    "total": 5,
+    "page": 1,
+    "limit": 20
+  }
+}
+```
+
+**Status Codes:**
+- `200` - Registrations listed successfully
+
+---
+
+### GET /customers/loyalty-registrations/:id - Get Loyalty Registration Details
+
+Fetch a single loyalty program registration with customer information.
+
+**Auth:** API key or admin session required.
+
+**Example Request:**
+
+```bash
+curl -X GET "https://your-store.com/api/v1/customers/loyalty-registrations/1" \
+  -u "ck_xxx:cs_yyy"
+```
+
+**Example Response (200):**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "registration": {
+      "id": 1,
+      "customer_id": 42,
+      "full_name": "Jane Doe",
+      "phone": "+254700000002",
+      "status": "pending",
+      "id_image_url": null,
+      "rejection_reason": null,
+      "created_at": "2026-01-15T10:00:00.000Z",
+      "updated_at": "2026-01-15T10:00:00.000Z",
+      "customer": {
+        "id": 42,
+        "first_name": "Jane",
+        "last_name": "Doe",
+        "email": "jane@example.com",
+        "phone": "+254700000002",
+        "created_at": "2026-01-14T08:00:00.000Z"
+      }
+    }
+  }
+}
+```
+
+**Status Codes:**
+- `200` - Registration found
+- `404` - Registration not found
+
+---
+
+### POST /customers/loyalty-registrations/:id/approve - Approve Loyalty Registration
+
+Approve a pending loyalty program registration. Automatically creates a loyalty points balance for the customer if not already present.
+
+**Auth:** API key or admin session required.
+
+**Request Body:** Empty JSON object or omitted.
+
+**Example Request:**
+
+```bash
+curl -X POST "https://your-store.com/api/v1/customers/loyalty-registrations/1/approve" \
+  -u "ck_xxx:cs_yyy" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Example Response (200):**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "registration": {
+      "id": 1,
+      "customer_id": 42,
+      "full_name": "Jane Doe",
+      "phone": "+254700000002",
+      "status": "approved",
+      "id_image_url": null,
+      "rejection_reason": null,
+      "created_at": "2026-01-15T10:00:00.000Z",
+      "updated_at": "2026-01-15T10:30:00.000Z"
+    }
+  }
+}
+```
+
+**Status Codes:**
+- `200` - Registration approved
+- `404` - Registration not found
+
+**Gotchas:** Approving automatically initializes a loyalty points balance (with 0 points) if the customer doesn't already have one. This allows the loyalty system to track the customer even if they haven't yet earned any points.
+
+---
+
+### POST /customers/loyalty-registrations/:id/reject - Reject Loyalty Registration
+
+Reject a loyalty program registration with an optional reason.
+
+**Auth:** API key or admin session required.
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `reason` | string | No | Optional rejection reason (stored for reference) |
+
+**Example Request:**
+
+```bash
+curl -X POST "https://your-store.com/api/v1/customers/loyalty-registrations/1/reject" \
+  -u "ck_xxx:cs_yyy" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "reason": "ID image not readable"
+  }'
+```
+
+**Example Response (200):**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "registration": {
+      "id": 1,
+      "customer_id": 42,
+      "full_name": "Jane Doe",
+      "phone": "+254700000002",
+      "status": "rejected",
+      "id_image_url": null,
+      "rejection_reason": "ID image not readable",
+      "created_at": "2026-01-15T10:00:00.000Z",
+      "updated_at": "2026-01-15T10:35:00.000Z"
+    }
+  }
+}
+```
+
+**Status Codes:**
+- `200` - Registration rejected
+- `404` - Registration not found
+
+---
+
+### POST /customers/import - Bulk Import Customers
+
+Import multiple customers and optionally create or approve loyalty registrations. Matches existing customers by phone number first, then email; updates fields if already found. Creates new customers when no match exists.
+
+**Auth:** API key or admin session required.
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `rows` | array | Yes | Array of customer objects (see field table below) |
+
+**Row Object Fields:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `email` | string | Conditional | Customer email. Required if creating a new customer and phone is not provided. |
+| `phone` | string | Conditional | Customer phone. Used to match existing customers; can be used alone if customer already exists. |
+| `first_name` | string | No | First name |
+| `last_name` | string | No | Last name |
+| `loyalty_status` | string | No | If set to `"active"`, creates or approves a loyalty registration for this customer and initializes loyalty balance. |
+| `points_balance` | number | No | Initial loyalty points (only applied if creating a new loyalty balance; ignored if customer already has loyalty registration) |
+
+**Example Request:**
+
+```bash
+curl -X POST "https://your-store.com/api/v1/customers/import" \
+  -u "ck_xxx:cs_yyy" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "rows": [
+      {
+        "email": "jane@example.com",
+        "first_name": "Jane",
+        "last_name": "Doe",
+        "phone": "+254700000002",
+        "loyalty_status": "active",
+        "points_balance": 100
+      },
+      {
+        "email": "john@example.com",
+        "first_name": "John",
+        "last_name": "Smith",
+        "phone": "+254700000007"
+      }
+    ]
+  }'
+```
+
+**Example Response (200):**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "imported": 2,
+    "skipped": 0,
+    "errors": []
+  }
+```
+
+**With Errors:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "imported": 1,
+    "skipped": 1,
+    "errors": [
+      {
+        "row": 2,
+        "identifier": "invalid_email",
+        "error": "Valid phone or email is required"
+      }
+    ]
+  }
+}
+```
+
+**Status Codes:**
+- `200` - Import completed (some or all rows may have succeeded)
+- `400` - Missing or invalid `rows` array
+
+**Gotchas:**
+- **Matching:** Phone is matched first (preferred), then email. A row with both phone and email that match different existing customers will update the phone-matched customer.
+- **New customer creation:** Requires at least an email address. Phone alone is insufficient to create a new customer account.
+- **Loyalty registration:** Setting `loyalty_status: "active"` creates a registration and sets `status: "approved"` immediately. If a registration already exists for the customer and is in a different status, it updates to approved.
+- **Points balance:** The `points_balance` field is only used on first loyalty balance creation. If a customer already has loyalty points, this field is ignored (existing balance is never overwritten).
+- **Validation:** Each row is validated independently. Errors in one row do not stop processing of others; see the `errors` array in the response for details on which rows failed and why.
 
 ---
 

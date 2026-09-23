@@ -31,6 +31,48 @@ Returns available shipping methods and costs for an address + cart.
 
 Public config for the distance-based shipping addon (Google Maps key, origin, pricing). Accepts an optional `branch_id`. (`/storefront/checkout/convenient-couriers-config` is an alias.)
 
+### GET /storefront/checkout/convenient-couriers-config - Distance-based shipping config
+
+Alias for `/checkout/distance-based-shipping-config`. Returns the distance-based shipping addon configuration.
+
+| Query param | Type | Description |
+| --- | --- | --- |
+| `branch_id` | number | Optional, branches addon only |
+
+```json
+{ "status": "success", "data": { "config": { "enabled": true, "nairobi_county_name": "Nairobi", "distance_calculation_method": "google_maps", "google_maps_api_key": "AIz..." } } }
+```
+
+### GET /storefront/delivery-promise - Delivery date estimate
+
+Returns the estimated delivery date(s) based on the store's delivery schedule configuration (cutoff times, delivery days). Useful for displaying delivery promises on product and cart pages.
+
+| Query param | Type | Description |
+| --- | --- | --- |
+| `method` | string | Optional shipping method name to filter the promise |
+
+```bash
+curl "https://your-store-api.example.com/api/v1/storefront/delivery-promise?method=standard"
+```
+
+```json
+{
+  "status": "success",
+  "data": {
+    "delivery_promise": {
+      "date": "2025-09-27",
+      "weekday": "Fri",
+      "when": "tomorrow",
+      "after_cutoff": false,
+      "cutoff_label": "3:00 PM",
+      "message": "Order by 3:00 PM for delivery by tomorrow"
+    }
+  }
+}
+```
+
+Returns `null` if delivery promise is not configured. The message is locale-aware and timezone-aware.
+
 ## Payment methods
 
 ### GET /storefront/checkout/payment-gateways - List enabled gateways
@@ -89,7 +131,7 @@ Creates a pending order (guest or logged-in). Validates products, recomputes the
 curl -X POST "https://your-store-api.example.com/api/v1/storefront/checkout/create-order" \
   -H "Content-Type: application/json" --cookie cookies.txt \
   -d '{
-    "customer": { "email": "sam@example.com", "first_name": "Sam", "phone": "+254700000000" },
+    "customer": { "email": "sam@example.com", "first_name": "Sam", "phone": "+254700000004" },
     "shipping_address": { "first_name": "Sam", "last_name": "R", "address_1": "12 Riverside", "city": "Nairobi", "state": "Nairobi", "country": "Kenya" },
     "billing_address": { "same_as_shipping": true },
     "items": [{ "product_id": 412, "quantity": 1 }],
@@ -166,8 +208,202 @@ Robust fallback when Paystack strips your callback query params: pass the Paysta
 { "reference": "ps_ref_123" }
 ```
 
-## Unified Checkout (advanced)
+### GET /storefront/webhooks/pesapal/callback - Pesapal payment callback
 
-For Cybersource Unified Checkout, three server-assisted steps are available: `POST /storefront/checkout/unified-checkout/capture-context`, `.../authorize`, and `.../record-result`. Use these only if your store is configured for Unified Checkout; most stores use M-Pesa, Pesapal, Paystack, or COD via the flow above.
+This is where customers return after completing or cancelling payment on Pesapal. The payment gateway redirects here with transaction metadata; the endpoint verifies the payment status and updates the order (or subscription).
 
-> Gateway webhooks (`/storefront/webhooks/mpesa`, `/storefront/webhooks/pesapal/*`) are called server-to-server by the providers, not by your storefront. They confirm payments out of band; your storefront only needs the polling/verify endpoints above.
+**Auth:** Public. No authentication required — the Pesapal tracking ID is the sole credential.
+
+```bash
+curl "https://your-store-api.example.com/api/v1/storefront/webhooks/pesapal/callback?OrderTrackingId=abc123&OrderMerchantReference=ORD-42"
+```
+
+| Query Param | Type | Description |
+| --- | --- | --- |
+| `OrderTrackingId` | string | Required. Pesapal's unique tracking ID for this transaction (case-insensitive) |
+| `OrderMerchantReference` | string | Required. Your merchant reference. Use `ORD-{orderId}` for orders or `SUB-{subscriptionId}` for subscriptions. Backward compatible with legacy `order_number` format |
+| `storefront` | string | Optional. Full storefront URL (with protocol and host) to redirect to instead of the configured default |
+| `storefront_url` | string | Optional. Alternative parameter name for storefront URL override |
+
+**Response:**
+
+The endpoint does not return JSON. Instead, it **redirects (302) to your storefront** with a status query parameter:
+
+- **Success:** `{storefront_base}/checkout?status=success&orderId={orderId}`
+- **Failure:** `{storefront_base}/checkout?status=failed&orderId={orderId}`
+- **Pending:** `{storefront_base}/checkout?status=pending&orderId={orderId}`
+
+For subscriptions, the redirect is to `/subscription-success` with `subscriptionId` instead of `orderId`.
+
+| Status | Meaning |
+| --- | --- |
+| `success` | Payment completed. Order `payment_status` is now `paid` |
+| `failed` | Payment failed or was cancelled. Order `payment_status` is now `failed` |
+| `pending` | Payment is pending (awaiting completion). Order remains in `pending` state |
+
+**Gotchas:**
+
+- The endpoint handles both new and existing transactions. If a transaction already exists for the tracking ID, it updates it; otherwise, it creates one.
+- For subscriptions, successful payment activates the subscription with a `current_period_end` one month from now and calculates the next delivery date based on the shop's `delivery_day_of_week` setting.
+- If the `storefront_url` or `storefront` parameter is invalid or missing, the redirect uses the default configured `storefront_url` from settings, falling back to the `STOREFRONT_URL` environment variable.
+- Always read `OrderTrackingId` case-insensitively — Pesapal's redirects vary in capitalization.
+
+## Unified Checkout (Cybersource)
+
+Unified Checkout is a hosted payment form from Cybersource (formerly Flex Microform) that handles card, wallet, and local payment methods in a single iframe. This section documents the API flow for initiating, authorizing, and recording payment results.
+
+### POST /storefront/checkout/unified-checkout/capture-context - Get Unified Checkout Context
+
+Request a Cybersource capture context JWT for displaying the Unified Checkout form on the storefront. This context is required to initialize the Unified Checkout JavaScript library.
+
+**Auth:** Public (no authentication required)
+
+```bash
+curl -X POST https://your-store-api.example.com/api/v1/storefront/checkout/unified-checkout/capture-context \
+  -H "Content-Type: application/json" \
+  -d '{
+    "order_id": 12345,
+    "email": "customer@example.com",
+    "return_url": "https://storefront.example.com/checkout?payment=pending&order_id=12345",
+    "target_origin": "https://storefront.example.com"
+  }'
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `order_id` | integer | Yes | Order ID (must exist and payment_status != 'paid') |
+| `email` | string | No | Customer email for Cybersource context |
+| `return_url` | string | No | Storefront URL to return to after payment (for redirect flows) |
+| `target_origin` | string | No | Storefront origin for iframe postMessage communication |
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "capture_context": "eyJraWQiOiI...",
+    "client_library": "https://testpayments.cybersource.com/unified-checkout/0.34/unified-checkout.min.js",
+    "client_library_integrity": "sha256-...",
+    "transaction_ref": "ABC123",
+    "expires_at": "2025-09-23T19:30:00Z",
+    "use_complete_mandate": false
+  }
+}
+```
+
+**Status Codes:**
+- `200` - Context generated successfully
+- `400` - Order already paid, Unified Checkout not enabled, or invalid order
+- `404` - Order not found
+
+**Gotchas:**
+- The capture_context JWT expires after ~15 minutes; request a fresh one if the form is left open for a long time.
+- target_origin should match the storefront's origin; mismatches may cause postMessage failures.
+- If email is not provided, Cybersource will prompt for it in the form.
+
+### POST /storefront/checkout/unified-checkout/authorize - Authorize with Transient Token
+
+Process payment authorization using a transient token obtained from Cybersource Unified Checkout (non-orchestrated flow).
+
+**Auth:** Public (no authentication required)
+
+```bash
+curl -X POST https://your-store-api.example.com/api/v1/storefront/checkout/unified-checkout/authorize \
+  -H "Content-Type: application/json" \
+  -d '{
+    "order_id": 12345,
+    "transient_token": "eyJraWQiOiI...",
+    "billing": {
+      "first_name": "John",
+      "last_name": "Doe",
+      "address_1": "123 Main St",
+      "city": "San Francisco",
+      "state": "CA",
+      "postal_code": "94102",
+      "country": "US"
+    }
+  }'
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `order_id` | integer | Yes | Order ID |
+| `transient_token` | string | Yes | Transient token JWT from Unified Checkout form |
+| `billing` | object | No | Billing address details |
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "success": true,
+    "transaction_id": "6142353050326433653031",
+    "status": "completed",
+    "message": "Payment authorized",
+    "gateway": "Unified Checkout"
+  }
+}
+```
+
+**Status Codes:**
+- `200` - Authorization successful
+- `400` - Missing order_id or transient_token, payment processing error
+- `404` - Order not found
+
+**Gotchas:**
+- Transient tokens are single-use; attempting to reuse a token fails.
+- This flow is for non-orchestrated (customer-initiated) payments; see record-result for orchestrated flow.
+- The billing address is optional; Cybersource can use the card's billing address if not provided.
+
+### POST /storefront/checkout/unified-checkout/record-result - Record Orchestrated Payment Result
+
+Record the payment result from Cybersource Unified Checkout orchestrated (.complete) flow. Used when Cybersource handles the authorization and the storefront calls .complete() to get the result.
+
+**Auth:** Public (no authentication required)
+
+```bash
+curl -X POST https://your-store-api.example.com/api/v1/storefront/checkout/unified-checkout/record-result \
+  -H "Content-Type: application/json" \
+  -d '{
+    "order_id": 12345,
+    "complete_response": {
+      "status": "AUTHORIZED",
+      "details": {
+        "transaction_id": "6142353050326433653031",
+        "processorResponse": "00"
+      }
+    }
+  }'
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `order_id` | integer | Yes | Order ID |
+| `complete_response` | object | Yes | Complete response from Cybersource .complete() method |
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "success": true,
+    "transaction_id": "6142353050326433653031",
+    "status": "completed",
+    "message": "Payment authorized",
+    "gateway": "Unified Checkout"
+  }
+}
+```
+
+**Status Codes:**
+- `200` - Result recorded successfully
+- `400` - Missing order_id or complete_response, invalid response format
+- `404` - Order not found
+
+**Gotchas:**
+- This endpoint is for the orchestrated flow where Cybersource manages the authorization. For non-orchestrated flow (where the storefront manages auth), use /authorize instead.
+- The complete_response must be the exact response object from Cybersource's .complete() call; don't modify it.
+- If the response status is not AUTHORIZED, payment_status will be set to failed but no error is returned (idempotent).

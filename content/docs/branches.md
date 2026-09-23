@@ -37,7 +37,7 @@ curl -X GET "https://your-store.com/api/v1/branches" \
         "name": "Main Store",
         "code": "MAIN",
         "address": "123 Main St, Nairobi",
-        "phone": "+254700000000",
+        "phone": "+254700000004",
         "is_active": true,
         "created_at": "2026-01-15T10:00:00.000Z",
         "updated_at": "2026-01-15T10:00:00.000Z"
@@ -56,7 +56,7 @@ curl -X GET "https://your-store.com/api/v1/branches" \
   "name": "Downtown Branch",
   "code": "DT",
   "address": "456 Downtown Ave, Nairobi",
-  "phone": "+254711111111",
+  "phone": "+254700000005",
   "is_active": true
 }
 ```
@@ -71,7 +71,7 @@ curl -X POST "https://your-store.com/api/v1/branches" \
     "name": "Downtown Branch",
     "code": "DT",
     "address": "456 Downtown Ave, Nairobi",
-    "phone": "+254711111111",
+    "phone": "+254700000005",
     "is_active": true
   }'
 ```

@@ -61,3 +61,297 @@ When exceeded, the API returns `429 Too Many Requests` with a `Retry-After` head
 
 ---
 
+## 5. API Key Management
+
+### GET /api-keys - List API keys
+
+Retrieve all API keys owned by the current user.
+
+**Auth:** Admin session required.
+
+```bash
+curl "https://your-store-api.example.com/api/v1/api-keys" \
+  -H "Cookie: sessionId=your_session_cookie"
+```
+
+**Example Response (200):**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "keys": [
+      {
+        "id": 42,
+        "user_id": 1,
+        "key": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6",
+        "consumer_key": "ck_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6",
+        "consumer_secret": null,
+        "name": "ERP Integration",
+        "permissions_json": { "read": true, "write": true },
+        "rate_limit_per_minute": 120,
+        "expires_at": "2027-09-23T00:00:00Z",
+        "created_at": "2024-09-23T10:30:00Z",
+        "updated_at": "2024-09-23T10:30:00Z"
+      }
+    ]
+  }
+}
+```
+
+**Notes:**
+- The `consumer_secret` is always `null` in list responses for security.
+- Only keys belonging to the authenticated user are returned.
+
+---
+
+### GET /api-keys/:id - Get API key details
+
+Retrieve details for a specific API key by ID.
+
+**Auth:** Admin session required.
+
+```bash
+curl "https://your-store-api.example.com/api/v1/api-keys/42" \
+  -H "Cookie: sessionId=your_session_cookie"
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | integer | URL | API key ID |
+
+**Example Response (200):**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "apiKey": {
+      "id": 42,
+      "user_id": 1,
+      "key": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6",
+      "consumer_key": "ck_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6",
+      "consumer_secret": null,
+      "name": "ERP Integration",
+      "permissions_json": { "read": true, "write": true },
+      "rate_limit_per_minute": 120,
+      "expires_at": "2027-09-23T00:00:00Z",
+      "created_at": "2024-09-23T10:30:00Z",
+      "updated_at": "2024-09-23T10:30:00Z"
+    }
+  }
+}
+```
+
+**Error Responses:**
+
+| Status | Meaning |
+|--------|---------|
+| `404` | API key not found or does not belong to the current user |
+
+---
+
+### POST /api-keys - Create API key
+
+Create a new API key with optional custom permissions and rate limits.
+
+**Auth:** Admin session required.
+
+```bash
+curl -X POST "https://your-store-api.example.com/api/v1/api-keys" \
+  -H "Content-Type: application/json" \
+  -H "Cookie: sessionId=your_session_cookie" \
+  -d '{
+    "name": "ERP Integration",
+    "permissions": { "read": true, "write": true },
+    "expires_at": "2027-09-23T00:00:00Z",
+    "rate_limit_per_minute": 120
+  }'
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | No | Descriptive name for the key (e.g., "ERP Integration", "Mobile App"); defaults to "API Key" if omitted |
+| `permissions` | object | No | Permission flags; defaults to `{ "read": true, "write": true }` |
+| `expires_at` | string (ISO 8601) | No | Expiration timestamp; if omitted, defaults to 365 days from creation |
+| `rate_limit_per_minute` | integer | No | Requests per minute (1–10,000); if omitted, uses server default (usually 60) |
+
+**Example Response (201):**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "apiKey": {
+      "id": 42,
+      "user_id": 1,
+      "key": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6",
+      "consumer_key": "ck_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6",
+      "consumer_secret": "cs_x9y8z7w6v5u4t3s2r1q0p9o8n7m6l5k4",
+      "name": "ERP Integration",
+      "permissions_json": { "read": true, "write": true },
+      "rate_limit_per_minute": 120,
+      "expires_at": "2027-09-23T00:00:00Z",
+      "created_at": "2024-09-23T10:30:00Z",
+      "updated_at": "2024-09-23T10:30:00Z"
+    }
+  }
+}
+```
+
+**Important:** The `consumer_secret` is displayed **only once** when the key is created. Copy it immediately and store it securely — you cannot retrieve it again later.
+
+---
+
+### PUT /api-keys/:id - Update API key
+
+Update the name, permissions, expiration date, or rate limit of an existing API key.
+
+**Auth:** Admin session required.
+
+```bash
+curl -X PUT "https://your-store-api.example.com/api/v1/api-keys/42" \
+  -H "Content-Type: application/json" \
+  -H "Cookie: sessionId=your_session_cookie" \
+  -d '{
+    "name": "ERP Integration (Updated)",
+    "rate_limit_per_minute": 240
+  }'
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | integer | URL | API key ID |
+| `name` | string | No | Update the descriptive name |
+| `permissions` | object | No | Update permission flags |
+| `expires_at` | string (ISO 8601) or null | No | Update expiration timestamp, or `null` to remove expiration |
+| `rate_limit_per_minute` | integer or null | No | Update rate limit (1–10,000), or `null` to use server default |
+
+**Example Response (200):**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "apiKey": {
+      "id": 42,
+      "user_id": 1,
+      "key": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6",
+      "consumer_key": "ck_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6",
+      "consumer_secret": null,
+      "name": "ERP Integration (Updated)",
+      "permissions_json": { "read": true, "write": true },
+      "rate_limit_per_minute": 240,
+      "expires_at": "2027-09-23T00:00:00Z",
+      "created_at": "2024-09-23T10:30:00Z",
+      "updated_at": "2024-09-24T14:15:00Z"
+    }
+  }
+}
+```
+
+**Error Responses:**
+
+| Status | Meaning |
+|--------|---------|
+| `404` | API key not found or does not belong to the current user |
+
+**Notes:**
+- Only the fields you send are updated; omitted fields are left unchanged.
+- The `consumer_secret` cannot be changed via this endpoint — use the `/regenerate` endpoint instead.
+
+---
+
+### POST /api-keys/:id/regenerate - Regenerate API key secret
+
+Generate a new `consumer_secret` for an existing API key. The old secret becomes invalid immediately.
+
+**Auth:** Admin session required.
+
+```bash
+curl -X POST "https://your-store-api.example.com/api/v1/api-keys/42/regenerate" \
+  -H "Content-Type: application/json" \
+  -H "Cookie: sessionId=your_session_cookie"
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | integer | URL | API key ID |
+
+**Example Response (200):**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "apiKey": {
+      "id": 42,
+      "user_id": 1,
+      "key": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6",
+      "consumer_key": "ck_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6",
+      "consumer_secret": "cs_newSecretNewSecretNewSecretNewSec",
+      "name": "ERP Integration",
+      "permissions_json": { "read": true, "write": true },
+      "rate_limit_per_minute": 120,
+      "expires_at": "2027-09-23T00:00:00Z",
+      "created_at": "2024-09-23T10:30:00Z",
+      "updated_at": "2024-09-24T14:20:00Z"
+    }
+  }
+}
+```
+
+**Error Responses:**
+
+| Status | Meaning |
+|--------|---------|
+| `404` | API key not found or does not belong to the current user |
+
+**Important:** The new `consumer_secret` is displayed **only once**. Copy it immediately. Any systems using the old secret must be updated before the old secret is deleted (which happens immediately). There is no grace period.
+
+---
+
+### DELETE /api-keys/:id - Delete API key
+
+Delete an API key permanently. All requests using this key will immediately fail with `401 Unauthorized`.
+
+**Auth:** Admin session required.
+
+```bash
+curl -X DELETE "https://your-store-api.example.com/api/v1/api-keys/42" \
+  -H "Cookie: sessionId=your_session_cookie"
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | integer | URL | API key ID |
+
+**Example Response (200):**
+
+```json
+{
+  "status": "success",
+  "message": "API key deleted"
+}
+```
+
+**Error Responses:**
+
+| Status | Meaning |
+|--------|---------|
+| `404` | API key not found or does not belong to the current user |
+
+**Notes:**
+- This action is irreversible.
+- Any integrations using this key must immediately switch to a different key or authentication method.
+
+---
+
+## Security Best Practices
+
+- **Treat consumer secrets like passwords.** Store them securely, never commit them to source control.
+- **Rotate secrets regularly.** Use the `/regenerate` endpoint to issue new credentials.
+- **Use minimal permissions.** Grant only the read/write permissions the integration actually needs.
+- **Set expiration dates.** Integrate with your audit process by expiring keys that are no longer needed.
+- **Monitor usage.** Check the API operation logs in the admin dashboard to detect unusual activity.
+

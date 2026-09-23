@@ -96,6 +96,88 @@ curl -X GET "https://your-store.com/api/v1/orders?page=1&limit=20&status=complet
 
 ---
 
+### GET /orders/sources - List all order sources
+
+Returns an array of unique sources from which orders have been created across the store.
+
+**Auth:** Admin session required.
+
+```bash
+curl "https://your-store-api.example.com/api/v1/orders/sources" \
+  -H "Cookie: shopflow.sid=..."
+```
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "sources": ["admin", "api", "storefront", "website"]
+  }
+}
+```
+
+---
+
+### GET /orders/count/unviewed - Count unviewed orders
+
+Get the total number of orders that have not yet been viewed by staff. Useful for displaying an unviewed order count in the dashboard.
+
+**Auth:** Admin session required.
+
+**Query params:**
+
+| Param | Type | Description |
+|-------|------|-------------|
+| `X-Branch-Id` | string (header) | Filter by branch ID, or `all` for super admin |
+
+```bash
+curl "https://your-store-api.example.com/api/v1/orders/count/unviewed" \
+  -H "Cookie: shopflow.sid=..."
+```
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "count": 5
+  }
+}
+```
+
+---
+
+### GET /orders/export - Export orders as CSV
+
+Download all orders matching optional filters as a CSV file with comprehensive order, customer, item, and shipping data.
+
+**Auth:** Admin session required.
+
+**Query params:**
+
+| Param | Type | Description |
+|-------|------|-------------|
+| `date_from` | string | Start date (ISO 8601: `YYYY-MM-DD`) |
+| `date_to` | string | End date (ISO 8601: `YYYY-MM-DD`) |
+| `status` | string | Filter by status: `pending`, `processing`, `in_transit`, `on_hold`, `completed`, `cancelled` |
+| `payment_status` | string | Filter by payment status: `pending`, `paid`, `failed`, `refunded` |
+| `source` | string | Filter by order source: `api`, `admin`, `storefront`, `website` |
+| `search` | string | Search by order number, customer email, or customer name (case-insensitive) |
+| `X-Branch-Id` | string (header) | Filter by branch ID, or `all` for super admin |
+
+```bash
+curl "https://your-store-api.example.com/api/v1/orders/export?status=completed&date_from=2024-01-01&date_to=2024-12-31" \
+  -H "Cookie: shopflow.sid=..." \
+  -o orders.csv
+```
+
+**Response:** A `text/csv` file with columns for order details, customer info, items, addresses, shipments, and transactions.
+
+---
+
 ### GET /orders/:id - Get Single Order
 
 **Example Request:**
@@ -128,7 +210,7 @@ curl -X GET "https://your-store.com/api/v1/orders/123" \
         "email": "customer@example.com",
         "first_name": "Jane",
         "last_name": "Doe",
-        "phone": "+254712345678"
+        "phone": "+254700000002"
       },
       "items": [
         {
@@ -193,6 +275,58 @@ curl -X GET "https://your-store.com/api/v1/orders/123" \
 | `place_id` | string \| null | Google Place ID of the delivery point, when the storefront resolved one. `null` when not collected. |
 
 > These fields are populated from the coordinates the storefront collects at checkout (used for distance-based shipping). They are **only present on orders placed after this feature shipped** — orders created before it, or through channels that don't collect a location (POS, phone orders, most API imports), return `null`/omit them. You may also send them yourself on `POST /orders` (see the Address Fields below).
+
+---
+
+### GET /orders/batch - Fetch multiple orders
+
+Retrieve up to 100 orders by ID in a single request. Useful for loading an order set without paginating through the list endpoint.
+
+**Auth:** Admin session required.
+
+**Query params:**
+
+| Param | Type | Required | Description |
+|-------|------|----------|-------------|
+| `ids` | string | Yes | Comma-separated order IDs, e.g., `"1,2,3"` (max 100 IDs) |
+| `X-Branch-Id` | string (header) | No | Filter by branch ID, or `all` for super admin |
+
+```bash
+curl "https://your-store-api.example.com/api/v1/orders/batch?ids=101,102,103" \
+  -H "Cookie: shopflow.sid=..."
+```
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "orders": [
+      {
+        "id": 101,
+        "order_number": "ORD-1234567890",
+        "status": "completed",
+        "payment_status": "paid",
+        "total": "2700.00",
+        "currency": "KES",
+        "customer": { "id": 5, "email": "jane@example.com" },
+        "items": [
+          { "id": 1, "name": "Organic Flour", "quantity": 2, "price": "1200.00" }
+        ]
+      }
+    ],
+    "not_found": [],
+    "count": 1
+  }
+}
+```
+
+**Gotchas:**
+
+- Order IDs beyond 100 are silently ignored.
+- The `not_found` array contains any IDs that did not exist or were outside your branch scope.
+- Branch scoping applies: you only see orders you have access to.
 
 ---
 
@@ -485,26 +619,123 @@ curl -X POST "https://your-store.com/api/v1/orders/batch" \
 
 ---
 
-### PUT /orders/:id/status - Update Order Status
+### PUT /orders/:id - Update order
 
-**Request Body:**
+Edit an order's fields, customer profile, items, or addresses. Items and addresses are replaced wholesale (delete + re-create). This is a full order replacement endpoint.
+
+**Auth:** Admin session required.
+
+**Request body:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `status` | string | Order status: `pending`, `processing`, `in_transit`, `on_hold`, `completed`, `cancelled` |
+| `payment_status` | string | Payment status: `pending`, `paid`, `failed`, `refunded` |
+| `customer_notes` | string | Internal or customer-facing notes |
+| `order_date` | string | ISO 8601 date when order was placed |
+| `created_at` | string | ISO 8601 date for order creation (raw SQL update) |
+| `items` | array | Array of item objects to replace all items: `{ name, sku, quantity, price }` |
+| `addresses` | array | Array of address objects: `{ type, name, street, city, state, zip, country, phone }` |
+| `customer_first_name`, `customer_last_name`, `customer_phone` | string | Update customer profile fields |
+
+```bash
+curl -X PUT "https://your-store-api.example.com/api/v1/orders/123" \
+  -H "Cookie: shopflow.sid=..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "status": "completed",
+    "customer_notes": "Shipped via courier",
+    "items": [
+      { "name": "Organic Flour", "sku": "FLOUR-ORG", "quantity": 2, "price": "1200.00" }
+    ]
+  }'
+```
+
+**Response (200):**
 
 ```json
 {
-  "status": "processing"
+  "status": "success",
+  "data": {
+    "order": {
+      "id": 123,
+      "order_number": "ORD-1234567890",
+      "status": "completed",
+      "payment_status": "paid",
+      "total": "2700.00",
+      "customer": { "id": 5, "email": "jane@example.com" },
+      "items": [ { "id": 1, "name": "Organic Flour", "sku": "FLOUR-ORG", "quantity": 2, "price": "1200.00" } ],
+      "addresses": [ { "type": "shipping", "name": "Jane Doe", "street": "123 Main St", "city": "Nairobi" } ]
+    }
+  }
 }
 ```
 
-Valid statuses: `pending`, `processing`, `completed`, `cancelled`.
+**Gotchas:**
 
-**Example Request:**
+- Items are **replaced wholesale** — all old items are deleted and new ones created.
+- Addresses are also **replaced wholesale**.
+- `created_at` updates bypass Sequelize and use raw SQL directly (useful for backdating orders).
+- Customer name/phone are merged intelligently: if customer has no name, the shipping address name is parsed as a fallback.
+
+---
+
+### PUT /orders/:id/status - Update order status
+
+Change an order's status. Optionally auto-mark the order as paid and record a transaction when marking as completed.
+
+`PATCH /orders/:id/status` is accepted too and runs the same handler — it exists for older integrations. Use `PUT`
+in new code.
+
+**Auth:** Admin session required.
+
+**Request body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `status` | string | Yes | New status: `pending`, `processing`, `in_transit`, `on_hold`, `completed`, `cancelled` |
+| `transaction_reference` | string | No | Transaction ID to record if marking as completed. Empty string skips recording. |
 
 ```bash
-curl -X PUT "https://your-store.com/api/v1/orders/123/status" \
-  -u "ck_xxx:cs_yyy" \
+curl -X PATCH "https://your-store-api.example.com/api/v1/orders/123/status" \
+  -H "Cookie: shopflow.sid=..." \
   -H "Content-Type: application/json" \
-  -d '{"status":"processing"}'
+  -d '{"status": "completed", "transaction_reference": "cash"}'
 ```
+
+**Response (200):**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "order": {
+      "id": 123,
+      "order_number": "ORD-1234567890",
+      "status": "completed",
+      "payment_status": "paid",
+      "total": "2700.00",
+      "customer": { "id": 5, "email": "jane@example.com" }
+    }
+  }
+}
+```
+
+**Auto-mark-paid behavior:**
+
+When the status changes to `completed` AND:
+- The order's payment_status is NOT already paid
+- A `transaction_reference` is provided and not empty
+
+Then:
+- `payment_status` is automatically set to `paid`
+- A new Transaction record is created with `method: 'manual'` and the provided reference
+
+**Gotchas:**
+
+- Status changes trigger email notifications to the customer (fire-and-forget).
+- The order's activity timeline records the status change and any payment status changes.
+- If neither `status` nor `transaction_reference` is provided, the request returns 200 but has no side effects.
 
 ---
 
@@ -532,6 +763,168 @@ curl -X PATCH "https://your-store.com/api/v1/orders/123/payment-status" \
 
 ---
 
+### POST /orders/:id/notes - Add a note to an order
+
+Create a new internal note on an order. The note is timestamped and attributed to the staff member who created it.
+
+**Auth:** Admin session required.
+
+**Request body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `content` | string | Yes | Note text (can include markdown) |
+
+```bash
+curl -X POST "https://your-store-api.example.com/api/v1/orders/123/notes" \
+  -H "Cookie: shopflow.sid=..." \
+  -H "Content-Type: application/json" \
+  -d '{"content": "Customer requested expedited shipping"}'
+```
+
+**Response (201):**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "note": {
+      "id": 1,
+      "order_id": 123,
+      "author_id": 5,
+      "content": "Customer requested expedited shipping",
+      "created_at": "2024-09-23T10:30:00.000Z",
+      "updated_at": "2024-09-23T10:30:00.000Z"
+    }
+  }
+}
+```
+
+---
+
+### POST /orders/:id/resend-confirmation-email - Resend order confirmation email
+
+Re-send the order confirmation email to the customer. This is useful when the original email failed or the customer requests a copy.
+
+**Auth:** Admin session required.
+
+**Request body:** Empty object or omitted.
+
+```bash
+curl -X POST "https://your-store-api.example.com/api/v1/orders/123/resend-confirmation-email" \
+  -H "Cookie: shopflow.sid=..." \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Response (200):**
+
+```json
+{
+  "status": "success",
+  "message": "Confirmation email sent",
+  "data": {
+    "email_sent": true
+  }
+}
+```
+
+**Errors:**
+
+- **400** if the order's customer has no email address.
+- Email send failures are caught and recorded in the order's `email_error` field.
+
+---
+
+### PATCH /orders/:id/view - Mark order as viewed
+
+Mark an order as viewed by staff. This clears it from the "unviewed" queue and broadcasts a change notification to other logged-in staff.
+
+**Auth:** Admin session required.
+
+**Request body:** Empty object or omitted.
+
+```bash
+curl -X PATCH "https://your-store-api.example.com/api/v1/orders/123/view" \
+  -H "Cookie: shopflow.sid=..." \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Response (200):**
+
+```json
+{
+  "status": "success",
+  "message": "Order marked as viewed"
+}
+```
+
+**Behavior:** Idempotent — if the order was already viewed, no-op but returns 200.
+
+---
+
+### POST /orders/:id/assign-rider - Assign or unassign a rider
+
+Manually dispatch an order to a rider, or reclaim it back to the desk. Requires the Riders addon to be enabled.
+
+**Auth:** Admin session required; requires `orders.manage` permission.
+
+**Addon:** Riders addon — returns 503 when switched off.
+
+**Request body:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `rider_id` | integer | Rider ID to assign, or `null` to unassign |
+
+```bash
+curl -X POST "https://your-store-api.example.com/api/v1/orders/123/assign-rider" \
+  -H "Cookie: shopflow.sid=..." \
+  -H "Content-Type: application/json" \
+  -d '{"rider_id": 42}'
+```
+
+**Response (200):**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "order": {
+      "id": 123,
+      "order_number": "ORD-1234567890",
+      "rider_id": 42,
+      "rider_assigned_at": "2024-09-23T10:30:00.000Z",
+      "rider_assigned_by": 5,
+      "status": "processing"
+    }
+  }
+}
+```
+
+**Unassign (pass null):**
+
+```bash
+curl -X POST "https://your-store-api.example.com/api/v1/orders/123/assign-rider" \
+  -H "Cookie: shopflow.sid=..." \
+  -H "Content-Type: application/json" \
+  -d '{"rider_id": null}'
+```
+
+**Errors:**
+
+- **404** if the order or rider does not exist.
+- **422** if `rider_id` is neither an integer nor `null`, or if the rider is inactive or belongs to a different branch (when branch enforcement is on).
+- **503** if the Riders addon is disabled.
+
+**Gotchas:**
+
+- **Branch enforcement:** If the store setting `riders_enforce_branch` is enabled, a rider must belong to the same branch as the order. Pass the correct rider for that branch.
+- **Timeline:** The assignment is recorded on the order's activity timeline with the assigning staff member's name.
+
+---
+
 ### DELETE /orders/:id - Delete Order
 
 **Example Request:**
@@ -542,4 +935,3 @@ curl -X DELETE "https://your-store.com/api/v1/orders/123" \
 ```
 
 ---
-

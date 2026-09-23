@@ -21,6 +21,10 @@ export const DOC_GROUPS: DocGroup[] = [
       { slug: "variable-products", title: "Variable products" },
       { slug: "categories", title: "Categories" },
       { slug: "brands", title: "Brands" },
+      { slug: "attributes-tags", title: "Attributes & tags" },
+      { slug: "reviews", title: "Reviews" },
+      { slug: "media", title: "Media library" },
+      { slug: "catalog-feed", title: "Catalog feed" },
     ],
   },
   {
@@ -36,6 +40,34 @@ export const DOC_GROUPS: DocGroup[] = [
     label: "Marketing & loyalty",
     items: [
       { slug: "marketing", title: "Marketing & loyalty" },
+    ],
+  },
+  {
+    label: "Store admin",
+    items: [
+      { slug: "settings", title: "Store settings" },
+      { slug: "appearance", title: "Appearance & themes" },
+      { slug: "admin-users", title: "Staff users & roles" },
+      { slug: "analytics", title: "Analytics & transactions" },
+      { slug: "plugins", title: "Plugins" },
+      { slug: "push-notifications", title: "Push notifications" },
+      { slug: "ai-assistant", title: "AI assistant" },
+    ],
+  },
+  {
+    label: "Addons",
+    items: [
+      { slug: "reservations", title: "Reservations" },
+      { slug: "subscriptions", title: "Subscriptions" },
+      { slug: "prescriptions", title: "Prescriptions" },
+      { slug: "riders", title: "Riders & tracking" },
+      { slug: "affiliates", title: "Affiliates" },
+      { slug: "distributors", title: "Distributors" },
+      { slug: "whatsapp", title: "WhatsApp" },
+      { slug: "whatsapp-storefront", title: "WhatsApp Storefront" },
+      { slug: "ai-search", title: "AI search" },
+      { slug: "ai-image", title: "AI images" },
+      { slug: "blog", title: "Blog" },
     ],
   },
   {

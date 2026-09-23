@@ -238,24 +238,438 @@ curl -X DELETE "https://your-store.com/api/v1/products/42" \
 
 ---
 
-### Product Import (CSV)
+### GET /products/template - Download Import Template
 
-**POST /products/import**
+Download a CSV template file with all supported product columns and field types for bulk imports.
 
-- `Content-Type: multipart/form-data`
-- `file` - CSV file
-- `updateExisting` - `true` (default) or `false` to update existing products by SKU
-- `columnMapping` - Optional JSON object for column mapping
+**Auth:** API key or admin session
 
-Returns `202 Accepted` with a task ID for background processing.
+```bash
+curl -X GET "https://your-store-api.example.com/api/v1/products/template" \
+  -u "ck_xxx:cs_yyy"
+```
+
+**Example Response (200):**
+
+CSV file with headers and sample data.
 
 ---
 
-### Product Export
+### POST /products/import - Bulk Import Products
 
-**GET /products/export**
+Upload a CSV file to import products in bulk. Supports creating new products or updating existing ones by SKU.
 
-Returns a CSV file with all products. Supports same query params as list (`search`, `status`, etc.).
+**Auth:** API key or admin session
+
+**Addon:** None (core feature)
+
+```bash
+curl -X POST "https://your-store-api.example.com/api/v1/products/import" \
+  -u "ck_xxx:cs_yyy" \
+  -F "file=@products.csv" \
+  -F "updateExisting=true" \
+  -F "createNew=true"
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `file` | binary | Yes | CSV file (max 10MB). Headers: `SKU`, `Name`, `Description`, `Price`, `Sale Price`, `Stock`, `Status`, `Category`, `Images`, etc. |
+| `updateExisting` | boolean | No | Default: `true`. Update products with matching SKU. |
+| `createNew` | boolean | No | Default: `true`. Create products for rows without matching SKU. |
+| `keepExternalImages` | boolean | No | Default: `false`. Preserve image URLs from external sources (e.g., supplier CDN). |
+| `skipExistingImages` | boolean | No | Default: `false`. Do not update images for existing products. |
+| `columnMapping` | JSON object | No | Custom column-name mapping (for non-standard CSV headers). |
+
+**Example Response (202):**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "task_id": "import_abc123",
+    "message": "Import started in background",
+    "filename": "products.csv"
+  }
+}
+```
+
+**Gotchas:**
+- Import runs as a background job; use the task ID to poll progress.
+- SKU is the primary key for matching (case-sensitive).
+- Blank `Type` on an update row converts variable products to simple and deletes variants.
+- Images are fetched from URLs; invalid URLs are silently skipped.
+- CSV must be UTF-8 encoded.
+
+---
+
+### GET /products/export - Export Products as CSV
+
+Export all products (or a filtered subset) as CSV.
+
+**Auth:** API key or admin session
+
+```bash
+curl -X GET "https://your-store-api.example.com/api/v1/products/export?status=active&search=flour" \
+  -u "ck_xxx:cs_yyy" \
+  --output products.csv
+```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `search` | string | Search by name or SKU. |
+| `status` | string | Filter: `active`, `draft`, `archived`. |
+| `category_id` | integer | Filter by category. |
+| `brand_id` | integer | Filter by brand. |
+
+**Example Response (200):**
+
+CSV file (all columns from the import template).
+
+---
+
+### POST /products/bulk-generate-ai - Generate AI Descriptions and SEO
+
+Enqueue a background job to automatically generate product descriptions and SEO metadata using Claude AI.
+
+**Auth:** API key or admin session
+
+```bash
+curl -X POST "https://your-store-api.example.com/api/v1/products/bulk-generate-ai" \
+  -u "ck_xxx:cs_yyy" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "product_ids": [1, 2, 3],
+    "mode": "manual",
+    "generate_short_description": true,
+    "short_description_format": "paragraph",
+    "generate_long_description": true,
+    "generate_seo": true
+  }'
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `product_ids` | array | Depends | List of product IDs. Required if `mode=manual`. Ignored if `mode=auto`. |
+| `mode` | string | No | Default: `manual`. `auto` = find all products missing AI content. |
+| `generate_short_description` | boolean | No | Generate short product descriptions. |
+| `short_description_format` | string | No | `list` or `paragraph` (only if `generate_short_description=true`). |
+| `generate_long_description` | boolean | No | Generate full product descriptions. |
+| `generate_seo` | boolean | No | Generate SEO title, description, and keywords. |
+
+**Example Response (202):**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "task_id": "ai_gen_xyz789",
+    "job_id": "ai_gen_xyz789",
+    "message": "Generation started in background",
+    "count": 3
+  }
+}
+```
+
+**Gotchas:**
+- Job runs asynchronously; poll task status for progress.
+- `auto` mode finds products with no short description, no long description, or missing SEO title (any missing = match).
+- Generated content is created as draft fields; you must review and publish.
+
+---
+
+### POST /products/bulk-enhance-images - Generate Images with AI
+
+Enqueue a background job to generate or replace product images using Gemini AI.
+
+**Auth:** API key or admin session
+
+**Addon:** AI Image Generation (must be enabled and configured with Gemini API key)
+
+```bash
+curl -X POST "https://your-store-api.example.com/api/v1/products/bulk-enhance-images" \
+  -u "ck_xxx:cs_yyy" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "product_ids": [5, 6],
+    "mode": "append",
+    "custom_prompt": "white background, professional lighting"
+  }'
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `product_ids` | array | Yes | List of product IDs to enhance. |
+| `mode` | string | No | Default: `append`. `append` = add new images. `replace` = regenerate all images. |
+| `custom_prompt` | string | No | Custom instruction to guide image generation. |
+
+**Example Response (202):**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "task_id": "img_enh_456def",
+    "job_id": "img_enh_456def",
+    "message": "AI image enhancement started in background",
+    "count": 2,
+    "mode": "append"
+  }
+}
+```
+
+**Gotchas:**
+- Requires AI Image addon; returns 503 if disabled.
+- Requires Gemini API key configured in Settings → Advanced.
+- Generated images are created as product images but not yet published.
+- Each product counts toward the configured `maxBulkSize` (default varies by plan).
+
+---
+
+### GET /products/ai-generation-status - Poll AI Generation Status
+
+Get the status of ongoing AI content or image generation jobs.
+
+**Auth:** API key or admin session
+
+```bash
+curl -X GET "https://your-store-api.example.com/api/v1/products/ai-generation-status" \
+  -u "ck_xxx:cs_yyy"
+```
+
+**Example Response (200):**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "status": "running",
+    "processed": 2,
+    "total": 5,
+    "errors": []
+  }
+}
+```
+
+---
+
+### POST /products/bulk-generate-image-alt - Generate Image Alt Text in Bulk
+
+Enqueue a background job to generate alt text and titles for product images.
+
+**Auth:** API key or admin session
+
+```bash
+curl -X POST "https://your-store-api.example.com/api/v1/products/bulk-generate-image-alt" \
+  -u "ck_xxx:cs_yyy" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "product_ids": [10, 11],
+    "mode": "manual",
+    "overwrite": false
+  }'
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `product_ids` | array | Depends | List of product IDs. Required if `mode=manual`. Ignored if `mode=auto`. |
+| `mode` | string | No | Default: `manual`. `auto` = find all images with missing alt/title. |
+| `overwrite` | boolean | No | Default: `false`. `true` = regenerate even where alt/title already exist. |
+
+**Example Response (202):**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "task_id": "img_alt_789ghi",
+    "job_id": "img_alt_789ghi",
+    "message": "Image alt text & title generation started in background",
+    "count": 2
+  }
+}
+```
+
+**Gotchas:**
+- Alt text is generated deterministically from product name (no AI call, fast).
+- `auto` mode finds images with no alt or no title.
+
+---
+
+### POST /products/:id/duplicate - Duplicate a Product
+
+Create an exact copy of a product (simple or variable).
+
+**Auth:** API key or admin session
+
+```bash
+curl -X POST "https://your-store-api.example.com/api/v1/products/42/duplicate" \
+  -u "ck_xxx:cs_yyy"
+```
+
+**Example Response (201):**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "product": {
+      "id": 99,
+      "name": "Organic Flour 1kg-copy",
+      "sku": "FLOUR-001-COPY",
+      "price": "12.99",
+      "status": "draft",
+      "product_type": "simple"
+    }
+  }
+}
+```
+
+**Gotchas:**
+- Duplicate is created as draft and receives "-copy" suffix on the name.
+- Images, variants, categories, and tags are all duplicated.
+- SKU is suffixed with "-COPY" to avoid duplicates.
+
+---
+
+### POST /products/:id/generate-image-alt - Generate Image Alt Text for One Product
+
+Synchronously generate alt text and titles for all images of a single product.
+
+**Auth:** API key or admin session
+
+```bash
+curl -X POST "https://your-store-api.example.com/api/v1/products/42/generate-image-alt" \
+  -u "ck_xxx:cs_yyy" \
+  -H "Content-Type: application/json" \
+  -d '{ "overwrite": false }'
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `overwrite` | boolean | No | Default: `false`. `true` = regenerate even where alt/title already exist. |
+
+**Example Response (200):**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "product_id": 42,
+    "updated": 2,
+    "images": [
+      { "id": 1, "alt": "Organic Flour 1kg", "title": "Organic Flour 1kg" },
+      { "id": 2, "alt": "Organic Flour 1kg", "title": "Organic Flour 1kg" }
+    ]
+  }
+}
+```
+
+**Gotchas:**
+- This is a synchronous operation (unlike bulk variants).
+- Deterministically derived from product name; no AI involved.
+
+---
+
+### GET /products/:id/currency-prices - Get Currency Price Overrides
+
+Retrieve all currency-specific price overrides for a product.
+
+**Auth:** API key or admin session
+
+```bash
+curl -X GET "https://your-store-api.example.com/api/v1/products/42/currency-prices" \
+  -u "ck_xxx:cs_yyy"
+```
+
+**Example Response (200):**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "prices": [
+      {
+        "id": 1,
+        "product_id": 42,
+        "variant_id": null,
+        "currency_code": "USD",
+        "price": 14.99,
+        "sale_price": 12.99
+      },
+      {
+        "id": 2,
+        "product_id": 42,
+        "variant_id": 5,
+        "currency_code": "EUR",
+        "price": 13.50,
+        "sale_price": null
+      }
+    ]
+  }
+}
+```
+
+---
+
+### PUT /products/:id/currency-prices - Set Currency Price Overrides
+
+Create or replace currency-specific price overrides for a product or variant.
+
+**Auth:** API key or admin session
+
+```bash
+curl -X PUT "https://your-store-api.example.com/api/v1/products/42/currency-prices" \
+  -u "ck_xxx:cs_yyy" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prices": [
+      { "currency_code": "USD", "price": 14.99, "sale_price": 12.99, "variant_id": null },
+      { "currency_code": "EUR", "price": 13.50, "sale_price": null, "variant_id": 5 }
+    ]
+  }'
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `prices` | array | Yes | Array of price entries. |
+| `prices[].currency_code` | string | Yes | ISO 4217 currency code (e.g., `USD`, `EUR`). |
+| `prices[].price` | number | Yes | Price in this currency. |
+| `prices[].sale_price` | number | No | Optional sale price for this currency. |
+| `prices[].variant_id` | integer | No | If set, override applies only to this variant. Null = base product. |
+
+**Example Response (200):**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "prices": [
+      {
+        "id": 1,
+        "product_id": 42,
+        "variant_id": null,
+        "currency_code": "USD",
+        "price": 14.99,
+        "sale_price": 12.99
+      },
+      {
+        "id": 2,
+        "product_id": 42,
+        "variant_id": 5,
+        "currency_code": "EUR",
+        "price": 13.50,
+        "sale_price": null
+      }
+    ]
+  }
+}
+```
+
+**Gotchas:**
+- Existing prices for the same currencies are replaced; others are preserved.
+- Currency codes are normalized to uppercase.
+- `variant_id=null` or omitted = base product price.
+- Invalid prices or currency codes are silently skipped.
 
 ---
 

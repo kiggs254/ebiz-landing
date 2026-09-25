@@ -163,13 +163,13 @@ Lines are charged the branch price when per-branch pricing is on. The coupon, lo
 
 ### POST /storefront/checkout/process-payment - Start payment
 
-Kicks off payment for an order through a gateway. The response depends on the gateway: M-Pesa triggers an STK push; Pesapal/Paystack return a `redirect_url` to send the customer to.
+Kicks off payment for an order through a gateway. The response depends on the gateway: M-Pesa triggers an STK push; Pesapal, Paystack and Tingg return a `redirect_url` to send the customer to.
 
 | Body field | Type | Description |
 | --- | --- | --- |
 | `order_id` | number | Required |
-| `gateway_name` | string | Required, e.g. `M-Pesa`, `Paystack`, `Pesapal` |
-| `payment_data` | object | Gateway-specific (e.g. `phone` for M-Pesa; `storefront_base_url` for redirect returns) |
+| `gateway_name` | string | Required, e.g. `M-Pesa`, `Paystack`, `Pesapal`, `Tingg` |
+| `payment_data` | object | Gateway-specific (e.g. `phone` for M-Pesa; `storefront_base_url` for redirect returns; `return_path` for Tingg) |
 
 ```json
 { "status": "success", "data": { "redirect_url": "https://pay.example.com/...", "reference": "..." } }
@@ -194,7 +194,7 @@ After an STK push (or while waiting on a redirect), poll this to detect success,
 
 ### POST /storefront/orders/:id/verify-payment - Force a verification
 
-Call this from your "payment success" page to force a Pesapal/Paystack status check even if the callback never reached the backend. Returns the resolved `payment_status`.
+Call this from your "payment success" page to force a Pesapal, Paystack or Tingg status check even if the callback never reached the backend. Returns the resolved `payment_status`.
 
 ```json
 { "status": "success", "data": { "payment_status": "paid" } }
@@ -247,6 +247,36 @@ For subscriptions, the redirect is to `/subscription-success` with `subscription
 - For subscriptions, successful payment activates the subscription with a `current_period_end` one month from now and calculates the next delivery date based on the shop's `delivery_day_of_week` setting.
 - If the `storefront_url` or `storefront` parameter is invalid or missing, the redirect uses the default configured `storefront_url` from settings, falling back to the `STOREFRONT_URL` environment variable.
 - Always read `OrderTrackingId` case-insensitively — Pesapal's redirects vary in capitalization.
+
+## Tingg (Cellulant)
+
+Tingg's hosted checkout takes M-Pesa, Airtel Money and cards on one page. Turn it on in **Settings → Payments → Tingg** with the API key, client ID/secret and service code from the Tingg merchant dashboard. The IPN secret is generated for you, and the notification and return URLs are sent with every checkout, so nothing needs setting in the Tingg dashboard.
+
+**Flow:**
+
+1. Create the order (`POST /storefront/checkout/create-order`).
+2. `POST /storefront/checkout/process-payment` with `gateway_name: "Tingg"`. Send `payment_data.storefront_base_url` (your site's origin) and `payment_data.return_path` (where the customer should land, e.g. `/checkout/success`). The customer's email, phone and name come from the order when you leave them out.
+3. Redirect the customer to `data.redirect_url` (Tingg's page).
+4. Tingg returns them via the backend, which confirms the payment with Tingg and redirects to `{storefront_base_url}{return_path}` with:
+
+| Query param | Meaning |
+| --- | --- |
+| `payment` | `success` (order is paid), `failed` (not paid — offer a retry), or `pending` (not confirmed yet) |
+| `order` / `order_id` | The order number and id |
+| `recheck` | Only while `pending`: a backend link that checks again and redirects back |
+| `gateway` | `tingg` |
+
+```json
+{
+  "order_id": 1043,
+  "gateway_name": "Tingg",
+  "payment_data": { "storefront_base_url": "https://shop.example.com", "return_path": "/checkout/success" }
+}
+```
+
+**Retrying:** call `process-payment` again for the same order. Each order keeps one Tingg reference, so this re-opens the same payment rather than starting a new one. An order that is already paid is refused.
+
+**How an order gets marked paid:** Tingg's notification (`POST /storefront/webhooks/tingg/ipn/{secret}`), the customer's return, `verify-payment` and a reconcile sweep every 2 minutes all ask Tingg what was actually paid. The order is marked paid only when Tingg reports a payment covering the amount due, and only once. A payment that doesn't match the amount is left pending, with a note on the order for staff.
 
 ## Unified Checkout (Cybersource)
 

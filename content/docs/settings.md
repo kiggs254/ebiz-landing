@@ -558,7 +558,7 @@ curl -X POST "https://your-store-api.example.com/api/v1/settings/emails/1/genera
 
 ### GET /settings/payment-gateways - List Payment Gateways
 
-Retrieve all configured payment gateways (Mpesa, Pesapal, Paystack, COD, Unified Checkout, etc.) with their configuration state.
+Retrieve all configured payment gateways (Mpesa, Pesapal, Paystack, COD, Unified Checkout, Tingg, etc.) with their configuration state. Secrets (including Tingg's `api_key`, `client_secret` and `ipn_secret`) are never returned: they come back masked with a sibling `*_set` flag.
 
 **Auth:** Admin session
 

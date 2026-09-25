@@ -601,6 +601,8 @@ links to the page that documents it in full.
 - `POST /storefront/paystack/reconcile` — Reconcile Paystack payment status ([docs](/docs/storefront-checkout))
 - `GET /storefront/shipping/areas` — Get shipping areas ([docs](/docs/storefront-content))
 - `GET /storefront/webhooks/pesapal/callback` — Pesapal payment callback ([docs](/docs/storefront-checkout))
+- `POST /storefront/webhooks/tingg/ipn/:secret` — Tingg payment notification (IPN) ([docs](/docs/storefront-checkout))
+- `GET /storefront/webhooks/tingg/return` — Tingg customer return ([docs](/docs/storefront-checkout))
 
 **Storefront - Content**
 

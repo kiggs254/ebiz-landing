@@ -4,23 +4,25 @@
  * ONE place to change when a new APK is built. Rebuilds are rare — day-to-day
  * changes ship over the air to installed phones via EAS Update, and only a
  * native change (a new native package, a permission, Firebase or Maps keys)
- * needs a fresh binary. When one does, update `apkUrl` and `version` here.
+ * needs a fresh binary.
  *
- * CAVEAT: an EAS artifact URL is permanent for the build but the build itself
- * is deleted 30 days after it is made on the free plan, so this link rots
- * around 2026-10-10. Set NEXT_PUBLIC_EBIZ_APK_URL to a self-hosted copy to be
- * free of that; the env var wins over the value below.
+ * The URL below is permanent and needs no editing: GitHub's `releases/latest`
+ * always redirects to the newest release asset, so publishing a new release in
+ * kiggs254/ebiz-app is all a rebuild requires. It replaced an EAS artifact
+ * link, which the free plan deletes after 14 days — that link 404'd two days
+ * after it expired, with nothing on the page to say why. Only `version` and
+ * `sizeMb` are worth refreshing here, and only because they are shown to the
+ * reader. NEXT_PUBLIC_EBIZ_APK_URL still wins if it is set.
  */
 
 export const MOBILE_APP = {
   /** Direct download of the current signed APK. */
   apkUrl:
     process.env.NEXT_PUBLIC_EBIZ_APK_URL ??
-    "https://expo.dev/artifacts/eas/LmT4y-6wTbTw_K8sDzpqAk6DvQQFT2IGE5TPNWK4kRI.apk",
-  /** The build page, which also renders a QR for installing from a phone. */
-  buildPageUrl:
-    "https://expo.dev/accounts/kiggs/projects/ebiz-mobile/builds/ecc63c77-bf21-42ea-b2b7-6bc821859d18",
+    "https://github.com/kiggs254/ebiz-app/releases/latest/download/ebiz.apk",
+  /** Where every release lives, in case someone wants an older build. */
+  buildPageUrl: "https://github.com/kiggs254/ebiz-app/releases",
   version: "0.1.0",
   minAndroid: "7.0",
-  sizeMb: 134,
+  sizeMb: 76,
 } as const;

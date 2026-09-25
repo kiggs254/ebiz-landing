@@ -231,12 +231,12 @@ export default function AppPage() {
           <div className="card" style={{ padding: 24, marginTop: 22, maxWidth: 720 }}>
             <h3 style={{ fontSize: 16, margin: "0 0 8px" }}>Installing on a phone directly</h3>
             <p style={{ color: "var(--ink-2)", fontSize: 15, lineHeight: 1.65, margin: 0 }}>
-              Open{" "}
+              Open this page on the phone itself and tap Download — the file has to
+              land on the phone that will run it. Earlier builds are kept on{" "}
               <a href={MOBILE_APP.buildPageUrl} style={{ color: "var(--accent-ink)" }}>
-                the build page
-              </a>{" "}
-              on the phone itself, or scan its QR code from a computer. iPhone is
-              not supported yet.
+                the releases page
+              </a>
+              . iPhone is not supported yet.
             </p>
           </div>
         </Section>

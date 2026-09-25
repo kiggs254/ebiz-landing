@@ -304,12 +304,17 @@ curl -X POST "https://your-store-api.example.com/api/v1/products/import" \
 
 ### GET /products/export - Export Products as CSV
 
-Export all products (or a filtered subset) as CSV.
+Export products as a WooCommerce-format CSV that the importer reads back. Pick the columns, the product types and the categories, or export specific products.
+
+Categories come out two ways:
+
+- **Categories**: every category the product is in, as full paths, e.g. `Kitchen > Fridges > Double Door, Deals`. The importer reads this format back.
+- **Category L1, Category L2, …**: the product's main (deepest) category path, one level per column. There are as many columns as the deepest product needs.
 
 **Auth:** API key or admin session
 
 ```bash
-curl -X GET "https://your-store-api.example.com/api/v1/products/export?status=active&search=flour" \
+curl -X GET "https://your-store-api.example.com/api/v1/products/export?status=published&columns=sku,name,regular_price,categories,category_levels" \
   -u "ck_xxx:cs_yyy" \
   --output products.csv
 ```
@@ -317,13 +322,18 @@ curl -X GET "https://your-store-api.example.com/api/v1/products/export?status=ac
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `search` | string | Search by name or SKU. |
-| `status` | string | Filter: `active`, `draft`, `archived`. |
-| `category_id` | integer | Filter by category. |
+| `status` | string | Filter: `published` or `draft`. |
+| `category_id` | integer | Filter by the product's primary category only. |
+| `category_ids` | string | Comma-separated category ids. Matches products in these categories or any category below them. |
 | `brand_id` | integer | Filter by brand. |
+| `ids` | string | Comma-separated product ids. Export only these. |
+| `columns` | string | Comma-separated column keys: `id`, `type`, `sku`, `name`, `published`, `featured`, `visibility`, `short_description`, `description`, `regular_price`, `sale_price`, `stock`, `manage_stock`, `stock_status`, `backorders`, `weight`, `categories`, `category_levels`, `tags`, `images`, `brand`, `attributes`, `parent`, `custom_fields`. Default: all. |
+| `types` | string | Comma-separated: `simple`, `variable`, `variation`. Default: all. |
+| `meta_columns` | string | `1` writes one `Meta: <key>` column per custom field instead of the single JSON `Custom fields` column. The importer reads either. |
 
 **Example Response (200):**
 
-CSV file (all columns from the import template).
+A CSV file. With no options it contains every column, product type and category.
 
 ---
 

@@ -110,7 +110,7 @@ Public. Pass `product_ids` (comma-separated) and get back whether any require a 
 
 Requires auth. Lists the logged-in customer's prescriptions and their status/refills.
 
-At checkout, pass valid `prescription_ids` to [`create-order`](/docs/storefront-checkout#post-storefront-checkout-create-order) for any items that require one.
+At checkout, pass valid `prescription_ids` to [`create-order`](/docs/storefront-checkout#post-storefrontcheckoutcreate-order---create-an-order) for any items that require one.
 
 ## Store Content & Config
 
@@ -836,7 +836,7 @@ curl "https://your-store-api.example.com/api/v1/storefront/shipping/areas?countr
 }
 ```
 
-When the store prices by zones alone (flat-rate shipping), `areas` is empty — the storefront should skip offering a drop-point picker. When a courier uses named drop points, you render this tree as a hierarchical selector so the customer can name their destination before you call [`/checkout/calculate-shipping`](/docs/storefront-checkout#post-storefront-checkout-calculate-shipping).
+When the store prices by zones alone (flat-rate shipping), `areas` is empty — the storefront should skip offering a drop-point picker. When a courier uses named drop points, you render this tree as a hierarchical selector so the customer can name their destination before you call [`/checkout/calculate-shipping`](/docs/storefront-checkout#post-storefrontcheckoutcalculate-shipping---quote-shipping).
 
 **Errors:**
 - `400` if `country` is missing

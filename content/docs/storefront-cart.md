@@ -1,6 +1,6 @@
 The cart is tied to the **session cookie** (see [Overview](/docs/storefront#authentication-model)). Guests get a cart keyed to their session; once a customer logs in, the cart is keyed to their account. Always send `credentials: "include"` so the cart persists across requests.
 
-When a guest logs in, call [`POST /storefront/cart/merge`](#post-storefront-cart-merge-merge-a-guest-cart-on-login) to fold their guest cart into their account cart.
+When a guest logs in, call [`POST /storefront/cart/merge`](#post-storefrontcartmerge---merge-a-guest-cart-on-login) to fold their guest cart into their account cart.
 
 ## Endpoints
 

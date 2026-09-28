@@ -22,7 +22,7 @@ Creates a customer and logs them in (sets the session).
 { "email": "sam@example.com", "password": "•••••••" }
 ```
 
-On success, sets the session cookie and returns the customer. Right after login, merge any guest state: [`POST /storefront/cart/merge`](/docs/storefront-cart#post-storefront-cart-merge-merge-a-guest-cart-on-login) and `POST /storefront/wishlist/merge`.
+On success, sets the session cookie and returns the customer. Right after login, merge any guest state: [`POST /storefront/cart/merge`](/docs/storefront-cart#post-storefrontcartmerge---merge-a-guest-cart-on-login) and `POST /storefront/wishlist/merge`.
 
 ### POST /storefront/auth/logout - Log out
 
@@ -265,7 +265,7 @@ Public. Verifies the `code` and returns a short-lived `redemption_token`.
 { "status": "success", "data": { "redemption_token": "•••", "expires_in_minutes": 15 } }
 ```
 
-Pass `{ token, points }` as `loyalty_redemption` to [`create-order`](/docs/storefront-checkout#post-storefront-checkout-create-order) to apply the discount.
+Pass `{ token, points }` as `loyalty_redemption` to [`create-order`](/docs/storefront-checkout#post-storefrontcheckoutcreate-order---create-an-order) to apply the discount.
 
 ### GET /storefront/customer/loyalty - Customer loyalty status
 

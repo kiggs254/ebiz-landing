@@ -410,7 +410,7 @@ Optional when creating a new customer from email: **`customer_first_name`**, **`
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `product_id` | integer | Yes | Product ID. For a variation, the **parent** product's `id` - not the variation's |
-| `variant_id` | integer | For variations | The variation's `id` (`variants[].id` on `GET /products/:id`). Leave out for simple products |
+| `variant_id` | integer | For variations | The variation's `id` (`variants[].id` on `GET /products/:id`). Leave out, or send `0`, for simple products |
 | `name` | string | Yes | Line name as it should read on the order, e.g. `Organic Flour - 1kg` |
 | `sku` | string | Yes | For a variation, its own `sku` (`variants[].sku`); otherwise the product's |
 | `quantity` | integer | Yes | Quantity |
@@ -454,8 +454,24 @@ Two options of the same product are two lines, one per `variant_id`:
 
 **What the server checks, and what it doesn't:**
 
-- Lines are stored as you send them. The server does not look up the variation's price, SKU or name, and does not check that `variant_id` belongs to `product_id` - send the values of the variation you read. The order's `subtotal` and `total` are stored as sent too.
-- `product_id` and `variant_id` must exist. An unknown id is refused with `400`.
+- Prices, SKUs and names are stored as you send them - the server does not look up the variation's values, so send the ones you read. The order's `subtotal` and `total` are stored as sent too.
+- Every line is checked before anything is saved: `product_id` must exist; `variant_id`, when set, must be a variation of that product (`0` means none); `name` and `sku` are required (at most 255 and 100 characters); `quantity` must be a whole number.
+- A bad line is refused with `400`, and nothing is saved - not the order, not the customer - so you can fix it and send the order again. `errors` lists every bad line:
+
+```json
+{
+  "status": "error",
+  "message": "Line 2: variation 101 belongs to product 10, not product 20. Send the parent product's id as product_id",
+  "errors": [
+    {
+      "line": 2,
+      "field": "variant_id",
+      "message": "Line 2: variation 101 belongs to product 10, not product 20. Send the parent product's id as product_id"
+    }
+  ]
+}
+```
+
 - Without `variant_id`, the line is recorded against the parent product only: the admin order page can't show which option was bought, because it reads the options from the variation.
 - `GET /orders/:id` returns each line with its `variant` (the variation's current record, including `attributes_json`) next to `product`.
 
@@ -603,7 +619,7 @@ curl -X POST "https://your-store.com/api/v1/orders" \
 
 ### POST /orders/batch - Create Multiple Orders
 
-Create up to **100 orders** in a single API call. Each order follows the same field spec as `POST /orders`. The response includes a `created` array (successful orders) and a `failed` array (with per-item error messages). The entire batch is logged as a single entry in the admin's **API Operation Logs** and can be undone with one click.
+Create up to **100 orders** in a single API call. Each order follows the same field spec as `POST /orders`. The response includes a `created` array (successful orders) and a `failed` array (with per-item error messages). Each order's lines are checked as on `POST /orders`; an order with a bad line lands in `failed` and is not saved. The entire batch is logged as a single entry in the admin's **API Operation Logs** and can be undone with one click.
 
 **Request Body:**
 
@@ -666,7 +682,7 @@ curl -X POST "https://your-store.com/api/v1/orders/batch" \
 
 ### PUT /orders/:id - Update order
 
-Edit an order's fields, customer profile, items, or addresses. Items and addresses are replaced wholesale (delete + re-create). This is a full order replacement endpoint.
+Edit an order's fields, customer profile, items, or addresses. Items and addresses are replaced wholesale (delete + re-create). This is a full order replacement endpoint. New `items` are checked first, as on `POST /orders`: if a line is refused (`400`), the order is left unchanged.
 
 **Auth:** Admin session required.
 

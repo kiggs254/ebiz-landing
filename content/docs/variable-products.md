@@ -78,6 +78,13 @@ When you **read** products (list or single), each variant in the `variants` arra
 
 Use `variant.id` as `variant_id` when creating orders or adding to cart for variable products.
 
+### Ordering a variation
+
+An order line for a variable product carries both ids: `product_id` is the parent product, `variant_id` the variation.
+
+- **Integrations (`POST /orders`)** - send `product_id`, `variant_id`, and the variation's own `sku` and `price` (its `sale_price` while a sale is running). Lines are stored as sent. See [Ordering variable products](/docs/orders#ordering-variable-products).
+- **Storefronts (`POST /storefront/checkout/create-order`)** - send `product_id`, `variant_id` and `quantity`; the server prices the line from the variation. See [create-order](/docs/storefront-checkout#ordering-variable-products).
+
 ### Creating a Variable Product
 
 **POST /products**

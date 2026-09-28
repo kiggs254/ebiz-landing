@@ -60,7 +60,7 @@ A variable product (`product_type: "variable"`) includes a `variants[]` array; e
 
 #### Branch prices and availability
 
-When the branches addon is on and you pass `branch_id`, the list, `by-ids` and single-product endpoints apply that branch's [options](/docs/branches#get-branchesconfig-branch-options):
+When the branches addon is on and you pass `branch_id`, the list, `by-ids` and single-product endpoints apply that branch's [options](/docs/branches#get-branchesconfig---branch-options):
 
 - **Per-branch pricing on:** `price`, `sale_price` and the sale dates on the product and its variants are the branch's own, and `branch_price: true` marks them.
 - **`branch_status`** on each product: `available`, `not_carried` or `sold_out` at that branch.

@@ -61,7 +61,7 @@ curl -X GET "https://your-store.com/api/v1/products?page=1&limit=20&status=activ
 }
 ```
 
-**Variable products in the list:** Each product in `products` includes a `variants` array. For simple products it is `[]`. For variable products it contains one object per variant (see [Variant response shape](#variant-response-shape-reading) below).
+**Variable products in the list:** Each product in `products` includes a `variants` array. For simple products it is `[]`. For variable products it contains one object per variant (see [Variant response shape](/docs/variable-products#variant-response-shape-reading)).
 
 ---
 
@@ -109,7 +109,7 @@ curl -X GET "https://your-store.com/api/v1/products/1" \
 }
 ```
 
-For variable products, `variants` is populated with the full variant list; see [Variant response shape](#variant-response-shape-reading) and [Variable Products](#7-variable-products).
+For variable products, `variants` is populated with the full variant list; see [Variant response shape](/docs/variable-products#variant-response-shape-reading) and [Variable Products](/docs/variable-products#7-variable-products).
 
 ---
 

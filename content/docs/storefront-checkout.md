@@ -118,7 +118,7 @@ Creates a pending order (guest or logged-in). Validates products, recomputes the
 | `customer` | object | `{ email* , first_name, last_name, phone }` |
 | `shipping_address` | object | `{ first_name, last_name, address_1, address_2, city, state, postal_code, country }` |
 | `billing_address` | object | Same shape, or `{ same_as_shipping: true }` |
-| `items` | array | `{ product_id, variant_id?, quantity }` (price is recomputed server-side) |
+| `items` | array | `{ product_id, variant_id?, quantity }` (price is recomputed server-side). `variant_id` is needed for a variable product - see [below](#ordering-variable-products) |
 | `shipping_method_id` | number/string | A method id from `calculate-shipping`, or `distance-based-shipping` |
 | `payment_method` | string | e.g. `mpesa`, `paystack`, `pesapal`, `cod` |
 | `coupon_code` | string | Optional |
@@ -148,7 +148,28 @@ Responds `201` with the created order (status `pending`, payment_status `pending
 
 Take the returned `order.id` into the payment step. The cart is cleared automatically on success.
 
-**Branch rules** (branches addon, per the shop's [branch options](/docs/branches#get-branchesconfig-branch-options)):
+#### Ordering variable products
+
+For a variable product, send the variation the shopper picked as `variant_id`, next to the parent product's `product_id`. The product's `variants[]` (from [GET /storefront/products/:slug](/docs/storefront-catalog#get-storefrontproductsslug---get-a-single-product)) lists each variation's `id` and its options in `attributes_json`.
+
+```json
+{
+  "items": [
+    { "product_id": 10, "variant_id": 101, "quantity": 2 },
+    { "product_id": 10, "variant_id": 102, "quantity": 1 }
+  ]
+}
+```
+
+The server does the rest for that line:
+
+- **Price** - the variation's own: its sale price while the sale is running, or the branch's price when per-branch pricing is on.
+- **SKU** - the variation's `sku`. The line's name is the product name.
+- **Checks** - the variation must belong to the product, or the order is refused with `400` "Invalid variant for product 10". A variation that is out of stock is refused with `409` "... is sold out in that option."
+
+Always send `variant_id` for a variable product. Without it the line is charged the parent product's own price, not the variation's, and no option is recorded.
+
+**Branch rules** (branches addon, per the shop's [branch options](/docs/branches#get-branchesconfig---branch-options)):
 
 | Situation | Response |
 |---|---|

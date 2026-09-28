@@ -409,12 +409,57 @@ Optional when creating a new customer from email: **`customer_first_name`**, **`
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `product_id` | integer | Yes | Product ID |
-| `variant_id` | integer | No | Variant ID for variable products |
-| `name` | string | Yes | Product/variant name |
-| `sku` | string | Yes | SKU |
+| `product_id` | integer | Yes | Product ID. For a variation, the **parent** product's `id` - not the variation's |
+| `variant_id` | integer | For variations | The variation's `id` (`variants[].id` on `GET /products/:id`). Leave out for simple products |
+| `name` | string | Yes | Line name as it should read on the order, e.g. `Organic Flour - 1kg` |
+| `sku` | string | Yes | For a variation, its own `sku` (`variants[].sku`); otherwise the product's |
 | `quantity` | integer | Yes | Quantity |
-| `price` | number | Yes | Unit price |
+| `price` | number | Yes | Unit price charged. For a variation, the variation's price (see below) |
+
+#### Ordering variable products
+
+A variable product (sizes, colours, weights) is ordered by variation: each line names the parent product **and** the variation. To order the 1kg bag of the flour from the [variant response example](/docs/variable-products#variant-response-shape-reading):
+
+1. Read the product with `GET /products/:id` (or find it in `GET /products`). Its `variants` array lists every variation with its `id`, `sku`, `price`, `sale_price` and options (`attributes_json`).
+2. Pick the variation whose `attributes_json` matches the customer's choice - here `{ "Size": "1kg" }`, variant `102`.
+3. Build the line from that variation:
+
+| Line field | Take it from |
+|---|---|
+| `product_id` | the product's `id` (`10`) |
+| `variant_id` | the variation's `id` (`102`) |
+| `sku` | the variation's `sku` (`FLOUR-ORG-1KG`) |
+| `price` | the variation's `sale_price` while its sale is running, otherwise its `price` |
+| `name` | the product name and the option (`Organic Flour - 1kg`) |
+
+A sale is running when `sale_price` is set and lower than `price`, and today falls between the variation's `sale_price_start_date` and `sale_price_end_date` (either may be empty).
+
+Two options of the same product are two lines, one per `variant_id`:
+
+```json
+{
+  "customer_email": "jane@example.com",
+  "subtotal": 24.97,
+  "shipping": 0,
+  "tax": 0,
+  "discount": 0,
+  "total": 24.97,
+  "currency": "USD",
+  "items": [
+    { "product_id": 10, "variant_id": 101, "name": "Organic Flour - 500g", "sku": "FLOUR-ORG-500G", "quantity": 2, "price": 5.99 },
+    { "product_id": 10, "variant_id": 102, "name": "Organic Flour - 1kg", "sku": "FLOUR-ORG-1KG", "quantity": 1, "price": 12.99 }
+  ]
+}
+```
+
+**What the server checks, and what it doesn't:**
+
+- Lines are stored as you send them. The server does not look up the variation's price, SKU or name, and does not check that `variant_id` belongs to `product_id` - send the values of the variation you read. The order's `subtotal` and `total` are stored as sent too.
+- `product_id` and `variant_id` must exist. An unknown id is refused with `400`.
+- Without `variant_id`, the line is recorded against the parent product only: the admin order page can't show which option was bought, because it reads the options from the variation.
+- `GET /orders/:id` returns each line with its `variant` (the variation's current record, including `attributes_json`) next to `product`.
+
+`POST /orders/batch` and `PUT /orders/:id` (which replaces all lines) take lines in this same shape. A storefront placing an order for a shopper uses [create-order](/docs/storefront-checkout#ordering-variable-products) instead, which prices each line itself.
 
 **Address Fields** _(all optional - include what you have)_:
 

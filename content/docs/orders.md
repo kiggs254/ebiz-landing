@@ -10,6 +10,10 @@
 | `limit` | integer | 20 | Items per page |
 | `status` | string | - | Filter: `pending`, `processing`, `completed`, `cancelled` |
 | `search` | string | - | Search by order number or customer email |
+| `delivery_date_from` | string | - | Orders due (collection or delivery) on or after this day, `YYYY-MM-DD` |
+| `delivery_date_to` | string | - | Orders due on or before this day — send both for one day, e.g. today's pickups |
+| `delivery_kind` | string | - | `pickup` or `delivery` |
+| `sort` | string | - | `delivery_date` — soonest due first, in time-slot order; orders with no time last |
 
 Each order in the list includes an **`items`** array (full line rows, not only a count). Every element includes **`product`** (with **`images`**, primary **`category`**, **`categories`**, **`brand`**, **`tags`**) and **`variant`** when applicable, matching `GET /orders/:id`. **`items_count`** is also set for convenience. Each order also carries its **`addresses`** array (shipping / billing), including the delivery **`place_id`** and **`latitude`** / **`longitude`** when they were captured at checkout — see `GET /orders/:id` below.
 
@@ -400,6 +404,9 @@ curl "https://your-store-api.example.com/api/v1/orders/batch?ids=101,102,103" \
 | `addresses` | array | No | Shipping and/or billing addresses. Omit if address is not applicable (e.g. POS, phone order). You can provide a free-form address - only `type` is required by the system; all other address fields are optional. |
 | `order_date` | string (ISO 8601) | No | Actual date the order was placed in the originating system (e.g. `"2024-12-31T14:30:00Z"`). Use this when syncing historical orders so the admin dashboard reflects the real order date. Defaults to the submission time when omitted. |
 | `api_label` | string | No | Optional display label shown as a badge on the order in the admin (max 100 chars). Useful to identify the source system, e.g. `"WooCommerce"`, `"ERP"`, `"POS"`. When omitted the badge simply shows **API**. |
+| `delivery_kind` | string | No | `pickup` or `delivery` — which calendar `delivery_date` / `delivery_slot` are on. See [Pickup and delivery times](#pickup-and-delivery-times). |
+| `delivery_date` | string | No | Collection or delivery day, `YYYY-MM-DD` in the shop's time zone |
+| `delivery_slot` | string | No | Time slot `id`, e.g. `"1430-1500"`, from `pickup_times` / `delivery_dates` on [`POST /shipping/external/calculate`](/docs/shipping#post-shippingexternalcalculate---calculate-shipping-rates) |
 
 \*Provide **`customer_email`** (or **`email`**) **or** **`customer_id`** - not all three as conflicting identifiers.
 
@@ -415,6 +422,34 @@ Optional when creating a new customer from email: **`customer_first_name`**, **`
 | `sku` | string | Yes | For a variation, its own `sku` (`variants[].sku`); otherwise the product's |
 | `quantity` | integer | Yes | Quantity |
 | `price` | number | Yes | Unit price charged. For a variation, the variation's price (see below) |
+
+#### Pickup and delivery times
+
+With the **Delivery Dates & Slots** addon on, an order can carry the day — and time slot — the customer will collect it (or have it delivered). Get what's on offer from [`POST /shipping/external/calculate`](/docs/shipping#post-shippingexternalcalculate---calculate-shipping-rates): each Local Pickup method carries `pickup_times`, other methods `delivery_dates`. Send the chosen day and slot `id` back:
+
+```json
+{
+  "customer_email": "jane@example.com",
+  "subtotal": 2400, "shipping": 0, "tax": 0, "discount": 0, "total": 2400,
+  "currency": "KES",
+  "shipping_method_title": "Pickup — Main kitchen",
+  "delivery_kind": "pickup",
+  "delivery_date": "2026-10-20",
+  "delivery_slot": "1430-1500",
+  "items": [{ "product_id": 101, "name": "Chicken Biryani", "sku": "CB-1", "quantity": 2, "price": 1200 }]
+}
+```
+
+The time is held to the same rules as the website checkout: the day must be on offer, and so must the slot when that day has slots (a slot that has started, starts too soon to prepare the order, or is fully booked is not). The place is taken in the same transaction as the order, so the last place in a slot can't go to two orders. The order comes back with `delivery_date`, `delivery_slot`, `delivery_kind` and `delivery_slot_label` (e.g. `"14:30–15:00"`, filled in by the server), and the admin, emails and the Orders "Due" column show it.
+
+All three fields are optional: an order without them is saved as before.
+
+| Status | When |
+|--------|------|
+| `400` | `delivery_date` isn't `YYYY-MM-DD`, `delivery_kind` isn't `pickup`/`delivery`, a slot is sent without a date, or the shop doesn't take times for that kind (addon off, or that calendar switched off) |
+| `409` | The day or slot isn't — or is no longer — available, e.g. `"That collection time is no longer available — please choose another."` or `"That collection time has just been booked up — please choose another."` Fetch the times again and resend. |
+
+Nothing is saved on a `400` or `409`.
 
 #### Ordering variable products
 
@@ -619,7 +654,7 @@ curl -X POST "https://your-store.com/api/v1/orders" \
 
 ### POST /orders/batch - Create Multiple Orders
 
-Create up to **100 orders** in a single API call. Each order follows the same field spec as `POST /orders`. The response includes a `created` array (successful orders) and a `failed` array (with per-item error messages). Each order's lines are checked as on `POST /orders`; an order with a bad line lands in `failed` and is not saved. The entire batch is logged as a single entry in the admin's **API Operation Logs** and can be undone with one click.
+Create up to **100 orders** in a single API call. Each order follows the same field spec as `POST /orders`. The response includes a `created` array (successful orders) and a `failed` array (with per-item error messages). Each order's lines — and its `delivery_kind` / `delivery_date` / `delivery_slot`, when sent — are checked as on `POST /orders`; an order that fails a check lands in `failed` and is not saved. The entire batch is logged as a single entry in the admin's **API Operation Logs** and can be undone with one click.
 
 **Request Body:**
 
@@ -698,6 +733,7 @@ Edit an order's fields, customer profile, items, or addresses. Items and address
 | `items` | array | Array of item objects to replace all items: `{ name, sku, quantity, price }` |
 | `addresses` | array | Array of address objects: `{ type, name, street, city, state, zip, country, phone }` |
 | `customer_first_name`, `customer_last_name`, `customer_phone` | string | Update customer profile fields |
+| `delivery_date`, `delivery_slot`, `delivery_kind` | string | Move the order to another collection / delivery time — checked and booked as on `POST /orders` before anything else changes (`400` / `409` leave the order unchanged). `delivery_kind` defaults to the order's current kind; re-sending the time it already has is accepted; `"delivery_date": null` takes the time off. |
 
 ```bash
 curl -X PUT "https://your-store-api.example.com/api/v1/orders/123" \

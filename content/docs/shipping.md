@@ -77,6 +77,61 @@ curl -X POST "https://your-store.com/api/v1/shipping/external/calculate" \
 }
 ```
 
+#### Pickup time slots
+
+With the **Delivery Dates & Slots** addon on, each Local Pickup method (`"type": "local_pickup"`) carries **`pickup_times`** — the days and time slots a customer may collect in. Other methods carry **`delivery_dates`** when the shop asks for a delivery day. Each is left out when the shop doesn't take times for that kind.
+
+```json
+{
+  "status": "success",
+  "data": {
+    "methods": [
+      {
+        "id": 9,
+        "name": "Pickup — Main kitchen",
+        "type": "local_pickup",
+        "cost": 0,
+        "pickup_address": "Gigiri Box Park, UN Avenue, Nairobi",
+        "pickup_times": {
+          "kind": "pickup",
+          "required": true,
+          "timezone": "Africa/Nairobi",
+          "slot_mode": "hours",
+          "slot_minutes": 30,
+          "lead_minutes": 60,
+          "note": null,
+          "dates": [
+            {
+              "date": "2026-10-20",
+              "label": "Tuesday, 20 October",
+              "few_left": false,
+              "hours": [{ "open": "07:00", "close": "19:00" }],
+              "slots": [
+                { "id": "0700-0730", "label": "07:00–07:30", "start": "07:00", "end": "07:30", "few_left": false },
+                { "id": "0730-0800", "label": "07:30–08:00", "start": "07:30", "end": "08:00", "few_left": false }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `required` | The shop wants a time on every order of this kind |
+| `timezone` | Dates and times are in this (the shop's) time zone |
+| `slot_mode` | `hours` — slots cut from opening hours (many, short); `fixed` — a hand-made list |
+| `slot_minutes` | Length of each slot when `slot_mode` is `hours` |
+| `lead_minutes` | Slots starting sooner than this after ordering aren't offered |
+| `note` | One line from the shop to show beside the times |
+| `dates[].hours` | That day's opening hours (when `slot_mode` is `hours`) |
+| `dates[].slots[]` | The slots on that day — empty when the shop asks for a day only. `few_left` flags three or fewer places left |
+
+Send the chosen day and slot back on [`POST /orders`](/docs/orders#pickup-and-delivery-times) as `delivery_kind`, `delivery_date` and `delivery_slot` (the slot's `id`). The server checks them again then, so a slot that filled up in the meantime is refused with `409`.
+
 ---
 
 ## Shipping Zones
